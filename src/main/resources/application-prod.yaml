@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+server:
+  error:
+    include-stacktrace: never
+    include-message: never
+
+logging:
+  level:
+    root: WARN
+    com.institucion.sigea: INFO

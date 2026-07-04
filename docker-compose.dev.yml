@@ -1,0 +1,47 @@
+services:
+  postgres-sigea-main:
+    image: postgres:15
+    container_name: postgres-main
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_main_data:/var/lib/postgresql/data
+
+  postgres-sigea-replica:
+    image: postgres:15
+    container_name: postgres-replica
+    depends_on:
+      - postgres-sigea-main
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_replica_data:/var/lib/postgresql/data
+
+  sigea:
+    build: .
+    image: sigea
+    container_name: sigea
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres-sigea-main
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-sigea-main:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      AES_SECRET_KEY: ${AES_SECRET_KEY}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      TOTP_ISSUER: ${TOTP_ISSUER}
+
+volumes:
+  postgres_main_data:
+  postgres_replica_data:
