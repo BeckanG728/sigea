@@ -16,15 +16,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 /**
  * Sin {@code DaoAuthenticationProvider}/{@code AuthenticationManager} a
- * propósito: el login pasa por 2FA (login -> requiere2FA -> verify-2fa), un
- * flujo de dos pasos que no encaja en el {@code AuthenticationManager}
- * estándar de Spring Security. AuthService valida usuario/password a mano
- * con {@link PasswordEncoder#matches} contra UsuarioRepository.
- * <p>
- * TODO(usuarios-roles): si en algún punto se prefiere volver al flujo
- * estándar de Spring Security para el login, reintroducir aquí
- * DaoAuthenticationProvider + AuthenticationManager apuntando a un
- * CustomUserDetailsService respaldado por UsuarioRepository.
+ * propósito. Decisión de equipo (cerrada, no reabrir):
+ * <ul>
+ *   <li>El login en dos pasos (login → {@code requiere2FA} → verify-2fa)
+ *       no encaja en el contrato todo-o-nada de
+ *       {@code DaoAuthenticationProvider}.</li>
+ *   <li>Las autorizaciones no se resuelven vía {@code GrantedAuthority};
+ *       {@code PermisoEvaluator} decide contra {@code Rol_Funcionalidad}.</li>
+ *   <li>El rol viaja solo como claim informativo del JWT.</li>
+ * </ul>
+ * {@code AuthServiceImpl} valida credenciales contra
+ * {@link PasswordEncoder#matches} / {@code UsuarioRepository} y emite
+ * el JWT directamente, sin intermediarios de Spring Security.
  */
 @Configuration
 @EnableWebSecurity
