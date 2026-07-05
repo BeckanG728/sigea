@@ -27,12 +27,6 @@ public abstract class BaseEntity {
     @Version
     private Long version;
 
-    /**
-     * Borrado lógico: true = registro activo, false = eliminado.
-     * Los repositorios de cada módulo deben filtrar por estado = true en
-     * sus consultas (o usar @SQLRestriction / @Where si se prefiere a nivel
-     * de entidad).
-     */
     @Column(nullable = false)
     private boolean estado = true;
 
