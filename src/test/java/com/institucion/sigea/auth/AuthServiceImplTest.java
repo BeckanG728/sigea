@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
  * TODO: login con y sin 2FA, verify-2fa (código válido/expirado/incorrecto),
  *       cambio de contraseña, emisión de JWT con claim "2fa".
  */
-class AuthServiceTest {
+class AuthServiceImplTest {
 
     @Test
-    @Disabled("Pendiente: implementar AuthService antes de escribir el caso de prueba")
+    @Disabled("Pendiente: implementar AuthServiceImpl antes de escribir el caso de prueba")
     void placeholder() {
     }
 }
