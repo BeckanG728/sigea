@@ -100,7 +100,6 @@ Docker en una sola máquina. En el despliegue real de 2 equipos esa red ya no ex
 | Contenerización     | Docker (multi-stage) + Docker Compose                                     |
 | Build               | Maven                                                                     |
 
-[![Tecnologias](https://skillicons.dev/icons?i=java,spring,postgresql,docker,maven)](https://skillicons.dev)
 ---
 
 ## Variables de entorno
@@ -282,23 +281,76 @@ public record ErrorResponse(
 
 ---
 
-## Entregables
+## Flujo de trabajo con Pull Requests
 
-- ☐ Código fuente en repositorio Git del equipo
-- ☐ Documentación Swagger/OpenAPI accesible en `/swagger-ui`
-- ☐ Colección Postman con todos los endpoints del sistema
-- ☐ `Dockerfile` + los tres `docker-compose.*.yml` funcionales: `dev`, `app` (Equipo 1) y `db` (Equipo 2)
-- ☐ Pruebas unitarias/integración cubriendo login, matrícula (transacción + rollback) y pagos
-- ☐ Evidencia de eliminación lógica, auditoría y optimistic lock funcionando
-- ☐ Demo en vivo mostrando el flujo completo: login → matrícula con 2FA → pago → auditoría → reportes
+### Tipos de PR
+
+| Tipo                 | Cuándo usarlo                                  | Ejemplo de rama               |
+|----------------------|------------------------------------------------|-------------------------------|
+| **Basado en ticket** | Tarea asignada del equipo (P2-04, P3-05, etc.) | `feat/P2-04-consulta-alumnos` |
+| **Libre**            | Bugfix, refactor, mejora sin ticket asociado   | `fix/error-login-2fa`         |
+
+### 1. Crear una rama
+
+```bash
+# PR basado en ticket
+git checkout -b feat/P2-04-consulta-alumnos
+
+# PR libre (sin ticket)
+git checkout -b fix/error-login-2fa
+```
+
+Prefijos recomendados: `feat/`, `fix/`, `refactor/`, `docs/`, `test/`, `chore/`.
+
+### 2. Desarrollo y commits
+
+```bash
+git add .
+git commit -m "feat: agrega consulta de alumnos por matrícula"
+```
+
+### 3. Publicar rama
+
+```bash
+git push origin feat/P2-04-consulta-alumnos
+```
+
+### 4. Abrir Pull Request en GitHub
+
+Al crear el PR se cargará automáticamente la plantilla de
+[`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md).
+
+- Si el PR es **basado en ticket**, completar `Ticket` con el código (ej. `P2-04`).
+- Si el PR es **libre**, escribir en `Ticket` solo el tipo (ej. `fix`, `refactor`).
+
+### 5. Revisión y merge
+
+- Solicitar review de al menos un compañero
+- Corregir según comentarios y hacer push de los cambios
+- Una vez aprobado, hacer merge desde GitHub usando **Merge**
+
+### 6. Sincronizar local después del merge
+
+```bash
+git checkout main
+git pull
+```
+
+### 7. Limpiar rama local
+
+```bash
+git branch -d feat/P2-04-consulta-alumnos
+```
 
 ---
 
 ## Equipo de desarrollo
 
-| Integrante | GitHub                                       |
-|------------|----------------------------------------------|
-| BeckanG728 | [@BeckanG728](https://github.com/BeckanG728) |
+| Integrante      | GitHub                                           |
+|-----------------|--------------------------------------------------|
+| Beckan Geronimo | [@BeckanG728](https://github.com/BeckanG728)     |
+| Isaias Gomero   | [@IsaiasGomero](https://github.com/IsaiasGomero) |
+| Jonathan Mejia  | [@Jonathan](https://github.com/Usuario)          |
 
 <br>
 
