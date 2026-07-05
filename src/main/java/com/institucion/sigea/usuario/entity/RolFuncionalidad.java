@@ -44,4 +44,17 @@ public class RolFuncionalidad extends BaseEntity {
 
     @Column(nullable = false)
     private boolean imprimir;
+
+    public RolFuncionalidad(Rol rol, Funcionalidad funcionalidad,
+                            boolean ver, boolean crear, boolean editar,
+                            boolean eliminar, boolean imprimir) {
+        this.rol = rol;
+        this.funcionalidad = funcionalidad;
+        this.ver = ver;
+        this.crear = crear;
+        this.editar = editar;
+        this.eliminar = eliminar;
+        this.imprimir = imprimir;
+        this.setEstado(true);
+    }
 }

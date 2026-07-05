@@ -18,6 +18,7 @@ public enum ErrorCode {
     AULA_SIN_VACANTES(HttpStatus.UNPROCESSABLE_ENTITY),
     CUOTA_ANTERIOR_PENDIENTE(HttpStatus.BAD_REQUEST),
     VALIDACION_FORMULARIO(HttpStatus.BAD_REQUEST),
+    ROL_NO_ENCONTRADO(HttpStatus.NOT_FOUND),
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final HttpStatus httpStatus;
