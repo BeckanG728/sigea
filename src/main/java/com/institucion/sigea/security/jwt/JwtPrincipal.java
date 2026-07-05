@@ -12,10 +12,11 @@ package com.institucion.sigea.security.jwt;
  *       .getContext().getAuthentication().getPrincipal();
  * </pre>
  * <p>
- * TODO(usuarios-roles): si en algún endpoint se necesita el registro
- * completo de Usuario (no solo id/username/rol), inyectar UsuarioRepository
- * en el servicio y buscar por {@link #userId()} — no cargarlo aquí en el
- * filtro para no acoplar la autenticación a BD en cada request.
+ * Contiene solo lo que viaja en los claims del JWT ({@code userId},
+ * {@code username}, {@code rol}). Si un endpoint necesita el registro
+ * completo de {@code Usuario}, debe inyectar {@code UsuarioRepository}
+ * y buscar por {@link #userId()} — no cargarlo aquí en el filtro para
+ * no acoplar la autenticación a BD en cada request.
  */
-public record JwtPrincipal(Long userId, String username, boolean twoFactorVerified) {
+public record JwtPrincipal(Long userId, String username, String rol, boolean twoFactorVerified) {
 }

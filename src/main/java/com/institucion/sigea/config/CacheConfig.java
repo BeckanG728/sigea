@@ -16,6 +16,7 @@ public class CacheConfig {
     public static final String CACHE_PERMISOS_POR_ROL = "permisosPorRol";
     public static final String CACHE_SESION_2FA_PENDIENTE = "sesion2faPendiente";
     public static final String CACHE_PARAMETROS_SISTEMA = "parametrosSistema";
+    public static final String CACHE_USUARIOS_DESACTIVADOS = "usuariosDesactivados";
 
     @Bean
     public CacheManager cacheManager() {
@@ -41,6 +42,16 @@ public class CacheConfig {
                 Caffeine.newBuilder()
                         .expireAfterWrite(30, TimeUnit.MINUTES)
                         .maximumSize(100)
+                        .build());
+
+        // Usuarios desactivados: se invalida sola tras 15 minutos; evita que un
+        // JWT ya emitido siga funcionando después de que un administrador
+        // desactive al usuario. Al desactivar, UsuarioService inserta el
+        // idUsuario aquí; JwtAuthFilter lo consulta en cada request.
+        manager.registerCustomCache(CACHE_USUARIOS_DESACTIVADOS,
+                Caffeine.newBuilder()
+                        .expireAfterWrite(15, TimeUnit.MINUTES)
+                        .maximumSize(10000)
                         .build());
 
         return manager;
