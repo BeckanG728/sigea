@@ -32,7 +32,7 @@ public class PermisoEvaluator implements PermissionEvaluator {
 
     @Override
     public boolean hasPermission(Authentication authentication, Serializable targetId,
-                                 Object targetType, Object permission) {
+                                 String targetType, Object permission) {
         if (authentication == null || !(authentication.getPrincipal() instanceof JwtPrincipal principal)) {
             throw new BusinessException(ErrorCode.PERMISO_DENEGADO, "No autenticado");
         }
@@ -48,7 +48,7 @@ public class PermisoEvaluator implements PermissionEvaluator {
 
         List<PermisoInfo> permisos = permisoService.obtenerPermisos(idRol);
 
-        String funcionalidad = targetType.toString();
+        String funcionalidad = targetType;
         String accion = permission.toString().toUpperCase();
 
         return permisos.stream()
