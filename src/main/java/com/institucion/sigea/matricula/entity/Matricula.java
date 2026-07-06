@@ -9,10 +9,6 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-/**
- * Matrícula de un alumno en un aula, para un año académico determinado.
- * Un alumno no puede matricularse dos veces en el mismo año (unique key).
- */
 @Entity
 @Table(
         name = "matricula",
@@ -32,15 +28,12 @@ public class Matricula extends BaseEntity {
     @Column(name = "cod_matricula")
     private Integer codMatricula;
 
-    /** FK lógica a alumno.entity.Alumno — no se referencia por JPA para no acoplar módulos. */
     @Column(name = "cod_alumno", nullable = false)
     private Integer codAlumno;
 
-    /** FK lógica a aula.entity.Aula. */
     @Column(name = "cod_aula", nullable = false)
     private Integer codAula;
 
-    /** FK lógica a aula.entity.AnioAcademico. */
     @Column(name = "cod_anio_academico", nullable = false)
     private Integer codAnioAcademico;
 

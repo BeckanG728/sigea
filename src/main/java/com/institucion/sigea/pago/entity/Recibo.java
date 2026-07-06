@@ -9,12 +9,6 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-/**
- * Comprobante de un Pago. numeroRecibo mantiene un correlativo único e
- * incremental por año, formato "R-<año>-<secuencial>" (ej. R-2026-000481).
- * anio + correlativo existen para poder calcular el siguiente secuencial
- * sin parsear el String (ver P3-06: "Actualizar Correlativo").
- */
 @Entity
 @Table(
         name = "recibo",

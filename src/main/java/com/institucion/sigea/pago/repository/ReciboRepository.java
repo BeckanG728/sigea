@@ -9,6 +9,5 @@ public interface ReciboRepository extends JpaRepository<Recibo, Integer> {
 
     Optional<Recibo> findByCodPago(Integer codPago);
 
-    /** Último correlativo emitido en el año, para calcular el siguiente (P3-06). */
     Optional<Recibo> findFirstByAnioOrderByCorrelativoDesc(Integer anio);
 }

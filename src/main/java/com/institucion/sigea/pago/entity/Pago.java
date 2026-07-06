@@ -10,10 +10,6 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/**
- * Registro de un pago sobre una Cuota. La generación del Recibo (correlativo
- * único) ocurre en la misma transacción que este registro — ver P3-06.
- */
 @Entity
 @Table(name = "pago")
 @Getter

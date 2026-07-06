@@ -10,11 +10,6 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/**
- * Cuota generada automáticamente al registrar una Matricula, a partir de los
- * Concepto activos del año académico. montoPagar y ordenPago se copian del
- * Concepto en el momento de generarse (no se recalculan después).
- */
 @Entity
 @Table(name = "cuota")
 @Getter
@@ -31,7 +26,6 @@ public class Cuota extends BaseEntity {
     @Column(name = "cod_matricula", nullable = false)
     private Integer codMatricula;
 
-    /** FK lógica a concepto.entity.Concepto. */
     @Column(name = "cod_concepto", nullable = false)
     private Integer codConcepto;
 
