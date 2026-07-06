@@ -11,17 +11,6 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
-/**
- * Generación y parseo de JWT.
- * <p>
- * El claim "2fa" indica si la sesión ya superó la verificación TOTP; los
- * endpoints que la requieren (ej. registrar matrícula, ver README) deben
- * validar este claim explícitamente, no solo que el token sea válido.
- * <p>
- * El subject del token es el {@code idUsuario} (Long), consistente con
- * BaseEntity (id autogenerado tipo IDENTITY) y con el enunciado del
- * proyecto (idUsuario: Integer PK) — no un UUID.
- */
 @Component
 @RequiredArgsConstructor
 public class JwtUtil {

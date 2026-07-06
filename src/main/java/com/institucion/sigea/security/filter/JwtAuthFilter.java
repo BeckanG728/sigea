@@ -24,16 +24,6 @@ import java.util.List;
 
 import static com.institucion.sigea.config.CacheConfig.CACHE_USUARIOS_DESACTIVADOS;
 
-/**
- * Autenticación 100% stateless a partir de los claims del JWT (username,
- * role), sin ir a BD en cada request.
- * <p>
- * Para revocar el acceso de un usuario desactivado ({@code Usuario.estado = false})
- * antes de que su JWT expire, se consulta la caché Caffeine
- * {@code usuariosDesactivados} (TTL 15 min). Cuando un administrador desactiva
- * un usuario, {@code UsuarioService} inserta su {@code idUsuario} en esa caché;
- * este filtro la consulta en cada request sin tocar la base de datos.
- */
 @Component
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
