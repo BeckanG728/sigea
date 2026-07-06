@@ -3,7 +3,6 @@ package com.institucion.sigea.usuario.entity;
 import com.institucion.sigea.core.crypto.AesConverter;
 import com.institucion.sigea.core.persistence.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,7 +11,7 @@ import lombok.Setter;
 @Table(name = "usuario")
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Usuario extends BaseEntity {
 
     @Column(nullable = false, unique = true, length = 30)
