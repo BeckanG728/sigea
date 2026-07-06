@@ -49,3 +49,7 @@ management:
       show-details: always
       probes:
         enabled: true
+
+superuser:
+  username: ${SUPERUSER_USERNAME}
+  password: ${SUPERUSER_PASSWORD}
