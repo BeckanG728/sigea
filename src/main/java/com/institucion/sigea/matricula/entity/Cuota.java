@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -46,12 +47,12 @@ public class Cuota extends BaseEntity {
     private LocalDateTime fechaPago;
 
     @Column(name = "fecha_registro", nullable = false, updatable = false)
-    private LocalDateTime fechaRegistro;
+    private Instant fechaRegistro;
 
     @PrePersist
     void prePersist() {
         if (fechaRegistro == null) {
-            fechaRegistro = LocalDateTime.now();
+            fechaRegistro = Instant.from(LocalDateTime.now());
         }
         if (estadoCuota == null) {
             estadoCuota = EstadoCuota.PENDIENTE;
