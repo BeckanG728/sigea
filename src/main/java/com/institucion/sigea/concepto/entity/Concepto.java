@@ -1,0 +1,39 @@
+package com.institucion.sigea.concepto.entity;
+
+import com.institucion.sigea.aula.entity.AnioAcademico;
+import com.institucion.sigea.core.persistence.BaseEntity;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+
+@Entity
+@Table(name = "concepto", uniqueConstraints = @UniqueConstraint(
+        columnNames = {"anio_academico_id", "nombre_concepto"}))
+@Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Concepto extends BaseEntity {
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "anio_academico_id", nullable = false)
+    private AnioAcademico anioAcademico;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tipo_concepto_id", nullable = false)
+    private TipoConcepto tipoConcepto;
+
+    @Column(nullable = false, length = 80)
+    private String nombreConcepto;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal monto;
+
+    @Column(nullable = false)
+    private short ordenPago;
+
+    @Column(nullable = false)
+    private boolean obligatorio;
+}
