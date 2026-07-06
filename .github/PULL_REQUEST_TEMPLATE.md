@@ -13,14 +13,12 @@
 ## Descripción
 
 <!-- Qué se hizo y por qué -->
--
 
 ## Cómo probarlo
 
 <!-- Pasos para verificar el cambio, de lo contrario, colocar: No se requieren -->
 
 1.
-    -
 
 ## Checklist
 

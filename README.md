@@ -346,11 +346,11 @@ git branch -d feat/P2-04-consulta-alumnos
 
 ## Equipo de desarrollo
 
-| Integrante      | GitHub                                           |
-|-----------------|--------------------------------------------------|
-| Beckan Geronimo | [@BeckanG728](https://github.com/BeckanG728)     |
-| Isaias Gomero   | [@IsaiasGomero](https://github.com/IsaiasGomero) |
-| Jonathan Mejia  | [@Jonathan](https://github.com/Usuario)          |
+| Integrante      | GitHub                                               |
+|-----------------|------------------------------------------------------|
+| Beckan Geronimo | [@BeckanG728](https://github.com/BeckanG728)         |
+| Isaias Gomero   | [@IsaiasGomero](https://github.com/IsaiasGomero)     |
+| Jonathan Mejia  | [@MejiaJonathan1](https://github.com/MejiaJonathan1) |
 
 <br>
 
