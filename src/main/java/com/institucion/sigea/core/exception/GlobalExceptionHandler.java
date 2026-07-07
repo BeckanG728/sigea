@@ -2,6 +2,7 @@ package com.institucion.sigea.core.exception;
 
 import com.institucion.sigea.core.api.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -19,6 +20,7 @@ import java.util.Map;
  * sobre valores estables como {@code INVALID_CREDENTIALS} en vez de
  * genéricos como {@code CONFLICT}.
  */
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -49,6 +51,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
+        log.error("Error no controlado", ex);
         ErrorResponse body = ErrorResponse.of(ErrorCode.INTERNAL_ERROR.name(), "Ocurrió un error inesperado");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }

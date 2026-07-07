@@ -6,7 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/parametros")
+@RequestMapping("parametros")
 public class ParametroController {
 
     private final ParametroService parametroService;

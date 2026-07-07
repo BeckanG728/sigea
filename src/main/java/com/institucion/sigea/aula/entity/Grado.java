@@ -10,7 +10,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "grado", uniqueConstraints = @UniqueConstraint(columnNames = {"nivel_id", "nombre_grado"}))
 @Getter @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Grado extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
