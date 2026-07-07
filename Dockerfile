@@ -22,6 +22,4 @@ COPY --from=layers /app/spring-boot-loader/ ./
 COPY --from=layers /app/snapshot-dependencies/ ./
 COPY --from=layers /app/application/ ./
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s \
-  CMD wget -q --spider http://localhost:8080/actuator/health || exit 1
 ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
