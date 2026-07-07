@@ -36,6 +36,13 @@ public class MatriculaValidator {
         validarSinDeudaAnioAnterior(codAlumno, codAnioAcademico);
         validarConceptosActivos(codAnioAcademico);
     }
+    public void validar(Aula aulaBloqueada, Long codAlumno, Long codAnioAcademico) {
+        validarAlumno(codAlumno);
+        validarNoMatriculadoEsteAnio(codAlumno, codAnioAcademico);
+        validarVacantesDisponibles(aulaBloqueada, codAnioAcademico);
+        validarSinDeudaAnioAnterior(codAlumno, codAnioAcademico);
+        validarConceptosActivos(codAnioAcademico);
+    }
 
     private Aula validarAula(Long codAula) {
         return aulaRepository.findById(codAula)
