@@ -1,32 +1,24 @@
 package com.institucion.sigea.aula.controller;
 
-import com.institucion.sigea.aula.dto.request.AulaRequest;
 import com.institucion.sigea.aula.dto.response.AulaBusquedaResponse;
-import com.institucion.sigea.aula.dto.response.AulaResponse;
 import com.institucion.sigea.aula.service.AulaService;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/aulas") // sin /api: el context-path global ya lo agrega
-public class AulaController {
+@RequestMapping("/api/aulas")
+public class AulaBusquedaController {
 
     private final AulaService aulaService;
 
-    public AulaController(AulaService aulaService) {
+    public AulaBusquedaController(AulaService aulaService) {
         this.aulaService = aulaService;
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public AulaResponse crear(@Valid @RequestBody AulaRequest request) {
-        return aulaService.crear(request);
-    }
-
     @GetMapping
+    @PreAuthorize("hasPermission(null, 'AULA', 'VER')")
     public List<AulaBusquedaResponse> buscar(
             @RequestParam(required = false) Long anioAcademico,
             @RequestParam(required = false) Long nivel) {
