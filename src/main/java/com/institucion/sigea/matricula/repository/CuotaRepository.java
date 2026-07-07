@@ -15,4 +15,6 @@ public interface CuotaRepository extends JpaRepository<Cuota, Long> {
             Integer codMatricula, List<EstadoCuota> estados);
 
     long countByCodMatriculaAndEstadoCuota(Integer codMatricula, EstadoCuota estadoCuota);
+
+    long countByCodMatriculaAndEstadoCuotaIn(Integer codMatricula, List<EstadoCuota> estados);
 }
