@@ -3,6 +3,7 @@ package com.institucion.sigea.matricula.repository;
 import com.institucion.sigea.matricula.entity.Matricula;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MatriculaRepository extends JpaRepository<Matricula, Long> {
@@ -12,4 +13,6 @@ public interface MatriculaRepository extends JpaRepository<Matricula, Long> {
     Optional<Matricula> findByCodAlumnoAndCodAnioAcademico(Integer codAlumno, Integer codAnioAcademico);
 
     long countByCodAulaAndCodAnioAcademicoAndEstadoTrue(Integer codAula, Integer codAnioAcademico);
+
+    List<Matricula> findByCodAlumnoAndEstadoTrueAndCodAnioAcademicoNot(Integer codAlumno, Integer codAnioAcademico);
 }
