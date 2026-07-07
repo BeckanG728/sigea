@@ -1,7 +1,7 @@
 package com.institucion.sigea.concepto.entity;
 
 import com.institucion.sigea.aula.entity.AnioAcademico;
-import com.institucion.sigea.core.persistence.BaseEntity;
+import com.institucion.sigea.core.persistence.AuditableEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,7 +15,12 @@ import java.math.BigDecimal;
         columnNames = {"anio_academico_id", "nombre_concepto"}))
 @Getter @Setter
 @NoArgsConstructor
-public class Concepto extends BaseEntity {
+public class Concepto extends AuditableEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cod_concepto")
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "anio_academico_id", nullable = false)

@@ -1,7 +1,7 @@
 package com.institucion.sigea.usuario.entity;
 
 import com.institucion.sigea.core.crypto.AesConverter;
-import com.institucion.sigea.core.persistence.BaseEntity;
+import com.institucion.sigea.core.persistence.AuditableEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Usuario extends BaseEntity {
+public class Usuario extends AuditableEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cod_usuario")
+    private Long id;
 
     @Column(nullable = false, unique = true, length = 30)
     private String username;
