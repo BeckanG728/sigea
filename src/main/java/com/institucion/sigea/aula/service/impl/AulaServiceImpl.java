@@ -2,6 +2,7 @@ package com.institucion.sigea.aula.service.impl;
 
 import com.institucion.sigea.auditoria.Auditable;
 import com.institucion.sigea.aula.dto.request.AulaRequest;
+import com.institucion.sigea.aula.dto.response.AulaBusquedaResponse;
 import com.institucion.sigea.aula.dto.response.AulaResponse;
 import com.institucion.sigea.aula.entity.Aula;
 import com.institucion.sigea.aula.repository.AnioAcademicoRepository;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -53,5 +55,23 @@ public class AulaServiceImpl implements AulaService {
 
         aulaRepository.save(aula);
         return new AulaResponse(aula.getId(), aula.getSeccion(), aula.getCapacidadMaxima());
+    }
+
+    @Override
+    public List<AulaBusquedaResponse> buscar(Long anioAcademicoId, Long nivelId) {
+        return aulaRepository.buscar(anioAcademicoId, nivelId).stream()
+                .map(this::toBusquedaResponse)
+                .toList();
+    }
+
+    private AulaBusquedaResponse toBusquedaResponse(Aula aula) {
+        String descripcion = "%d - %s - %s %s".formatted(
+                aula.getAnioAcademico().getAnio(),
+                aula.getNivel().getNombre(),
+                aula.getGrado().getNombreGrado(),
+                aula.getSeccion());
+        // TODO (INT-1 con Persona 3): reemplazar capacidadMaxima por
+        // capacidadMaxima - matriculadosActuales cuando exista Matricula.
+        return new AulaBusquedaResponse(aula.getId(), descripcion, aula.getCapacidadMaxima());
     }
 }

@@ -1,6 +1,7 @@
 package com.institucion.sigea.alumno.service.impl;
 
 import com.institucion.sigea.alumno.dto.request.AlumnoRequest;
+import com.institucion.sigea.alumno.dto.response.AlumnoBusquedaResponse;
 import com.institucion.sigea.alumno.dto.response.AlumnoResponse;
 import com.institucion.sigea.alumno.entity.Alumno;
 import com.institucion.sigea.alumno.entity.TipoDocumento;
@@ -53,6 +54,18 @@ public class AlumnoServiceImpl implements AlumnoService {
         return toResponse(alumno);
     }
 
+    @Override
+    public List<AlumnoBusquedaResponse> buscar(String nombres) {
+        List<Alumno> alumnos = (nombres == null || nombres.isBlank())
+                ? alumnoRepository.findByEstadoTrue()
+                : alumnoRepository.findByEstadoTrueAndNombresContainingIgnoreCaseOrEstadoTrueAndApellidoPaternoContainingIgnoreCase(
+                nombres, nombres);
+
+        return alumnos.stream()
+                .map(this::toBusquedaResponse)
+                .toList();
+    }
+
     private AlumnoResponse toResponse(Alumno alumno) {
         return new AlumnoResponse(
                 alumno.getId(),
@@ -61,5 +74,11 @@ public class AlumnoServiceImpl implements AlumnoService {
                 alumno.getApellidoPaterno(),
                 alumno.getApellidoMaterno(),
                 LocalDate.parse(alumno.getFechaNacimiento()));
+    }
+
+    private AlumnoBusquedaResponse toBusquedaResponse(Alumno alumno) {
+        String nombreCompleto = "%s %s %s".formatted(
+                alumno.getNombres(), alumno.getApellidoPaterno(), alumno.getApellidoMaterno());
+        return new AlumnoBusquedaResponse(alumno.getId(), alumno.getNumeroDocumento(), nombreCompleto);
     }
 }
