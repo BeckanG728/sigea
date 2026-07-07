@@ -25,7 +25,9 @@ public enum ErrorCode {
     AULA_NO_ENCONTRADA(HttpStatus.NOT_FOUND),
     ALUMNO_NO_ENCONTRADO(HttpStatus.NOT_FOUND),
     CONCEPTO_NO_ENCONTRADO(HttpStatus.NOT_FOUND),
-    TIPO_CONCEPTO_NO_ENCONTRADO(HttpStatus.NOT_FOUND);
+    TIPO_CONCEPTO_NO_ENCONTRADO(HttpStatus.NOT_FOUND),
+    CUOTA_NO_ENCONTRADA(HttpStatus.NOT_FOUND),
+    CUOTA_YA_PAGADA(HttpStatus.CONFLICT);
 
     private final HttpStatus httpStatus;
 
