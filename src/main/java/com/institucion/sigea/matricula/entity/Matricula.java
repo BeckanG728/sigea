@@ -1,6 +1,6 @@
 package com.institucion.sigea.matricula.entity;
 
-import com.institucion.sigea.core.persistence.BaseEntity;
+import com.institucion.sigea.core.persistence.AuditableEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,12 +21,12 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Matricula extends BaseEntity {
+public class Matricula extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cod_matricula")
-    private Integer codMatricula;
+    private Long id;
 
     @Column(name = "cod_alumno", nullable = false)
     private Integer codAlumno;

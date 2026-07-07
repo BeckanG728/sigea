@@ -13,17 +13,8 @@ import java.time.Instant;
 @Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class BaseEntity {
+public abstract class AuditableEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    /**
-     * Control de concurrencia optimista (JPA incrementa este valor en cada
-     * UPDATE y lanza OptimisticLockException si detecta una edición basada
-     * en una versión desactualizada).
-     */
     @Version
     private Long version;
 
@@ -38,4 +29,3 @@ public abstract class BaseEntity {
     @Column(nullable = false)
     private Instant fechaModificacion;
 }
-

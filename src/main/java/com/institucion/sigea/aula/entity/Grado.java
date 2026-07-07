@@ -1,6 +1,6 @@
 package com.institucion.sigea.aula.entity;
 
-import com.institucion.sigea.core.persistence.BaseEntity;
+import com.institucion.sigea.core.persistence.AuditableEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,7 +11,12 @@ import lombok.Setter;
 @Table(name = "grado", uniqueConstraints = @UniqueConstraint(columnNames = {"nivel_id", "nombre_grado"}))
 @Getter @Setter
 @NoArgsConstructor
-public class Grado extends BaseEntity {
+public class Grado extends AuditableEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cod_grado")
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "nivel_id", nullable = false)

@@ -1,6 +1,6 @@
 package com.institucion.sigea.pago.entity;
 
-import com.institucion.sigea.core.persistence.BaseEntity;
+import com.institucion.sigea.core.persistence.AuditableEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,12 +18,12 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Recibo extends BaseEntity {
+public class Recibo extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cod_recibo")
-    private Integer codRecibo;
+    private Long id;
 
     @Column(name = "numero_recibo", nullable = false, length = 20)
     private String numeroRecibo;

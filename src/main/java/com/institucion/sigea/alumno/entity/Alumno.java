@@ -1,7 +1,7 @@
 package com.institucion.sigea.alumno.entity;
 
 import com.institucion.sigea.core.crypto.AesConverter;
-import com.institucion.sigea.core.persistence.BaseEntity;
+import com.institucion.sigea.core.persistence.AuditableEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,7 +12,12 @@ import lombok.Setter;
 @Table(name = "alumno")
 @Getter @Setter
 @NoArgsConstructor
-public class Alumno extends BaseEntity {
+public class Alumno extends AuditableEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cod_alumno")
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tipo_documento_id", nullable = false)

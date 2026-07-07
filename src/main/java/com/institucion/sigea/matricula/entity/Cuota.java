@@ -1,6 +1,6 @@
 package com.institucion.sigea.matricula.entity;
 
-import com.institucion.sigea.core.persistence.BaseEntity;
+import com.institucion.sigea.core.persistence.AuditableEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,12 +16,12 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Cuota extends BaseEntity {
+public class Cuota extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cod_cuota")
-    private Integer codCuota;
+    private Long id;
 
     @Column(name = "cod_matricula", nullable = false)
     private Integer codMatricula;
@@ -46,14 +45,8 @@ public class Cuota extends BaseEntity {
     @Column(name = "fecha_pago")
     private LocalDateTime fechaPago;
 
-    @Column(name = "fecha_registro", nullable = false, updatable = false)
-    private Instant fechaRegistro;
-
     @PrePersist
     void prePersist() {
-        if (fechaRegistro == null) {
-            fechaRegistro = Instant.from(LocalDateTime.now());
-        }
         if (estadoCuota == null) {
             estadoCuota = EstadoCuota.PENDIENTE;
         }
