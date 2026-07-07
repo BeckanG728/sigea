@@ -1,4 +1,8 @@
 package com.institucion.sigea.aula.repository;
 
-public interface AnioAcademicoRepository {
+import com.institucion.sigea.aula.entity.AnioAcademico;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface AnioAcademicoRepository extends JpaRepository<AnioAcademico,Long> {
+
 }
