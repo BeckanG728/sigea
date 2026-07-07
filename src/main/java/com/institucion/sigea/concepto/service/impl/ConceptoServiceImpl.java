@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -74,5 +75,23 @@ public class ConceptoServiceImpl implements ConceptoService {
                 concepto.getOrdenPago(),
                 concepto.isObligatorio(),
                 concepto.getVersion());
+    }
+
+    @Override
+    @Transactional
+    @Auditable(modulo = "concepto", operacion = TipoOperacionAuditoria.DELETE)
+    public void eliminar(Long id) {
+        Concepto concepto = conceptoRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CONCEPTO_NO_ENCONTRADO, "Concepto no encontrado"));
+        concepto.setEstado(false);
+        conceptoRepository.save(concepto);
+    }
+
+    @Override
+    public List<ConceptoResponse> listar() {
+        return conceptoRepository.findAll().stream()
+                .filter(Concepto::isEstado)
+                .map(this::toResponse)
+                .toList();
     }
 }

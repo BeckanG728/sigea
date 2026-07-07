@@ -32,4 +32,10 @@ public class AulaController {
             @RequestParam(required = false) Long nivel) {
         return aulaService.buscar(anioAcademico, nivel);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminar(@PathVariable Long id) {
+        aulaService.eliminar(id);
+    }
 }

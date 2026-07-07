@@ -9,4 +9,5 @@ import java.util.List;
 public interface AulaService {
     AulaResponse crear(AulaRequest request);
     List<AulaBusquedaResponse> buscar(Long anioAcademicoId, Long nivelId);
+    void eliminar(Long id);
 }

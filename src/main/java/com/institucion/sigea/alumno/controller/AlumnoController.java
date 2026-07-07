@@ -30,4 +30,10 @@ public class AlumnoController {
     public List<AlumnoBusquedaResponse> buscar(@RequestParam(required = false) String nombres) {
         return alumnoService.buscar(nombres);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminar(@PathVariable Long id) {
+        alumnoService.eliminar(id);
+    }
 }
