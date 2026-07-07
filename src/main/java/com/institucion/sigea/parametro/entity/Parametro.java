@@ -12,7 +12,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "parametro")
 @Getter @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Parametro extends BaseEntity {
 
     @Column(nullable = false, unique = true, length = 60)

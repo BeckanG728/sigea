@@ -12,7 +12,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "tipo_documento")
 @Getter @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class TipoDocumento extends BaseEntity {
 
     @Column(nullable = false, unique = true, length = 40)

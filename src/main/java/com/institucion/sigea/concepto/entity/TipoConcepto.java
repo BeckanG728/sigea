@@ -12,7 +12,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "tipo_concepto")
 @Getter @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class TipoConcepto extends BaseEntity {
 
     @Column(nullable = false, unique = true, length = 60)

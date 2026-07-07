@@ -29,8 +29,8 @@ server:
     context-path: /api
 
 jwt:
-  secret: ${JWT_SECRET}
-  expiration: ${JWT_EXPIRATION}
+  secret: 6UdiLAwSKX2VNppWkj2stJsMRxirnMT5yPjLZ+28QVM=
+  expiration: 86400000
 
 aes:
   secret: ${AES_SECRET_KEY}

@@ -11,7 +11,7 @@ import lombok.Setter;
 @Table(name = "aula", uniqueConstraints = @UniqueConstraint(
         columnNames = {"anio_academico_id", "nivel_id", "grado_id", "seccion"}))
 @Getter @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Aula extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Table(name = "concepto", uniqueConstraints = @UniqueConstraint(
         columnNames = {"anio_academico_id", "nombre_concepto"}))
 @Getter @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Concepto extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)

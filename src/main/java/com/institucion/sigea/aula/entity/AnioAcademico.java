@@ -12,7 +12,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "anio_academico")
 @Getter @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class AnioAcademico extends BaseEntity {
 
     @Column(nullable = false, unique = true)

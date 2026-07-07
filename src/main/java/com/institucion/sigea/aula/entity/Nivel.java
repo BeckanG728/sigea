@@ -12,7 +12,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "nivel")
 @Getter @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Nivel extends BaseEntity {
 
     @Column(nullable = false, unique = true, length = 30)
