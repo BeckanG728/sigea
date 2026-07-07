@@ -21,6 +21,7 @@ public enum ErrorCode {
     ROL_NO_ENCONTRADO(HttpStatus.NOT_FOUND),
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR),
     TIPO_CONCEPTO_DUPLICADO(HttpStatus.CONFLICT),
+    CLONADO_ANIOS_IGUALES(HttpStatus.BAD_REQUEST),
     TIPO_CONCEPTO_NO_ENCONTRADO(HttpStatus.NOT_FOUND);
 
     private final HttpStatus httpStatus;
