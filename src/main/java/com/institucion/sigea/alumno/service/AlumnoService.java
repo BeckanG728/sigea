@@ -9,4 +9,5 @@ import java.util.List;
 public interface AlumnoService {
     AlumnoResponse crear(AlumnoRequest request);
     List<AlumnoBusquedaResponse> buscar(String nombres);
+    void eliminar(Long id);
 }

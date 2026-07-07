@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/conceptos") // sin /api, igual que Alumno y Aula
 public class ConceptoController {
@@ -36,5 +38,16 @@ public class ConceptoController {
     @PostMapping("/clonar")
     public ClonadoResponse clonar(@Valid @RequestBody ClonadoRequest request) {
         return clonadorConceptoService.clonar(request.anioOrigen(), request.anioDestino());
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminar(@PathVariable Long id) {
+        conceptoService.eliminar(id);
+    }
+
+    @GetMapping
+    public List<ConceptoResponse> listar() {
+        return conceptoService.listar();
     }
 }

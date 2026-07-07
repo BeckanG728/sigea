@@ -74,4 +74,14 @@ public class AulaServiceImpl implements AulaService {
         // capacidadMaxima - matriculadosActuales cuando exista Matricula.
         return new AulaBusquedaResponse(aula.getId(), descripcion, aula.getCapacidadMaxima());
     }
+
+    @Override
+    @Transactional
+    @Auditable(modulo = "aula", operacion = TipoOperacionAuditoria.DELETE)
+    public void eliminar(Long id) {
+        Aula aula = aulaRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.AULA_NO_ENCONTRADA, "Aula no encontrada"));
+        aula.setEstado(false);
+        aulaRepository.save(aula);
+    }
 }

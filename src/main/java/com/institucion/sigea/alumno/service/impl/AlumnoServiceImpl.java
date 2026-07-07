@@ -81,4 +81,14 @@ public class AlumnoServiceImpl implements AlumnoService {
                 alumno.getNombres(), alumno.getApellidoPaterno(), alumno.getApellidoMaterno());
         return new AlumnoBusquedaResponse(alumno.getId(), alumno.getNumeroDocumento(), nombreCompleto);
     }
+
+    @Override
+    @Transactional
+    @Auditable(modulo = "alumno", operacion = TipoOperacionAuditoria.DELETE)
+    public void eliminar(Long id) {
+        Alumno alumno = alumnoRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ALUMNO_NO_ENCONTRADO, "Alumno no encontrado"));
+        alumno.setEstado(false);
+        alumnoRepository.save(alumno);
+    }
 }
