@@ -4,6 +4,7 @@ import com.institucion.sigea.auditoria.Auditable;
 import com.institucion.sigea.concepto.dto.request.TipoConceptoRequest;
 import com.institucion.sigea.concepto.dto.response.TipoConceptoResponse;
 import com.institucion.sigea.concepto.entity.TipoConcepto;
+import com.institucion.sigea.concepto.mapper.TipoConceptoMapper;
 import com.institucion.sigea.concepto.repository.TipoConceptoRepository;
 import com.institucion.sigea.concepto.service.TipoConceptoService;
 import com.institucion.sigea.core.enums.TipoOperacionAuditoria;
@@ -21,6 +22,7 @@ import java.util.Map;
 public class TipoConceptoServiceImpl implements TipoConceptoService {
 
     private final TipoConceptoRepository tipoConceptoRepository;
+    private final TipoConceptoMapper tipoConceptoMapper;
 
     @Override
     @Transactional
@@ -33,13 +35,13 @@ public class TipoConceptoServiceImpl implements TipoConceptoService {
         TipoConcepto tipoConcepto = new TipoConcepto();
         tipoConcepto.setNombre(request.nombre());
         tipoConceptoRepository.save(tipoConcepto);
-        return toResponse(tipoConcepto);
+        return tipoConceptoMapper.toResponse(tipoConcepto);
     }
 
     @Override
     public List<TipoConceptoResponse> listar() {
         return tipoConceptoRepository.findByEstadoTrue().stream()
-                .map(this::toResponse)
+                .map(tipoConceptoMapper::toResponse)
                 .toList();
     }
 
@@ -51,7 +53,7 @@ public class TipoConceptoServiceImpl implements TipoConceptoService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.TIPO_CONCEPTO_NO_ENCONTRADO, "No encontrado"));
         tipoConcepto.setNombre(request.nombre());
         tipoConceptoRepository.save(tipoConcepto);
-        return toResponse(tipoConcepto);
+        return tipoConceptoMapper.toResponse(tipoConcepto);
     }
 
     @Override
@@ -62,9 +64,5 @@ public class TipoConceptoServiceImpl implements TipoConceptoService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.TIPO_CONCEPTO_NO_ENCONTRADO, "No encontrado"));
         tipoConcepto.setEstado(false); // eliminación lógica, nunca deleteById()
         tipoConceptoRepository.save(tipoConcepto);
-    }
-
-    private TipoConceptoResponse toResponse(TipoConcepto tipoConcepto) {
-        return new TipoConceptoResponse(tipoConcepto.getId(), tipoConcepto.getNombre(), tipoConcepto.isEstado());
     }
 }

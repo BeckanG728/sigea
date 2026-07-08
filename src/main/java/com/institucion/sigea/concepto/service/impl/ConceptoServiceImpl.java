@@ -5,6 +5,7 @@ import com.institucion.sigea.aula.repository.AnioAcademicoRepository;
 import com.institucion.sigea.concepto.dto.request.ConceptoRequest;
 import com.institucion.sigea.concepto.dto.response.ConceptoResponse;
 import com.institucion.sigea.concepto.entity.Concepto;
+import com.institucion.sigea.concepto.mapper.ConceptoMapper;
 import com.institucion.sigea.concepto.repository.ConceptoRepository;
 import com.institucion.sigea.concepto.repository.TipoConceptoRepository;
 import com.institucion.sigea.concepto.service.ConceptoService;
@@ -25,6 +26,7 @@ public class ConceptoServiceImpl implements ConceptoService {
     private final ConceptoRepository conceptoRepository;
     private final AnioAcademicoRepository anioAcademicoRepository;
     private final TipoConceptoRepository tipoConceptoRepository;
+    private final ConceptoMapper conceptoMapper;
 
     @Override
     @Transactional
@@ -45,7 +47,7 @@ public class ConceptoServiceImpl implements ConceptoService {
         concepto.setObligatorio(request.obligatorio());
 
         conceptoRepository.save(concepto);
-        return toResponse(concepto);
+        return conceptoMapper.toResponse(concepto);
     }
 
     @Override
@@ -64,17 +66,7 @@ public class ConceptoServiceImpl implements ConceptoService {
         concepto.setObligatorio(request.obligatorio());
 
         conceptoRepository.save(concepto);
-        return toResponse(concepto);
-    }
-
-    private ConceptoResponse toResponse(Concepto concepto) {
-        return new ConceptoResponse(
-                concepto.getId(),
-                concepto.getNombreConcepto(),
-                concepto.getMonto(),
-                concepto.getOrdenPago(),
-                concepto.isObligatorio(),
-                concepto.getVersion());
+        return conceptoMapper.toResponse(concepto);
     }
 
     @Override
@@ -91,7 +83,7 @@ public class ConceptoServiceImpl implements ConceptoService {
     public List<ConceptoResponse> listar() {
         return conceptoRepository.findAll().stream()
                 .filter(Concepto::isEstado)
-                .map(this::toResponse)
+                .map(conceptoMapper::toResponse)
                 .toList();
     }
 }

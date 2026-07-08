@@ -5,6 +5,7 @@ import com.institucion.sigea.aula.dto.request.AulaRequest;
 import com.institucion.sigea.aula.dto.response.AulaBusquedaResponse;
 import com.institucion.sigea.aula.dto.response.AulaResponse;
 import com.institucion.sigea.aula.entity.Aula;
+import com.institucion.sigea.aula.mapper.AulaMapper;
 import com.institucion.sigea.aula.repository.AnioAcademicoRepository;
 import com.institucion.sigea.aula.repository.AulaRepository;
 import com.institucion.sigea.aula.repository.GradoRepository;
@@ -30,6 +31,7 @@ public class AulaServiceImpl implements AulaService {
     private final NivelRepository nivelRepository;
     private final GradoRepository gradoRepository;
     private final ParametroService parametroService;
+    private final AulaMapper aulaMapper;
 
     @Override
     @Transactional
@@ -54,25 +56,14 @@ public class AulaServiceImpl implements AulaService {
         aula.setCapacidadMaxima(capacidad);
 
         aulaRepository.save(aula);
-        return new AulaResponse(aula.getId(), aula.getSeccion(), aula.getCapacidadMaxima());
+        return aulaMapper.toResponse(aula);
     }
 
     @Override
     public List<AulaBusquedaResponse> buscar(Long anioAcademicoId, Long nivelId) {
         return aulaRepository.buscar(anioAcademicoId, nivelId).stream()
-                .map(this::toBusquedaResponse)
+                .map(aulaMapper::toBusquedaResponse)
                 .toList();
-    }
-
-    private AulaBusquedaResponse toBusquedaResponse(Aula aula) {
-        String descripcion = "%d - %s - %s %s".formatted(
-                aula.getAnioAcademico().getAnio(),
-                aula.getNivel().getNombre(),
-                aula.getGrado().getNombreGrado(),
-                aula.getSeccion());
-        // TODO (INT-1 con Persona 3): reemplazar capacidadMaxima por
-        // capacidadMaxima - matriculadosActuales cuando exista Matricula.
-        return new AulaBusquedaResponse(aula.getId(), descripcion, aula.getCapacidadMaxima());
     }
 
     @Override
