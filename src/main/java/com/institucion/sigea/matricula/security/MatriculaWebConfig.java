@@ -14,6 +14,6 @@ public class MatriculaWebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(twoFaClaimInterceptor)
-                .addPathPatterns("/api/matriculas");
+                .addPathPatterns("/matriculas");
     }
 }
