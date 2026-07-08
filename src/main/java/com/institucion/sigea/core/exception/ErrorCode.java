@@ -27,6 +27,7 @@ public enum ErrorCode {
     CONCEPTO_NO_ENCONTRADO(HttpStatus.NOT_FOUND),
     TIPO_CONCEPTO_NO_ENCONTRADO(HttpStatus.NOT_FOUND),
     CUOTA_NO_ENCONTRADA(HttpStatus.NOT_FOUND),
+    MONTO_PAGO_INVALIDO(HttpStatus.BAD_REQUEST),
     CUOTA_YA_PAGADA(HttpStatus.CONFLICT);
 
     private final HttpStatus httpStatus;
