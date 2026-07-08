@@ -11,6 +11,7 @@ import com.institucion.sigea.pago.dto.request.RegistrarPagoRequest;
 import com.institucion.sigea.pago.dto.response.PagoResponse;
 import com.institucion.sigea.pago.entity.Pago;
 import com.institucion.sigea.pago.entity.Recibo;
+import com.institucion.sigea.pago.mapper.PagoMapper;
 import com.institucion.sigea.pago.repository.PagoRepository;
 import com.institucion.sigea.pago.repository.ReciboRepository;
 import com.institucion.sigea.pago.service.PagoService;
@@ -41,6 +42,8 @@ public class PagoTransaccionServiceImpl implements PagoTransaccionService {
     private final PagoRepository pagoRepository;
     private final ReciboRepository reciboRepository;
     private final CuotaRepository cuotaRepository;
+
+    private final PagoMapper pagoMapper; // agregar al constructor
 
     @Override
     @Transactional
@@ -91,12 +94,6 @@ public class PagoTransaccionServiceImpl implements PagoTransaccionService {
 
         // 4. Registrar Auditoría → Commit: delegado en @Auditable (arriba).
 
-        return new PagoResponse(
-                pago.getId(),
-                cuota.getId(),
-                numeroRecibo,
-                pago.getMontoPagado(),
-                pago.getMedioPago(),
-                pago.getFechaPago());
+        return pagoMapper.toResponse(pago, cuota);
     }
 }

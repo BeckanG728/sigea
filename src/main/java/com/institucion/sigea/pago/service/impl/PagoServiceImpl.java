@@ -10,6 +10,7 @@ import com.institucion.sigea.pago.dto.response.DeudaAlumnoResponse;
 import com.institucion.sigea.pago.dto.response.PagoDetalleResponse;
 import com.institucion.sigea.pago.dto.response.PagoReporteResponse;
 import com.institucion.sigea.pago.entity.Pago;
+import com.institucion.sigea.pago.mapper.PagoMapper;
 import com.institucion.sigea.pago.repository.PagoRepository;
 import com.institucion.sigea.pago.service.PagoService;
 import lombok.RequiredArgsConstructor;
@@ -29,12 +30,12 @@ public class PagoServiceImpl implements PagoService {
     private final CuotaRepository cuotaRepository;
     private final PagoRepository pagoRepository;
 
+    private final PagoMapper pagoMapper;
+
     @Override
     public List<CuotaDeudaResponse> listarDeudas(Long codAlumno) {
-        return cuotaRepository.findDeudasPorAlumno(codAlumno.intValue(), ESTADOS_DEUDA).stream()
-                .map(c -> new CuotaDeudaResponse(
-                        c.getId(), c.getCodMatricula(), c.getMontoPagar(), c.getOrdenPago(), c.getEstadoCuota()))
-                .toList();
+        return pagoMapper.toDeudaResponseList(
+                cuotaRepository.findDeudasPorAlumno(codAlumno.intValue(), ESTADOS_DEUDA));
     }
 
     @Override
@@ -70,18 +71,13 @@ public class PagoServiceImpl implements PagoService {
                 .map(Pago::getMontoPagado)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        List<PagoDetalleResponse> detalle = pagos.stream()
-                .map(p -> new PagoDetalleResponse(
-                        p.getId(), p.getCodCuota().longValue(), p.getMontoPagado(), p.getMedioPago(), p.getFechaPago()))
-                .toList();
+        List<PagoDetalleResponse> detalle = pagoMapper.toDetalleResponseList(pagos);
 
         return new PagoReporteResponse(total, pagos.size(), detalle);
     }
 
     @Override
     public List<DeudaAlumnoResponse> reportarDeudasConsolidadas() {
-        return cuotaRepository.reporteDeudasPorAlumno(ESTADOS_DEUDA).stream()
-                .map(p -> new DeudaAlumnoResponse(p.getCodAlumno(), p.getMontoAdeudado(), p.getCantidadCuotas()))
-                .toList();
+        return pagoMapper.toDeudaAlumnoResponseList(cuotaRepository.reporteDeudasPorAlumno(ESTADOS_DEUDA));
     }
 }

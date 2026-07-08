@@ -15,6 +15,7 @@ import com.institucion.sigea.matricula.dto.response.MatriculaResponse;
 import com.institucion.sigea.matricula.entity.Cuota;
 import com.institucion.sigea.matricula.entity.EstadoCuota;
 import com.institucion.sigea.matricula.entity.Matricula;
+import com.institucion.sigea.matricula.mapper.MatriculaMapper;
 import com.institucion.sigea.matricula.repository.CuotaRepository;
 import com.institucion.sigea.matricula.repository.MatriculaRepository;
 import com.institucion.sigea.matricula.service.MatriculaService;
@@ -36,6 +37,8 @@ public class MatriculaServiceImpl implements MatriculaService {
     private final ConceptoRepository conceptoRepository;
     private final MatriculaRepository matriculaRepository;
     private final CuotaRepository cuotaRepository;
+
+    private final MatriculaMapper matriculaMapper; // agregar al constructor (Lombok @RequiredArgsConstructor lo toma solo)
 
     @Override
     @Transactional
@@ -74,30 +77,14 @@ public class MatriculaServiceImpl implements MatriculaService {
                 .toList();
         cuotaRepository.saveAll(cuotas);
 
-        return toResponse(matricula, cuotas);
+        return matriculaMapper.toResponse(matricula, cuotas);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<MatriculaReporteResponse> reportar(Integer anioAcademico, Long codNivel, Long codGrado, Integer codAula) {
-        return matriculaRepository.buscarParaReporte(anioAcademico, codNivel, codGrado, codAula).stream()
-                .map(m -> new MatriculaReporteResponse(
-                        m.getId(), m.getCodAlumno(), m.getCodAula(), m.getCodAnioAcademico(), m.getFechaMatricula()))
-                .toList();
+        return matriculaMapper.toReporteResponseList(
+                matriculaRepository.buscarParaReporte(anioAcademico, codNivel, codGrado, codAula));
     }
 
-    private MatriculaResponse toResponse(Matricula matricula, List<Cuota> cuotas) {
-        List<CuotaResponse> cuotaResponses = cuotas.stream()
-                .map(c -> new CuotaResponse(
-                        c.getId(), c.getCodConcepto(), c.getMontoPagar(), c.getOrdenPago(), c.getEstadoCuota()))
-                .toList();
-
-        return new MatriculaResponse(
-                matricula.getId(),
-                matricula.getCodAlumno(),
-                matricula.getCodAula(),
-                matricula.getCodAnioAcademico(),
-                matricula.getFechaMatricula(),
-                cuotaResponses);
-    }
 }

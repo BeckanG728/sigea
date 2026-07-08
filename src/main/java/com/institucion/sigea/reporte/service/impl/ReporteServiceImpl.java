@@ -8,6 +8,7 @@ import com.institucion.sigea.pago.dto.response.DeudaAlumnoResponse;
 import com.institucion.sigea.pago.dto.response.PagoReporteResponse;
 import com.institucion.sigea.pago.service.PagoService;
 import com.institucion.sigea.reporte.dto.response.AuditoriaReporteResponse;
+import com.institucion.sigea.reporte.mapper.AuditoriaMapper;
 import com.institucion.sigea.reporte.service.ReporteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,8 @@ public class ReporteServiceImpl implements ReporteService {
     private final MatriculaService matriculaService;
     private final PagoService pagoService;
     private final AuditoriaService auditoriaService;
+
+    private final AuditoriaMapper auditoriaMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -48,19 +51,6 @@ public class ReporteServiceImpl implements ReporteService {
     @Transactional(readOnly = true)
     public List<AuditoriaReporteResponse> reportarAuditoria(
             Long codUsuario, String modulo, Instant desde, Instant hasta) {
-        return auditoriaService.buscar(codUsuario, modulo, desde, hasta).stream()
-                .map(this::toAuditoriaResponse)
-                .toList();
-    }
-
-    private AuditoriaReporteResponse toAuditoriaResponse(AuditoriaEntity a) {
-        return new AuditoriaReporteResponse(
-                a.getId(),
-                a.getUsuario() != null ? a.getUsuario().getId() : null,
-                a.getModulo(),
-                a.getOperacion(),
-                a.getCodigoRegistro(),
-                a.getFechaHora(),
-                a.getIpOrigen());
+        return auditoriaMapper.toResponseList(auditoriaService.buscar(codUsuario, modulo, desde, hasta));
     }
 }
