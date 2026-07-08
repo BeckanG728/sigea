@@ -5,6 +5,7 @@ import com.institucion.sigea.alumno.dto.response.AlumnoBusquedaResponse;
 import com.institucion.sigea.alumno.dto.response.AlumnoResponse;
 import com.institucion.sigea.alumno.entity.Alumno;
 import com.institucion.sigea.alumno.entity.TipoDocumento;
+import com.institucion.sigea.alumno.mapper.AlumnoMapper;
 import com.institucion.sigea.alumno.repository.AlumnoRepository;
 import com.institucion.sigea.alumno.repository.TipoDocumentoRepository;
 import com.institucion.sigea.alumno.service.AlumnoService;
@@ -26,6 +27,7 @@ public class AlumnoServiceImpl implements AlumnoService {
 
     private final AlumnoRepository alumnoRepository;
     private final TipoDocumentoRepository tipoDocumentoRepository;
+    private final AlumnoMapper alumnoMapper;
 
     @Override
     @Transactional
@@ -51,7 +53,7 @@ public class AlumnoServiceImpl implements AlumnoService {
         alumno.setFechaNacimiento(request.fechaNacimiento().toString());
 
         alumnoRepository.save(alumno);
-        return toResponse(alumno);
+        return alumnoMapper.toResponse(alumno);
     }
 
     @Override
@@ -62,7 +64,7 @@ public class AlumnoServiceImpl implements AlumnoService {
                 nombres, nombres);
 
         return alumnos.stream()
-                .map(this::toBusquedaResponse)
+                .map(alumnoMapper::toBusquedaResponse)
                 .toList();
     }
 
@@ -74,12 +76,6 @@ public class AlumnoServiceImpl implements AlumnoService {
                 alumno.getApellidoPaterno(),
                 alumno.getApellidoMaterno(),
                 LocalDate.parse(alumno.getFechaNacimiento()));
-    }
-
-    private AlumnoBusquedaResponse toBusquedaResponse(Alumno alumno) {
-        String nombreCompleto = "%s %s %s".formatted(
-                alumno.getNombres(), alumno.getApellidoPaterno(), alumno.getApellidoMaterno());
-        return new AlumnoBusquedaResponse(alumno.getId(), alumno.getNumeroDocumento(), nombreCompleto);
     }
 
     @Override
