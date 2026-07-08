@@ -28,6 +28,8 @@ public enum ErrorCode {
     TIPO_CONCEPTO_NO_ENCONTRADO(HttpStatus.NOT_FOUND),
     CUOTA_NO_ENCONTRADA(HttpStatus.NOT_FOUND),
     MONTO_PAGO_INVALIDO(HttpStatus.BAD_REQUEST),
+    KEYEXCHANGE_SESSION_EXPIRED(HttpStatus.GONE),
+    KEYEXCHANGE_INVALID_KEY(HttpStatus.BAD_REQUEST),
     CUOTA_YA_PAGADA(HttpStatus.CONFLICT);
 
     private final HttpStatus httpStatus;

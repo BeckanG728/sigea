@@ -18,36 +18,35 @@ public class CacheConfig {
     public static final String CACHE_PARAMETROS_SISTEMA = "parametrosSistema";
     public static final String CACHE_USUARIOS_DESACTIVADOS = "usuariosDesactivados";
 
+    public static final String CACHE_SESION_ECDH = "sesionEcdh";
+
     @Bean
     public CacheManager cacheManager() {
         CaffeineCacheManager manager = new CaffeineCacheManager();
 
-        // Permisos por rol: se invalidan manualmente al actualizar
-        // Rol_Funcionalidad (ver README), por eso no lleva expiración por tiempo.
         manager.registerCustomCache(CACHE_PERMISOS_POR_ROL,
                 Caffeine.newBuilder()
                         .maximumSize(50)
                         .build());
 
-        // Sesión 2FA pendiente: ventana corta para ingresar el código TOTP
-        // antes de que el login quede invalidado.
+        manager.registerCustomCache(CACHE_SESION_ECDH,
+                Caffeine.newBuilder()
+                        .expireAfterWrite(5, TimeUnit.MINUTES)
+                        .maximumSize(1000)
+                        .build());
+
         manager.registerCustomCache(CACHE_SESION_2FA_PENDIENTE,
                 Caffeine.newBuilder()
                         .expireAfterWrite(5, TimeUnit.MINUTES)
                         .maximumSize(1000)
                         .build());
 
-        // Parámetros del sistema (tarifario vigente, configuración general, etc.)
         manager.registerCustomCache(CACHE_PARAMETROS_SISTEMA,
                 Caffeine.newBuilder()
                         .expireAfterWrite(30, TimeUnit.MINUTES)
                         .maximumSize(100)
                         .build());
 
-        // Usuarios desactivados: se invalida sola tras 15 minutos; evita que un
-        // JWT ya emitido siga funcionando después de que un administrador
-        // desactive al usuario. Al desactivar, UsuarioService inserta el
-        // idUsuario aquí; JwtAuthFilter lo consulta en cada request.
         manager.registerCustomCache(CACHE_USUARIOS_DESACTIVADOS,
                 Caffeine.newBuilder()
                         .expireAfterWrite(15, TimeUnit.MINUTES)
