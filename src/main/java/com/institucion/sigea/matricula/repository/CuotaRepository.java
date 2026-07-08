@@ -31,4 +31,17 @@ public interface CuotaRepository extends JpaRepository<Cuota, Long> {
 
     List<Cuota> findByCodMatriculaAndEstadoCuotaInAndOrdenPagoLessThanOrderByOrdenPagoAsc(
             Integer codMatricula, List<EstadoCuota> estados, Short ordenPago);
+
+    @Query("""
+    SELECT m.codAlumno AS codAlumno,
+           SUM(c.montoPagar) AS montoAdeudado,
+           COUNT(c) AS cantidadCuotas
+    FROM Cuota c, Matricula m
+    WHERE c.codMatricula = m.id
+      AND c.estadoCuota IN :estados
+    GROUP BY m.codAlumno
+    ORDER BY SUM(c.montoPagar) DESC
+    """)
+    List<DeudaAlumnoProjection> reporteDeudasPorAlumno(@Param("estados") List<EstadoCuota> estados);
+
 }

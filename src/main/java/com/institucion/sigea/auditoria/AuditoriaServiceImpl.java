@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -60,5 +61,11 @@ public class AuditoriaServiceImpl implements AuditoriaService {
         Instant desde = Instant.now().minus(minutos, ChronoUnit.MINUTES);
         return auditoriaRepository.countByOperacionAndFechaHoraAfter(
                 TipoOperacionAuditoria.LOGIN_FAILED, desde, idUsuario);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AuditoriaEntity> buscar(Long usuarioId, String modulo, Instant desde, Instant hasta) {
+        return auditoriaRepository.buscar(usuarioId, modulo, desde, hasta);
     }
 }

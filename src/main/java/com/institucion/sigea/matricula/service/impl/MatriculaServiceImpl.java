@@ -10,6 +10,7 @@ import com.institucion.sigea.core.exception.BusinessException;
 import com.institucion.sigea.core.exception.ErrorCode;
 import com.institucion.sigea.matricula.dto.request.MatriculaRequest;
 import com.institucion.sigea.matricula.dto.response.CuotaResponse;
+import com.institucion.sigea.matricula.dto.response.MatriculaReporteResponse;
 import com.institucion.sigea.matricula.dto.response.MatriculaResponse;
 import com.institucion.sigea.matricula.entity.Cuota;
 import com.institucion.sigea.matricula.entity.EstadoCuota;
@@ -74,6 +75,15 @@ public class MatriculaServiceImpl implements MatriculaService {
         cuotaRepository.saveAll(cuotas);
 
         return toResponse(matricula, cuotas);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<MatriculaReporteResponse> reportar(Integer anioAcademico, Long codNivel, Long codGrado, Integer codAula) {
+        return matriculaRepository.buscarParaReporte(anioAcademico, codNivel, codGrado, codAula).stream()
+                .map(m -> new MatriculaReporteResponse(
+                        m.getId(), m.getCodAlumno(), m.getCodAula(), m.getCodAnioAcademico(), m.getFechaMatricula()))
+                .toList();
     }
 
     private MatriculaResponse toResponse(Matricula matricula, List<Cuota> cuotas) {
