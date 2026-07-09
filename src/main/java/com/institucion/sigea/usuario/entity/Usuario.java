@@ -1,6 +1,7 @@
 package com.institucion.sigea.usuario.entity;
 
 import com.institucion.sigea.core.crypto.AesConverter;
+import com.institucion.sigea.core.crypto.AesDeterministicConverter;
 import com.institucion.sigea.core.persistence.AuditableEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -19,8 +20,9 @@ public class Usuario extends AuditableEntity {
     @Column(name = "cod_usuario")
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 30)
-    private String username;
+    @Column(name = "nombre_usuario", nullable = false, unique = true, length = 255)
+    @Convert(converter = AesDeterministicConverter.class)
+    private String nombreUsuario;
 
     @Column(nullable = false, length = 255)
     private String password;

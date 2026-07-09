@@ -47,9 +47,9 @@ public class SuperusuarioSeeder implements CommandLineRunner {
                     return nuevoRol;
                 });
 
-        if (!usuarioRepository.existsByUsername(superuserUsername)) {
+        if (!usuarioRepository.existsByNombreUsuario(superuserUsername)) {
             Usuario usuario = new Usuario();
-            usuario.setUsername(superuserUsername);
+            usuario.setNombreUsuario(superuserUsername);
             usuario.setPassword(passwordEncoder.encode(superuserPassword));
             usuario.setRol(rol);
             usuario.setDosFactorHabilitado(false);

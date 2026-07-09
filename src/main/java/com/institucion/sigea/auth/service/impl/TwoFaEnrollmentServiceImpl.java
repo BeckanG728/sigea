@@ -44,7 +44,7 @@ public class TwoFaEnrollmentServiceImpl implements TwoFaEnrollmentService {
                     "Contraseña incorrecta");
         }
 
-        GenerarSecretoResult secreto = totpService.generarSecreto(usuario.getUsername());
+        GenerarSecretoResult secreto = totpService.generarSecreto(usuario.getNombreUsuario());
 
         usuario.setTotpSecret(secreto.secretRaw());
         usuario.setDosFactorHabilitado(true);

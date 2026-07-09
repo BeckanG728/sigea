@@ -46,7 +46,7 @@ public class AuthServiceImpl implements AuthService {
         String ip = getClientIp();
         String userAgent = getUserAgent();
 
-        Usuario usuario = usuarioRepository.findByUsername(request.usuario())
+        Usuario usuario = usuarioRepository.findByNombreUsuario(request.usuario())
                 .orElseThrow(() -> {
                     auditoriaService.registrarIntentoFallido(null, ip, null, userAgent);
                     return new BusinessException(
@@ -79,7 +79,7 @@ public class AuthServiceImpl implements AuthService {
             return LoginResponse.requires2fa(usuario.getId(), rol);
         }
 
-        String token = jwtUtil.generateToken(usuario.getId(), usuario.getUsername(), rol, false);
+        String token = jwtUtil.generateToken(usuario.getId(), usuario.getNombreUsuario(), rol, false);
         auditoriaService.registrarLogin(usuario.getId(), ip, null, userAgent);
         return LoginResponse.withToken(token, jwtProperties.expiration(), usuario.getId(), rol);
     }
@@ -111,7 +111,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String rol = usuario.getRol().getNombreRol();
-        String token = jwtUtil.generateToken(usuario.getId(), usuario.getUsername(), rol, true);
+        String token = jwtUtil.generateToken(usuario.getId(), usuario.getNombreUsuario(), rol, true);
         auditoriaService.registrarLogin(usuario.getId(), ip, null, userAgent);
 
         return LoginResponse.withToken(token, jwtProperties.expiration(), usuario.getId(), rol);

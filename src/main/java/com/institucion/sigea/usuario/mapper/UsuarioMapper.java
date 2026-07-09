@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 public interface UsuarioMapper {
 
     @Mapping(target = "idUsuario", source = "id")
-    @Mapping(target = "usuario", source = "username")
+    @Mapping(target = "usuario", source = "nombreUsuario")
     @Mapping(target = "idRol", source = "rol.id")
     @Mapping(target = "nombreRol", source = "rol.nombreRol")
     UsuarioResponse toResponse(Usuario usuario);
