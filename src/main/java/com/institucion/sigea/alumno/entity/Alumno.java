@@ -1,6 +1,7 @@
 package com.institucion.sigea.alumno.entity;
 
 import com.institucion.sigea.core.crypto.AesConverter;
+import com.institucion.sigea.core.crypto.AesDeterministicConverter;
 import com.institucion.sigea.core.persistence.AuditableEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -24,8 +25,8 @@ public class Alumno extends AuditableEntity {
     private TipoDocumento tipoDocumento;
 
     @Column(nullable = false, length = 255)
-    @Convert(converter = AesConverter.class)
-    private String numeroDocumento; // se guarda cifrado
+    @Convert(converter = AesDeterministicConverter.class)
+    private String numeroDocumento;
 
     @Column(nullable = false, length = 80)
     private String nombres;

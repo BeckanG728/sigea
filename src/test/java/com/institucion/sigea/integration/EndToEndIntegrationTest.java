@@ -86,7 +86,7 @@ class EndToEndIntegrationTest {
         secretoTotp = secretGenerator.generate();
 
         usuario = new Usuario();
-        usuario.setUsername("secretaria.e2e");
+        usuario.setNombreUsuario("secretaria.e2e");
         usuario.setPassword(passwordEncoder.encode(PASSWORD));
         usuario.setRol(rol);
         usuario.setDosFactorHabilitado(true);

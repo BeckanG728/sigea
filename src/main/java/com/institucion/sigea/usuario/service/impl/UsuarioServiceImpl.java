@@ -52,7 +52,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                         "Rol no encontrado: " + request.idRol(),
                         Map.of("idRol", request.idRol())));
 
-        if (usuarioRepository.existsByUsername(request.usuario())) {
+        if (usuarioRepository.existsByNombreUsuario(request.usuario())) {
             throw new BusinessException(
                     ErrorCode.VALIDACION_FORMULARIO,
                     "El nombre de usuario ya existe: " + request.usuario(),
@@ -60,7 +60,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
 
         Usuario usuario = new Usuario();
-        usuario.setUsername(request.usuario());
+        usuario.setNombreUsuario(request.usuario());
         usuario.setPassword(passwordEncoder.encode(request.password()));
         usuario.setRol(rol);
         usuario.setDosFactorHabilitado(false);
