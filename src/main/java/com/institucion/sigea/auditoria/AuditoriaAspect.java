@@ -16,6 +16,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import com.fasterxml.jackson.core.type.TypeReference;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import java.time.Instant;
 
@@ -28,6 +32,10 @@ public class AuditoriaAspect {
     private final AuditoriaRepository auditoriaRepository;
     private final UsuarioRepository usuarioRepository;
     private final ObjectMapper objectMapper;
+    private static final Set<String> CAMPOS_CIFRADOS = Set.of(
+            "numeroDocumento", "fechaNacimiento", "totpSecret", "nombreUsuario"
+    );
+    private static final String MASCARA = "***CIFRADO***";
 
     @Around("@annotation(auditable)")
     public Object auditar(ProceedingJoinPoint pjp, Auditable auditable) throws Throwable {
@@ -84,7 +92,14 @@ public class AuditoriaAspect {
 
     private String toJson(Object obj) {
         try {
-            return objectMapper.writeValueAsString(obj);
+            Map<String, Object> nodo = objectMapper.convertValue(obj, new TypeReference<>() {
+            });
+            for (String campo : CAMPOS_CIFRADOS) {
+                if (nodo.containsKey(campo)) {
+                    nodo.put(campo, MASCARA);
+                }
+            }
+            return objectMapper.writeValueAsString(nodo);
         } catch (Exception e) {
             return null;
         }
