@@ -40,7 +40,7 @@ public class PagoServiceImpl implements PagoService {
 
     @Override
     public Cuota validarOrdenDePago(Long codCuota) {
-        Cuota cuota = cuotaRepository.findById(codCuota)
+        Cuota cuota = cuotaRepository.findWithLockById(codCuota)
                 .orElseThrow(() -> new BusinessException(
                         ErrorCode.CUOTA_NO_ENCONTRADA, "Cuota no encontrada",
                         Map.of("codCuota", codCuota)));
