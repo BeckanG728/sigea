@@ -37,8 +37,4 @@ public class Usuario extends AuditableEntity {
     @Column(length = 255)
     @Convert(converter = AesConverter.class)
     private String totpSecret;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_creacion_id")
-    private Usuario usuarioCreacion;
 }

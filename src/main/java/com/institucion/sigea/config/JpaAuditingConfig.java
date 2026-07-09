@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
  * Separado de CacheConfig porque son responsabilidades distintas.
  */
 @Configuration
-@EnableJpaAuditing
+@EnableJpaAuditing(auditorAwareRef = "springSecurityAuditorAware")
 public class JpaAuditingConfig {
 }

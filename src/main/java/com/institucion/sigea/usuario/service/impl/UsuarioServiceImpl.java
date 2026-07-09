@@ -6,7 +6,6 @@ import com.institucion.sigea.core.api.PageResponse;
 import com.institucion.sigea.core.enums.TipoOperacionAuditoria;
 import com.institucion.sigea.core.exception.BusinessException;
 import com.institucion.sigea.core.exception.ErrorCode;
-import com.institucion.sigea.security.jwt.JwtPrincipal;
 import com.institucion.sigea.usuario.dto.request.ActualizarUsuarioRequest;
 import com.institucion.sigea.usuario.dto.request.CrearUsuarioRequest;
 import com.institucion.sigea.usuario.dto.response.UsuarioResponse;
@@ -21,8 +20,6 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,13 +61,6 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setPassword(passwordEncoder.encode(request.password()));
         usuario.setRol(rol);
         usuario.setDosFactorHabilitado(false);
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.getPrincipal() instanceof JwtPrincipal principal) {
-            usuario.setUsuarioCreacion(
-                    usuarioRepository.getReferenceById(principal.userId()));
-        }
-
         usuario = usuarioRepository.save(usuario);
         return usuarioMapper.toResponse(usuario);
     }
