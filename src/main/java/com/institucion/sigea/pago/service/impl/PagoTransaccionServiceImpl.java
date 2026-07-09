@@ -16,6 +16,7 @@ import com.institucion.sigea.pago.repository.PagoRepository;
 import com.institucion.sigea.pago.repository.ReciboRepository;
 import com.institucion.sigea.pago.service.PagoService;
 import com.institucion.sigea.pago.service.PagoTransaccionService;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,14 +25,6 @@ import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.Map;
 
-/**
- * Secuencia exacta exigida por el enunciado:
- * Generar Recibo → Actualizar Correlativo → Marcar Cuota como Pagada →
- * Registrar Auditoría → Commit, con rollback total ante error.
- *
- * @Auditable + AuditoriaAspect (P1-11) escriben la fila de auditoría
- * dentro de esta misma transacción, antes del commit real.
- */
 @Service
 @RequiredArgsConstructor
 public class PagoTransaccionServiceImpl implements PagoTransaccionService {
@@ -43,15 +36,14 @@ public class PagoTransaccionServiceImpl implements PagoTransaccionService {
     private final ReciboRepository reciboRepository;
     private final CuotaRepository cuotaRepository;
 
-    private final PagoMapper pagoMapper; // agregar al constructor
+    private final EntityManager entityManager;
+    private final PagoMapper pagoMapper;
 
     @Override
     @Transactional
     @Auditable(modulo = "pago", operacion = TipoOperacionAuditoria.PAGO)
     public PagoResponse registrarPago(RegistrarPagoRequest request) {
 
-        // 0. Validar orden de pago (P3-05): existe, no está ya pagada, y no
-        // hay cuotas anteriores de la misma matrícula sin pagar.
         Cuota cuota = pagoService.validarOrdenDePago(request.codCuota());
 
         if (cuota.getMontoPagar().compareTo(request.montoPagado()) != 0) {
@@ -60,7 +52,6 @@ public class PagoTransaccionServiceImpl implements PagoTransaccionService {
                     Map.of("montoCuota", cuota.getMontoPagar(), "montoPagado", request.montoPagado()));
         }
 
-        // 1. Generar Pago
         Pago pago = new Pago();
         pago.setCodCuota(cuota.getId().intValue());
         pago.setMontoPagado(request.montoPagado());
@@ -68,13 +59,10 @@ public class PagoTransaccionServiceImpl implements PagoTransaccionService {
         pago.setFechaPago(LocalDateTime.now());
         pagoRepository.save(pago);
 
-        // 2. Generar Recibo + Actualizar Correlativo (bloqueado con
-        // PESSIMISTIC_WRITE en ReciboRepository para serializar concurrencia
-        // dentro del mismo año).
         int anioActual = Year.now().getValue();
-        int siguienteCorrelativo = reciboRepository.findFirstByAnioOrderByCorrelativoDesc(anioActual)
-                .map(ultimo -> ultimo.getCorrelativo() + 1)
-                .orElse(1);
+        Long siguienteCorrelativo = ((Number) entityManager
+                .createNativeQuery("SELECT nextval('seq_numero_recibo')")
+                .getSingleResult()).longValue();
 
         String numeroRecibo = FORMATO_NUMERO_RECIBO.formatted(anioActual, siguienteCorrelativo);
 
@@ -82,17 +70,14 @@ public class PagoTransaccionServiceImpl implements PagoTransaccionService {
         recibo.setNumeroRecibo(numeroRecibo);
         recibo.setCodPago(pago.getId().intValue());
         recibo.setAnio(anioActual);
-        recibo.setCorrelativo(siguienteCorrelativo);
+        recibo.setCorrelativo(siguienteCorrelativo.intValue());
         recibo.setFechaEmision(LocalDateTime.now());
         reciboRepository.save(recibo);
 
-        // 3. Marcar Cuota como Pagada
         cuota.setEstadoCuota(EstadoCuota.PAGADA);
         cuota.setNumeroRecibo(numeroRecibo);
         cuota.setFechaPago(LocalDateTime.now());
         cuotaRepository.save(cuota);
-
-        // 4. Registrar Auditoría → Commit: delegado en @Auditable (arriba).
 
         return pagoMapper.toResponse(pago, cuota);
     }
