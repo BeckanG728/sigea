@@ -18,10 +18,11 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SequenceGenerator(name = "seq_recibo", sequenceName = "seq_numero_recibo", allocationSize = 1)
 public class Recibo extends AuditableEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_recibo")
     @Column(name = "cod_recibo")
     private Long id;
 
