@@ -11,6 +11,7 @@ import com.institucion.sigea.core.enums.TipoOperacionAuditoria;
 import com.institucion.sigea.core.exception.BusinessException;
 import com.institucion.sigea.core.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,7 +63,12 @@ public class TipoConceptoServiceImpl implements TipoConceptoService {
     public void eliminar(Long id) {
         TipoConcepto tipoConcepto = tipoConceptoRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.TIPO_CONCEPTO_NO_ENCONTRADO, "No encontrado"));
-        tipoConcepto.setEstado(false); // eliminación lógica, nunca deleteById()
-        tipoConceptoRepository.save(tipoConcepto);
+        try {
+            tipoConceptoRepository.delete(tipoConcepto);
+            tipoConceptoRepository.flush();
+        } catch (DataIntegrityViolationException e) {
+            tipoConcepto.setEstado(false);
+            tipoConceptoRepository.save(tipoConcepto);
+        }
     }
 }
