@@ -30,7 +30,10 @@ public enum ErrorCode {
     MONTO_PAGO_INVALIDO(HttpStatus.BAD_REQUEST),
     KEYEXCHANGE_SESSION_EXPIRED(HttpStatus.GONE),
     KEYEXCHANGE_INVALID_KEY(HttpStatus.BAD_REQUEST),
-    CUOTA_YA_PAGADA(HttpStatus.CONFLICT);
+    CUOTA_YA_PAGADA(HttpStatus.CONFLICT),
+    NIVEL_NO_ENCONTRADO(HttpStatus.NOT_FOUND),
+    GRADO_NO_ENCONTRADO(HttpStatus.NOT_FOUND),
+    TIPO_DOCUMENTO_NO_ENCONTRADO(HttpStatus.NOT_FOUND);
 
     private final HttpStatus httpStatus;
 

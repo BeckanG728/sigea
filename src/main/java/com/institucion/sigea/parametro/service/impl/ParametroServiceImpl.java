@@ -1,12 +1,15 @@
 package com.institucion.sigea.parametro.service.impl;
 
+import com.institucion.sigea.auditoria.Auditable;
 import com.institucion.sigea.config.CacheConfig;
+import com.institucion.sigea.core.enums.TipoOperacionAuditoria;
 import com.institucion.sigea.core.exception.BusinessException;
 import com.institucion.sigea.core.exception.ErrorCode;
 import com.institucion.sigea.parametro.entity.Parametro;
 import com.institucion.sigea.parametro.repository.ParametroRepository;
 import com.institucion.sigea.parametro.service.ParametroService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -36,5 +39,17 @@ public class ParametroServiceImpl implements ParametroService {
                         "Parámetro no configurado: " + clave));
         parametro.setValor(valor);
         return valor;
+    }
+
+    @Override
+    @Transactional
+    @Auditable(modulo = "parametro", operacion = TipoOperacionAuditoria.DELETE)
+    @CacheEvict(value = CacheConfig.CACHE_PARAMETROS_SISTEMA, key = "#clave")
+    public void eliminar(String clave) {
+        Parametro parametro = parametroRepository.findByClave(clave)
+                .orElseThrow(() -> new BusinessException(ErrorCode.INTERNAL_ERROR,
+                        "Parámetro no configurado: " + clave));
+        parametro.setEstado(false);
+        parametroRepository.save(parametro);
     }
 }
