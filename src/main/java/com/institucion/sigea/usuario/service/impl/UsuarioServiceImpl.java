@@ -56,8 +56,18 @@ public class UsuarioServiceImpl implements UsuarioService {
                     Map.of("usuario", request.usuario()));
         }
 
+        if (usuarioRepository.existsByNumeroDocumento(request.numeroDocumento())) {
+            throw new BusinessException(
+                    ErrorCode.USUARIO_DUPLICADO,
+                    "Ya existe un usuario con ese número de documento",
+                    Map.of("numeroDocumento", request.numeroDocumento()));
+        }
+
         Usuario usuario = new Usuario();
         usuario.setNombreUsuario(request.usuario());
+        usuario.setNombre(request.nombre());
+        usuario.setPrimerApellido(request.primerApellido());
+        usuario.setNumeroDocumento(request.numeroDocumento());
         usuario.setPassword(passwordEncoder.encode(request.password()));
         usuario.setRol(rol);
         usuario.setDosFactorHabilitado(false);

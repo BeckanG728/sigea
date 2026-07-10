@@ -24,6 +24,16 @@ public class Usuario extends AuditableEntity {
     @Convert(converter = AesDeterministicConverter.class)
     private String nombreUsuario;
 
+    @Column(nullable = false, length = 100)
+    private String nombre;
+
+    @Column(name = "primer_apellido", nullable = false, length = 100)
+    private String primerApellido;
+
+    @Column(name = "numero_documento", nullable = false, unique = true, length = 255)
+    @Convert(converter = AesDeterministicConverter.class)
+    private String numeroDocumento;
+
     @Column(nullable = false, length = 255)
     private String password;
 
