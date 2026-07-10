@@ -20,6 +20,9 @@ public class Usuario extends AuditableEntity {
     @Column(name = "cod_usuario")
     private Long id;
 
+    @Column(nullable = false, unique = true, length = 20)
+    private String codigo;
+
     @Column(name = "nombre_usuario", nullable = false, unique = true, length = 255)
     @Convert(converter = AesDeterministicConverter.class)
     private String nombreUsuario;

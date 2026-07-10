@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 public record AlumnoResponse(
         Long id,
+        String codigo,
         String numeroDocumento,
         String nombres,
         String apellidoPaterno,

@@ -4,6 +4,7 @@ import java.time.Instant;
 
 public record UsuarioResponse(
         Long idUsuario,
+        String codigo,
         String usuario,
         String nombre,
         String primerApellido,
@@ -13,5 +14,4 @@ public record UsuarioResponse(
         boolean estado,
         boolean dosFactorHabilitado,
         Instant fechaRegistro
-) {
-}
+) {}

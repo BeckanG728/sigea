@@ -73,7 +73,7 @@ public class AuditoriaAspect {
         entity.setModulo(auditable.modulo());
         entity.setOperacion(operacion);
         entity.setTablaAfectada(extraerTabla(firstArg, result));
-        entity.setCodigoRegistro(extraerId(firstArg, result));
+        entity.setCodigoRegistro(extraerCodigoRegistro(firstArg, result));
         entity.setValorAnterior(valorAnterior);
         entity.setValorNuevo(valorNuevo);
         entity.setFechaHora(Instant.now());
@@ -110,13 +110,32 @@ public class AuditoriaAspect {
         return source != null ? source.getClass().getSimpleName() : null;
     }
 
-    private Long extraerId(Object firstArg, Object result) {
+    private String extraerCodigoRegistro(Object firstArg, Object result) {
         Object source = result != null ? result : firstArg;
         if (source == null) return null;
-        try {
-            return (Long) source.getClass().getMethod("getId").invoke(source);
-        } catch (Exception e) {
-            return null;
+
+        // eliminar(Long id) -> el propio argumento YA es el identificador
+        if (source instanceof Long || source instanceof Integer) {
+            return source.toString();
         }
+
+        String codigo = invocarAccessor(source, "getCodigo", "codigo");
+        if (codigo != null) return codigo;
+
+        return invocarAccessor(source, "getId", "id");
+    }
+
+    private String invocarAccessor(Object source, String nombreGetter, String nombreRecord) {
+        for (String nombreMetodo : new String[]{nombreGetter, nombreRecord}) {
+            try {
+                Object valor = source.getClass().getMethod(nombreMetodo).invoke(source);
+                if (valor != null) return valor.toString();
+            } catch (NoSuchMethodException ignored) {
+                
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        return null;
     }
 }

@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import jakarta.persistence.EntityManager;
 
 import java.util.Map;
 
@@ -32,12 +33,14 @@ import java.util.Map;
 public class UsuarioServiceImpl implements UsuarioService {
 
     private static final String ROL_SUPERUSUARIO = "SUPERUSUARIO";
+    private static final String FORMATO_CODIGO_USUARIO = "CU-%03d";
 
     private final UsuarioRepository usuarioRepository;
     private final RolRepository rolRepository;
     private final PasswordEncoder passwordEncoder;
     private final CacheManager cacheManager;
     private final UsuarioMapper usuarioMapper;
+    private final EntityManager entityManager;
 
     @Override
     @Transactional
@@ -71,6 +74,10 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setPassword(passwordEncoder.encode(request.password()));
         usuario.setRol(rol);
         usuario.setDosFactorHabilitado(false);
+        Long siguienteCorrelativo = ((Number) entityManager
+                .createNativeQuery("SELECT nextval('seq_codigo_usuario')")
+                .getSingleResult()).longValue();
+        usuario.setCodigo(FORMATO_CODIGO_USUARIO.formatted(siguienteCorrelativo));
         usuario = usuarioRepository.save(usuario);
         return usuarioMapper.toResponse(usuario);
     }

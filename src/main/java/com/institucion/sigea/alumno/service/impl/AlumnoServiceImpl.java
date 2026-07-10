@@ -16,7 +16,7 @@ import com.institucion.sigea.core.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -24,10 +24,12 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class AlumnoServiceImpl implements AlumnoService {
+    private static final String FORMATO_CODIGO_ALUMNO = "AL-%04d";
 
     private final AlumnoRepository alumnoRepository;
     private final TipoDocumentoRepository tipoDocumentoRepository;
     private final AlumnoMapper alumnoMapper;
+    private final EntityManager entityManager;
 
     @Override
     @Transactional
@@ -51,7 +53,10 @@ public class AlumnoServiceImpl implements AlumnoService {
         alumno.setApellidoPaterno(request.apellidoPaterno());
         alumno.setApellidoMaterno(request.apellidoMaterno());
         alumno.setFechaNacimiento(request.fechaNacimiento().toString());
-
+        Long siguienteCorrelativo = ((Number) entityManager
+                .createNativeQuery("SELECT nextval('seq_codigo_alumno')")
+                .getSingleResult()).longValue();
+        alumno.setCodigo(FORMATO_CODIGO_ALUMNO.formatted(siguienteCorrelativo));
         alumnoRepository.save(alumno);
         return alumnoMapper.toResponse(alumno);
     }
@@ -71,6 +76,7 @@ public class AlumnoServiceImpl implements AlumnoService {
     private AlumnoResponse toResponse(Alumno alumno) {
         return new AlumnoResponse(
                 alumno.getId(),
+                alumno.getCodigo(),
                 alumno.getNumeroDocumento(),
                 alumno.getNombres(),
                 alumno.getApellidoPaterno(),

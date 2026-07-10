@@ -19,6 +19,9 @@ public class Aula extends AuditableEntity {
     @Column(name = "cod_aula")
     private Long id;
 
+    @Column(nullable = false, unique = true, length = 20)
+    private String codigo;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "anio_academico_id", nullable = false)
     private AnioAcademico anioAcademico;
@@ -36,4 +39,5 @@ public class Aula extends AuditableEntity {
 
     @Column(nullable = false)
     private short capacidadMaxima;
+
 }
