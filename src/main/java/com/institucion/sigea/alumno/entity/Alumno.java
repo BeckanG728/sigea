@@ -20,6 +20,9 @@ public class Alumno extends AuditableEntity {
     @Column(name = "cod_alumno")
     private Long id;
 
+    @Column(nullable = false, unique = true, length = 20)
+    private String codigo;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tipo_documento_id", nullable = false)
     private TipoDocumento tipoDocumento;

@@ -18,6 +18,7 @@ import com.institucion.sigea.parametro.service.ParametroService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import jakarta.persistence.EntityManager;
 
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class AulaServiceImpl implements AulaService {
+    private static final String FORMATO_CODIGO_AULA = "AU-%03d";
 
     private final AulaRepository aulaRepository;
     private final AnioAcademicoRepository anioAcademicoRepository;
@@ -32,6 +34,7 @@ public class AulaServiceImpl implements AulaService {
     private final GradoRepository gradoRepository;
     private final ParametroService parametroService;
     private final AulaMapper aulaMapper;
+    private final EntityManager entityManager;
 
     @Override
     @Transactional
@@ -54,7 +57,10 @@ public class AulaServiceImpl implements AulaService {
         aula.setGrado(gradoRepository.getReferenceById(request.codGrado()));
         aula.setSeccion(request.seccion());
         aula.setCapacidadMaxima(capacidad);
-
+        Long siguienteCorrelativo = ((Number) entityManager
+                .createNativeQuery("SELECT nextval('seq_codigo_aula')")
+                .getSingleResult()).longValue();
+        aula.setCodigo(FORMATO_CODIGO_AULA.formatted(siguienteCorrelativo));
         aulaRepository.save(aula);
         return aulaMapper.toResponse(aula);
     }

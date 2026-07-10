@@ -9,7 +9,7 @@ public record AuditoriaReporteResponse(
         Long codUsuario,
         String modulo,
         TipoOperacionAuditoria operacion,
-        Long codigoRegistro,
+        String codigoRegistro,
         Instant fechaHora,
         String ipOrigen
 ) {}

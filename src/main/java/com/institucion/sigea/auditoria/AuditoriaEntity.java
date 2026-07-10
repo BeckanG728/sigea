@@ -44,8 +44,8 @@ public class AuditoriaEntity {
     @Column(nullable = false, length = 20)
     private TipoOperacionAuditoria operacion;
 
-    @Column(name = "codigo_registro")
-    private Long codigoRegistro;
+    @Column(name = "codigo_registro", length = 20)
+    private String codigoRegistro;
 
     @Lob
     @Column(name = "valor_anterior")

@@ -5,6 +5,7 @@ import java.util.List;
 
 public record MatriculaResponse(
         Long id,
+        String codigo,
         Integer codAlumno,
         Integer codAula,
         Integer codAnioAcademico,

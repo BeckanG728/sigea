@@ -28,6 +28,9 @@ public class Matricula extends AuditableEntity {
     @Column(name = "cod_matricula")
     private Long id;
 
+    @Column(nullable = false, unique = true, length = 20)
+    private String codigo;
+
     @Column(name = "cod_alumno", nullable = false)
     private Integer codAlumno;
 

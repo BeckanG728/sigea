@@ -23,6 +23,8 @@ import com.institucion.sigea.matricula.service.MatriculaValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import jakarta.persistence.EntityManager;
+import java.time.Year;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,12 +33,14 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class MatriculaServiceImpl implements MatriculaService {
+    private static final String FORMATO_CODIGO_MATRICULA = "MAT-%d-%04d";
 
     private final MatriculaValidator matriculaValidator;
     private final AulaRepository aulaRepository;
     private final ConceptoRepository conceptoRepository;
     private final MatriculaRepository matriculaRepository;
     private final CuotaRepository cuotaRepository;
+    private final EntityManager entityManager;
 
     private final MatriculaMapper matriculaMapper; // agregar al constructor (Lombok @RequiredArgsConstructor lo toma solo)
 
@@ -57,6 +61,11 @@ public class MatriculaServiceImpl implements MatriculaService {
         matricula.setCodAula(request.codAula().intValue());
         matricula.setCodAnioAcademico(request.codAnioAcademico().intValue());
         matricula.setFechaMatricula(LocalDateTime.now());
+        int anioActual = Year.now().getValue();
+        Long siguienteCorrelativo = ((Number) entityManager
+                .createNativeQuery("SELECT nextval('seq_codigo_matricula')")
+                .getSingleResult()).longValue();
+        matricula.setCodigo(FORMATO_CODIGO_MATRICULA.formatted(anioActual, siguienteCorrelativo));
         matriculaRepository.save(matricula);
 
         List<Concepto> conceptosActivos = conceptoRepository
