@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByNombreUsuario(String nombreUsuario);
     boolean existsByNombreUsuario(String nombreUsuario);
+    boolean existsByNumeroDocumento(String numeroDocumento);
 
     @Override
     @EntityGraph(attributePaths = {"rol"})

@@ -33,6 +33,7 @@ public enum ErrorCode {
     CUOTA_YA_PAGADA(HttpStatus.CONFLICT),
     NIVEL_NO_ENCONTRADO(HttpStatus.NOT_FOUND),
     GRADO_NO_ENCONTRADO(HttpStatus.NOT_FOUND),
+    USUARIO_DUPLICADO(HttpStatus.CONFLICT),
     TIPO_DOCUMENTO_NO_ENCONTRADO(HttpStatus.NOT_FOUND);
 
     private final HttpStatus httpStatus;

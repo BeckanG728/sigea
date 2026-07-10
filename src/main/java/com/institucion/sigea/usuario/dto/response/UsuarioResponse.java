@@ -5,6 +5,9 @@ import java.time.Instant;
 public record UsuarioResponse(
         Long idUsuario,
         String usuario,
+        String nombre,
+        String primerApellido,
+        String numeroDocumento,
         Long idRol,
         String nombreRol,
         boolean estado,

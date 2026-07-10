@@ -53,6 +53,9 @@ public class SuperusuarioSeeder implements CommandLineRunner {
             usuario.setPassword(passwordEncoder.encode(superuserPassword));
             usuario.setRol(rol);
             usuario.setDosFactorHabilitado(false);
+            usuario.setNombre("Super");
+            usuario.setPrimerApellido("Usuario");
+            usuario.setNumeroDocumento("00000000");
             usuarioRepository.save(usuario);
             log.info("Superusuario '{}' creado correctamente", superuserUsername);
         } else {
