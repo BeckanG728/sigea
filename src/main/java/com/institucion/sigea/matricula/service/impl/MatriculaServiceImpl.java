@@ -65,7 +65,7 @@ public class MatriculaServiceImpl implements MatriculaService {
                 .orElseThrow(() -> new BusinessException(
                         ErrorCode.INVALID_CREDENTIALS, "Usuario no encontrado"));
 
-        Aula aula = aulaRepository.findById(request.codAula())
+        Aula aula = aulaRepository.findWithLockById(request.codAula())
                 .orElseThrow(() -> new BusinessException(
                         ErrorCode.AULA_NO_ENCONTRADA, "Aula no encontrada",
                         Map.of("codAula", request.codAula())));
