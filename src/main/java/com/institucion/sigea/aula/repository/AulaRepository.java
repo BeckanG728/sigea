@@ -17,7 +17,7 @@ public interface AulaRepository extends JpaRepository<Aula, Long> {
             Long anioAcademicoId, Long nivelId, Long gradoId, String seccion);
 
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
     @Query("SELECT a FROM Aula a WHERE a.id = :id")
     Optional<Aula> findWithLockById(@Param("id") Long id);
 
