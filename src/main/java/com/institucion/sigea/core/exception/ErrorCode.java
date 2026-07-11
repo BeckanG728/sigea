@@ -34,6 +34,8 @@ public enum ErrorCode {
     NIVEL_NO_ENCONTRADO(HttpStatus.NOT_FOUND),
     GRADO_NO_ENCONTRADO(HttpStatus.NOT_FOUND),
     USUARIO_DUPLICADO(HttpStatus.CONFLICT),
+    ROL_DUPLICADO(HttpStatus.CONFLICT),
+    ROL_CON_USUARIOS(HttpStatus.CONFLICT),
     TIPO_DOCUMENTO_NO_ENCONTRADO(HttpStatus.NOT_FOUND);
 
     private final HttpStatus httpStatus;
