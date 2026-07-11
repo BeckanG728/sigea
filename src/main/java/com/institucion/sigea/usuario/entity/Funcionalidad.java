@@ -23,7 +23,7 @@ import java.util.List;
 @Table(name = "funcionalidad")
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Funcionalidad extends AuditableEntity {
 
     @Id

@@ -8,4 +8,5 @@ import java.util.List;
 public interface RolFuncionalidadRepository extends JpaRepository<RolFuncionalidad, Long> {
     List<RolFuncionalidad> findByRolId(Long rolId);
     List<RolFuncionalidad> findByRolIdAndEstadoTrue(Long rolId);
+    boolean existsByRolIdAndFuncionalidadId(Long rolId, Long funcionalidadId);
 }
