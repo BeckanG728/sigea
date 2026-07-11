@@ -50,4 +50,18 @@ public class TotpServiceImpl implements TotpService {
                 .getUri();
         return new GenerarSecretoResult(secret, uri);
     }
+
+    @Override
+    public String generarQrUri(String secret, String username) {
+        String issuer = totpProperties.issuer();
+        return new QrData.Builder()
+                .label(issuer + ":" + username)
+                .secret(secret)
+                .issuer(issuer)
+                .algorithm(HashingAlgorithm.SHA1)
+                .digits(6)
+                .period(30)
+                .build()
+                .getUri();
+    }
 }

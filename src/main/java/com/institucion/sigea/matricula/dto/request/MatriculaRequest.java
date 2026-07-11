@@ -5,5 +5,6 @@ import jakarta.validation.constraints.NotNull;
 public record MatriculaRequest(
         @NotNull Long codAlumno,
         @NotNull Long codAula,
-        @NotNull Long codAnioAcademico
+        @NotNull Long codAnioAcademico,
+        String codigoOTP
 ) {}

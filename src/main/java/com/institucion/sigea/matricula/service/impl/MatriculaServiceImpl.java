@@ -3,13 +3,13 @@ package com.institucion.sigea.matricula.service.impl;
 import com.institucion.sigea.auditoria.Auditable;
 import com.institucion.sigea.aula.entity.Aula;
 import com.institucion.sigea.aula.repository.AulaRepository;
+import com.institucion.sigea.auth.service.TotpService;
 import com.institucion.sigea.concepto.entity.Concepto;
 import com.institucion.sigea.concepto.repository.ConceptoRepository;
 import com.institucion.sigea.core.enums.TipoOperacionAuditoria;
 import com.institucion.sigea.core.exception.BusinessException;
 import com.institucion.sigea.core.exception.ErrorCode;
 import com.institucion.sigea.matricula.dto.request.MatriculaRequest;
-import com.institucion.sigea.matricula.dto.response.CuotaResponse;
 import com.institucion.sigea.matricula.dto.response.MatriculaReporteResponse;
 import com.institucion.sigea.matricula.dto.response.MatriculaResponse;
 import com.institucion.sigea.matricula.entity.Cuota;
@@ -20,7 +20,13 @@ import com.institucion.sigea.matricula.repository.CuotaRepository;
 import com.institucion.sigea.matricula.repository.MatriculaRepository;
 import com.institucion.sigea.matricula.service.MatriculaService;
 import com.institucion.sigea.matricula.service.MatriculaValidator;
+import com.institucion.sigea.security.jwt.JwtPrincipal;
+import com.institucion.sigea.usuario.entity.Usuario;
+import com.institucion.sigea.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
@@ -42,12 +48,22 @@ public class MatriculaServiceImpl implements MatriculaService {
     private final CuotaRepository cuotaRepository;
     private final EntityManager entityManager;
 
-    private final MatriculaMapper matriculaMapper; // agregar al constructor (Lombok @RequiredArgsConstructor lo toma solo)
+    private final MatriculaMapper matriculaMapper;
+
+    private final UsuarioRepository usuarioRepository;
+    private final TotpService totpService;
+    private final CacheManager cacheManager;
 
     @Override
     @Transactional
     @Auditable(modulo = "matricula", operacion = TipoOperacionAuditoria.MATRICULA)
     public MatriculaResponse matricular(MatriculaRequest request) {
+        JwtPrincipal principal = (JwtPrincipal) SecurityContextHolder
+                .getContext().getAuthentication().getPrincipal();
+
+        Usuario usuario = usuarioRepository.findById(principal.userId())
+                .orElseThrow(() -> new BusinessException(
+                        ErrorCode.INVALID_CREDENTIALS, "Usuario no encontrado"));
 
         Aula aula = aulaRepository.findWithLockById(request.codAula())
                 .orElseThrow(() -> new BusinessException(
@@ -55,6 +71,15 @@ public class MatriculaServiceImpl implements MatriculaService {
                         Map.of("codAula", request.codAula())));
 
         matriculaValidator.validar(aula, request.codAlumno(), request.codAnioAcademico());
+
+        if (usuario.isTotpVerificado() && usuario.isDosFactorHabilitado()) {
+            String codigoOtp = request.codigoOTP();
+            if (codigoOtp == null || codigoOtp.isBlank()) {
+                throw new BusinessException(ErrorCode.INVALID_OTP,
+                        "Código OTP obligatorio para matricularse.");
+            }
+            validarOtpYRateLimit(usuario, codigoOtp);
+        }
 
         Matricula matricula = new Matricula();
         matricula.setCodAlumno(request.codAlumno().intValue());
@@ -86,7 +111,40 @@ public class MatriculaServiceImpl implements MatriculaService {
                 .toList();
         cuotaRepository.saveAll(cuotas);
 
-        return matriculaMapper.toResponse(matricula, cuotas);
+        MatriculaResponse response = matriculaMapper.toResponse(matricula, cuotas);
+
+        if (!usuario.isTotpVerificado()) {
+            String qrUri = totpService.generarQrUri(
+                    usuario.getTotpSecret(), usuario.getNombreUsuario());
+            return MatriculaResponse.withQrSetup(response, qrUri);
+        }
+
+        return response;
+    }
+
+    private void validarOtpYRateLimit(Usuario usuario, String codigoOtp) {
+        Cache cache = cacheManager.getCache(
+                com.institucion.sigea.config.CacheConfig.CACHE_OTP_INTENTOS_MATRICULA);
+        Long userId = usuario.getId();
+        String cacheKey = "intentos:" + userId;
+
+        Integer intentos = cache.get(cacheKey, Integer.class);
+        if (intentos != null && intentos >= 3) {
+            throw new BusinessException(ErrorCode.OTP_BLOCKED,
+                    "Demasiados intentos fallidos de OTP. Espere 5 minutos.");
+        }
+
+        try {
+            totpService.verificarCodigo(usuario.getTotpSecret(), codigoOtp);
+            if (intentos != null) {
+                cache.evict(cacheKey);
+            }
+        } catch (Exception e) {
+            int nuevoIntento = (intentos != null ? intentos : 0) + 1;
+            cache.put(cacheKey, nuevoIntento);
+            throw new BusinessException(ErrorCode.INVALID_OTP,
+                    "Código OTP inválido. Intento " + nuevoIntento + " de 3.");
+        }
     }
 
     @Override

@@ -36,7 +36,10 @@ public enum ErrorCode {
     USUARIO_DUPLICADO(HttpStatus.CONFLICT),
     ROL_DUPLICADO(HttpStatus.CONFLICT),
     ROL_CON_USUARIOS(HttpStatus.CONFLICT),
-    TIPO_DOCUMENTO_NO_ENCONTRADO(HttpStatus.NOT_FOUND);
+    TIPO_DOCUMENTO_NO_ENCONTRADO(HttpStatus.NOT_FOUND),
+    TWOFA_ALREADY_VERIFIED(HttpStatus.CONFLICT),
+    INVALID_OTP(HttpStatus.BAD_REQUEST),
+    OTP_BLOCKED(HttpStatus.TOO_MANY_REQUESTS);
 
     private final HttpStatus httpStatus;
 

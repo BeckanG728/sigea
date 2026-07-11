@@ -13,5 +13,6 @@ public record UsuarioResponse(
         String nombreRol,
         boolean estado,
         boolean dosFactorHabilitado,
+        boolean totpVerificado,
         Instant fechaRegistro
 ) {}

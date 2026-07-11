@@ -50,4 +50,7 @@ public class Usuario extends AuditableEntity {
     @Column(length = 255)
     @Convert(converter = AesConverter.class)
     private String totpSecret;
+
+    @Column(name = "totp_verificado", nullable = false)
+    private boolean totpVerificado;
 }
