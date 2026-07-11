@@ -18,6 +18,8 @@ public class CacheConfig {
     public static final String CACHE_PARAMETROS_SISTEMA = "parametrosSistema";
     public static final String CACHE_USUARIOS_DESACTIVADOS = "usuariosDesactivados";
 
+    public static final String CACHE_OTP_INTENTOS_MATRICULA = "otpIntentosMatricula";
+
     public static final String CACHE_SESION_ECDH = "sesionEcdh";
 
     @Bean
@@ -27,6 +29,12 @@ public class CacheConfig {
         manager.registerCustomCache(CACHE_PERMISOS_POR_ROL,
                 Caffeine.newBuilder()
                         .maximumSize(50)
+                        .build());
+
+        manager.registerCustomCache(CACHE_OTP_INTENTOS_MATRICULA,
+                Caffeine.newBuilder()
+                        .expireAfterWrite(5, TimeUnit.MINUTES)
+                        .maximumSize(10000)
                         .build());
 
         manager.registerCustomCache(CACHE_SESION_ECDH,

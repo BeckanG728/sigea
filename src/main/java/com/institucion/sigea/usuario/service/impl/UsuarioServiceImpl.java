@@ -1,6 +1,8 @@
 package com.institucion.sigea.usuario.service.impl;
 
 import com.institucion.sigea.auditoria.Auditable;
+import com.institucion.sigea.auth.dto.internal.GenerarSecretoResult;
+import com.institucion.sigea.auth.service.TotpService;
 import com.institucion.sigea.config.CacheConfig;
 import com.institucion.sigea.core.api.PageResponse;
 import com.institucion.sigea.core.enums.TipoOperacionAuditoria;
@@ -41,6 +43,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final CacheManager cacheManager;
     private final UsuarioMapper usuarioMapper;
     private final EntityManager entityManager;
+    private final TotpService totpService;
 
     @Override
     @Transactional
@@ -74,6 +77,9 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setPassword(passwordEncoder.encode(request.password()));
         usuario.setRol(rol);
         usuario.setDosFactorHabilitado(false);
+        usuario.setTotpVerificado(false);
+        GenerarSecretoResult secreto = totpService.generarSecreto(request.usuario());
+        usuario.setTotpSecret(secreto.secretRaw());
         Long siguienteCorrelativo = ((Number) entityManager
                 .createNativeQuery("SELECT nextval('seq_codigo_usuario')")
                 .getSingleResult()).longValue();

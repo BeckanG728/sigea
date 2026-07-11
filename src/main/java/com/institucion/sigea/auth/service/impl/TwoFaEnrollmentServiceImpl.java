@@ -1,7 +1,5 @@
 package com.institucion.sigea.auth.service.impl;
 
-import com.institucion.sigea.auth.dto.internal.GenerarSecretoResult;
-import com.institucion.sigea.auth.dto.request.Habilitar2FaRequest;
 import com.institucion.sigea.auth.dto.response.Habilitar2FaResponse;
 import com.institucion.sigea.auth.service.TotpService;
 import com.institucion.sigea.auth.service.TwoFaEnrollmentService;
@@ -14,7 +12,6 @@ import com.institucion.sigea.usuario.entity.Usuario;
 import com.institucion.sigea.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,13 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class TwoFaEnrollmentServiceImpl implements TwoFaEnrollmentService {
 
     private final UsuarioRepository usuarioRepository;
-    private final PasswordEncoder passwordEncoder;
     private final TotpService totpService;
 
     @Override
     @Transactional
     @Auditable(modulo = "auth", operacion = TipoOperacionAuditoria.UPDATE)
-    public Habilitar2FaResponse habilitar2fa(Habilitar2FaRequest request) {
+    public Habilitar2FaResponse habilitar2fa() {
         JwtPrincipal principal = (JwtPrincipal) SecurityContextHolder
                 .getContext().getAuthentication().getPrincipal();
 
@@ -38,18 +34,19 @@ public class TwoFaEnrollmentServiceImpl implements TwoFaEnrollmentService {
                         ErrorCode.INVALID_CREDENTIALS,
                         "Usuario no encontrado"));
 
-        if (!passwordEncoder.matches(request.password(), usuario.getPassword())) {
-            throw new BusinessException(
-                    ErrorCode.INVALID_CREDENTIALS,
-                    "Contraseña incorrecta");
+        if (!usuario.isTotpVerificado()) {
+            String qrUri = totpService.generarQrUri(
+                    usuario.getTotpSecret(), usuario.getNombreUsuario());
+            return new Habilitar2FaResponse(qrUri, false);
         }
 
-        GenerarSecretoResult secreto = totpService.generarSecreto(usuario.getNombreUsuario());
+        if (!usuario.isDosFactorHabilitado()) {
+            usuario.setDosFactorHabilitado(true);
+            usuarioRepository.save(usuario);
+            return new Habilitar2FaResponse(null, true);
+        }
 
-        usuario.setTotpSecret(secreto.secretRaw());
-        usuario.setDosFactorHabilitado(true);
-        usuarioRepository.save(usuario);
-
-        return new Habilitar2FaResponse(secreto.uri(), true);
+        throw new BusinessException(ErrorCode.TWOFA_ALREADY_VERIFIED,
+                "La autenticación de doble factor ya se encuentra activa.");
     }
 }

@@ -10,5 +10,17 @@ public record MatriculaResponse(
         Integer codAula,
         Integer codAnioAcademico,
         LocalDateTime fechaMatricula,
-        List<CuotaResponse> cuotas
-) {}
+        List<CuotaResponse> cuotas,
+        Boolean requiresQrSetup,
+        String qrUri
+) {
+
+    public static MatriculaResponse withQrSetup(MatriculaResponse original, String qrUri) {
+        return new MatriculaResponse(
+                original.id(), original.codigo(), original.codAlumno(), original.codAula(),
+                original.codAnioAcademico(), original.fechaMatricula(), original.cuotas(),
+                true, qrUri
+        );
+    }
+
+}

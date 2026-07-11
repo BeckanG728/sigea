@@ -7,4 +7,6 @@ public interface TotpService {
     void verificarCodigo(String secret, String codigo);
 
     GenerarSecretoResult generarSecreto(String username);
+
+    String generarQrUri(String secret, String username);
 }
