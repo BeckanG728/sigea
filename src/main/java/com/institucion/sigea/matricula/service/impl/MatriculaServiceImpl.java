@@ -72,7 +72,7 @@ public class MatriculaServiceImpl implements MatriculaService {
 
         matriculaValidator.validar(aula, request.codAlumno(), request.codAnioAcademico());
 
-        if (usuario.isTotpVerificado() && usuario.isDosFactorHabilitado()) {
+        if (usuario.isTotpVerificado() && usuario.isLogin2fa()) {
             String codigoOtp = request.codigoOTP();
             if (codigoOtp == null || codigoOtp.isBlank()) {
                 throw new BusinessException(ErrorCode.INVALID_OTP,

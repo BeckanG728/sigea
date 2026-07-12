@@ -78,7 +78,7 @@ class MatriculaIntegrationTest {
         usuario.setNombreUsuario("secretaria.test");
         usuario.setPassword(passwordEncoder.encode("Clave123!"));
         usuario.setRol(rol);
-        usuario.setDosFactorHabilitado(false);
+        usuario.setLogin2fa(false);
         usuario = usuarioRepository.save(usuario);
 
         tokenCon2fa = jwtUtil.generateToken(usuario.getId(), usuario.getNombreUsuario(), "SUPERUSUARIO", true);

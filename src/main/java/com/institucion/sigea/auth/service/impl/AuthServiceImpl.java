@@ -71,17 +71,17 @@ public class AuthServiceImpl implements AuthService {
 
         String rol = usuario.getRol().getNombreRol();
 
-        if (usuario.isDosFactorHabilitado()) {
+        if (usuario.isLogin2fa()) {
             Cache cache = cacheManager.getCache(CacheConfig.CACHE_SESION_2FA_PENDIENTE);
             if (cache != null) {
                 cache.put(usuario.getId(), true);
             }
-            return LoginResponse.requires2fa(usuario.getId(), rol);
+            return new LoginResponse(null, null, usuario.getId(), usuario.getNombreUsuario(), usuario.getRol().getId(), rol, true);
         }
 
         String token = jwtUtil.generateToken(usuario.getId(), usuario.getNombreUsuario(), rol, false);
         auditoriaService.registrarLogin(usuario.getId(), ip, null, userAgent);
-        return LoginResponse.withToken(token, jwtProperties.expiration(), usuario.getId(), rol);
+        return new LoginResponse(token, jwtProperties.expiration(), usuario.getId(), usuario.getNombreUsuario(), usuario.getRol().getId(), rol, false);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtUtil.generateToken(usuario.getId(), usuario.getNombreUsuario(), rol, true);
         auditoriaService.registrarLogin(usuario.getId(), ip, null, userAgent);
 
-        return LoginResponse.withToken(token, jwtProperties.expiration(), usuario.getId(), rol);
+        return new LoginResponse(token, jwtProperties.expiration(), usuario.getId(), usuario.getNombreUsuario(), usuario.getRol().getId(), rol, false);
     }
 
     private String getClientIp() {

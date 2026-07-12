@@ -45,7 +45,7 @@ public class Usuario extends AuditableEntity {
     private Rol rol;
 
     @Column(nullable = false)
-    private boolean dosFactorHabilitado;
+    private boolean login2fa;
 
     @Column(length = 255)
     @Convert(converter = AesConverter.class)

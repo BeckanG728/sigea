@@ -40,8 +40,8 @@ public class TwoFaEnrollmentServiceImpl implements TwoFaEnrollmentService {
             return new Habilitar2FaResponse(qrUri, false);
         }
 
-        if (!usuario.isDosFactorHabilitado()) {
-            usuario.setDosFactorHabilitado(true);
+        if (!usuario.isLogin2fa()) {
+            usuario.setLogin2fa(true);
             usuarioRepository.save(usuario);
             return new Habilitar2FaResponse(null, true);
         }

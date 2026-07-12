@@ -1,5 +1,6 @@
 package com.institucion.sigea.usuario.config;
 
+import com.institucion.sigea.auth.service.TotpService;
 import com.institucion.sigea.usuario.entity.Rol;
 import com.institucion.sigea.usuario.entity.Usuario;
 import com.institucion.sigea.usuario.repository.RolRepository;
@@ -26,6 +27,7 @@ public class SuperusuarioSeeder implements CommandLineRunner {
     private final RolRepository rolRepository;
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TotpService totpService;
 
     @Value("${superuser.username}")
     private String superuserUsername;
@@ -54,11 +56,13 @@ public class SuperusuarioSeeder implements CommandLineRunner {
             usuario.setNombreUsuario(superuserUsername);
             usuario.setPassword(passwordEncoder.encode(superuserPassword));
             usuario.setRol(rol);
-            usuario.setDosFactorHabilitado(false);
+            usuario.setLogin2fa(false);
             usuario.setNombre("Super");
             usuario.setPrimerApellido("Usuario");
             usuario.setNumeroDocumento("00000000");
             usuario.setCodigo("CU-000");
+            usuario.setTotpSecret(totpService.generarSecreto(superuserUsername).secretRaw());
+            usuario.setTotpVerificado(false);
             usuarioRepository.save(usuario);
             log.info("Superusuario '{}' creado correctamente", superuserUsername);
         } else {
