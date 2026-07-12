@@ -169,7 +169,7 @@ class EndToEndIntegrationTest {
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
-                                new MatriculaRequest(alumno.getId(), aula.getId(), anio.getId()))))
+                                new MatriculaRequest(alumno.getId(), aula.getId(), anio.getId(), null))))
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
 

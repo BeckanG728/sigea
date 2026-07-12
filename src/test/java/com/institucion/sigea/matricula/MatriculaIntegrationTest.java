@@ -129,7 +129,7 @@ class MatriculaIntegrationTest {
 
     @Test
     void matricula_exitosa() throws Exception {
-        MatriculaRequest request = new MatriculaRequest(alumno1.getId(), aula.getId(), anio.getId());
+        MatriculaRequest request = new MatriculaRequest(alumno1.getId(), aula.getId(), anio.getId(), null);
 
         mockMvc.perform(post("/matriculas")
                         .header("Authorization", "Bearer " + tokenCon2fa)
@@ -145,7 +145,7 @@ class MatriculaIntegrationTest {
 
     @Test
     void matricula_sin_2fa_rechazada() throws Exception {
-        MatriculaRequest request = new MatriculaRequest(alumno1.getId(), aula.getId(), anio.getId());
+        MatriculaRequest request = new MatriculaRequest(alumno1.getId(), aula.getId(), anio.getId(), null);
 
         mockMvc.perform(post("/matriculas")
                         .header("Authorization", "Bearer " + tokenSin2fa)
@@ -164,7 +164,7 @@ class MatriculaIntegrationTest {
                         .header("Authorization", "Bearer " + tokenCon2fa)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
-                                new MatriculaRequest(alumno1.getId(), aula.getId(), anio.getId()))))
+                                new MatriculaRequest(alumno1.getId(), aula.getId(), anio.getId(), null))))
                 .andExpect(status().isCreated());
 
         // alumno2 intenta matricularse en la misma aula, ya sin vacantes
@@ -172,7 +172,7 @@ class MatriculaIntegrationTest {
                         .header("Authorization", "Bearer " + tokenCon2fa)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
-                                new MatriculaRequest(alumno2.getId(), aula.getId(), anio.getId()))))
+                                new MatriculaRequest(alumno2.getId(), aula.getId(), anio.getId(), null))))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.error").value("AULA_SIN_VACANTES"));
 

@@ -3,6 +3,7 @@ package com.institucion.sigea.usuario.controller;
 import com.institucion.sigea.security.jwt.JwtPrincipal;
 import com.institucion.sigea.usuario.dto.response.FuncionalidadTreeResponse;
 import com.institucion.sigea.usuario.dto.response.MisPermisosResponse;
+import com.institucion.sigea.usuario.dto.response.MisPermisosWrapper;
 import com.institucion.sigea.usuario.entity.Rol;
 import com.institucion.sigea.usuario.repository.RolRepository;
 import com.institucion.sigea.usuario.service.FuncionalidadService;
@@ -31,9 +32,9 @@ public class FuncionalidadController {
     }
 
     @GetMapping("/mis-permisos")
-    public ResponseEntity<List<MisPermisosResponse>> misPermisos(Authentication authentication) {
+    public ResponseEntity<MisPermisosWrapper> misPermisos(Authentication authentication) {
         JwtPrincipal principal = (JwtPrincipal) authentication.getPrincipal();
         Long idRol = rolRepository.findByNombreRol(principal.rol()).map(Rol::getId).orElseThrow();
-        return ResponseEntity.ok(funcionalidadService.obtenerMisPermisos(idRol));
+        return ResponseEntity.ok(new MisPermisosWrapper(funcionalidadService.obtenerMisPermisos(idRol)));
     }
 }

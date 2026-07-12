@@ -13,11 +13,10 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 
 @Component
 @Profile("!test")
-@Order(2) // después de SuperusuarioSeeder
+@Order(2)
 @RequiredArgsConstructor
 public class FuncionalidadSeeder implements CommandLineRunner {
 
@@ -28,19 +27,40 @@ public class FuncionalidadSeeder implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-        if (funcionalidadRepository.count() > 0) return; // idempotente
+        if (funcionalidadRepository.count() > 0) return;
 
-        crearArbol("SEGURIDAD", null, List.of("USUARIO", "ROLES", "PERMISOS", "MI_CUENTA"));
-        crearArbol("ACADEMICO", null, List.of("AULA", "ALUMNO", "CONCEPTO", "MATRICULA"));
-        crearArbol("PAGOS", null, List.of("PAGO"));
-        crearArbol("AUDITORIA", null, List.of("AUDITORIA"));
-        crearArbol("REPORTES", null, List.of("REPORTE"));
+        Funcionalidad seguridad = crearFuncionalidad("Seguridad", null);
+        Funcionalidad academico = crearFuncionalidad("Académico", null);
+        Funcionalidad pagos = crearFuncionalidad("Pagos", null);
+        Funcionalidad auditoria = crearFuncionalidad("Auditoría", null);
+        Funcionalidad reportes = crearFuncionalidad("Reportes", null);
+
+        crearFuncionalidad("Usuarios", seguridad);
+        crearFuncionalidad("Roles", seguridad);
+        crearFuncionalidad("Permisos", seguridad);
+        crearFuncionalidad("Parámetros", seguridad);
+        crearFuncionalidad("Mi Cuenta", seguridad);
+
+        crearFuncionalidad("Aulas", academico);
+        crearFuncionalidad("Alumnos", academico);
+        crearFuncionalidad("Conceptos", academico);
+        crearFuncionalidad("Registrar Matrícula", academico);
+
+        crearFuncionalidad("Registrar Pago", pagos);
+        crearFuncionalidad("Historial de Deudas", pagos);
+
+        crearFuncionalidad("Registro de Auditoría", auditoria);
+
+        crearFuncionalidad("Reporte de Matrícula", reportes);
+        crearFuncionalidad("Reporte de Vacantes", reportes);
+        crearFuncionalidad("Reporte de Deudas", reportes);
+        crearFuncionalidad("Reporte de Caja", reportes);
 
         Rol superusuario = rolRepository.findByNombreRol("SUPERUSUARIO").orElseThrow();
         funcionalidadRepository.findAll().forEach(f ->
                 rolFuncionalidadRepository.save(new RolFuncionalidad(superusuario, f, true, true, true, true, true)));
 
-        Funcionalidad miCuenta = funcionalidadRepository.findByNombre("MI_CUENTA").orElseThrow();
+        Funcionalidad miCuenta = funcionalidadRepository.findByNombre("Mi Cuenta").orElseThrow();
         rolRepository.findAll().forEach(rol -> {
             boolean yaTiene = rolFuncionalidadRepository.existsByRolIdAndFuncionalidadId(rol.getId(), miCuenta.getId());
             if (!yaTiene) {
@@ -49,21 +69,13 @@ public class FuncionalidadSeeder implements CommandLineRunner {
         });
     }
 
-    private void crearArbol(String nombrePadre, Funcionalidad padre, List<String> hijos) {
-        Funcionalidad p = funcionalidadRepository.findByNombre(nombrePadre)
+    private Funcionalidad crearFuncionalidad(String nombre, Funcionalidad padre) {
+        return funcionalidadRepository.findByNombre(nombre)
                 .orElseGet(() -> {
-                    Funcionalidad nueva = new Funcionalidad();
-                    nueva.setNombre(nombrePadre);
-                    nueva.setPadre(padre);
-                    return funcionalidadRepository.save(nueva);
+                    Funcionalidad f = new Funcionalidad();
+                    f.setNombre(nombre);
+                    f.setPadre(padre);
+                    return funcionalidadRepository.save(f);
                 });
-        hijos.forEach(nombreHijo -> {
-            if (funcionalidadRepository.findByNombre(nombreHijo).isEmpty()) {
-                Funcionalidad f = new Funcionalidad();
-                f.setNombre(nombreHijo);
-                f.setPadre(p);
-                funcionalidadRepository.save(f);
-            }
-        });
     }
 }
