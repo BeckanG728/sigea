@@ -5,7 +5,7 @@ import java.util.List;
 public record FuncionalidadTreeResponse(
         Long idFuncionalidad,
         String nombre,
-        String icono,
+        String codigo,
         List<FuncionalidadTreeResponse> hijos
 ) {
 }

@@ -75,7 +75,7 @@ public class FuncionalidadServiceImpl implements FuncionalidadService {
                 ? new MisPermisosResponse.PermisosFlags(permiso.ver(), permiso.crear(), permiso.editar(), permiso.eliminar(), permiso.imprimir())
                 : new MisPermisosResponse.PermisosFlags(false, false, false, false, false);
 
-        return new MisPermisosResponse(f.getId(), f.getNombre(), flags, hijos);
+        return new MisPermisosResponse(f.getId(), f.getCodigo(), f.getNombre(), flags, hijos);
     }
 
     private FuncionalidadTreeResponse toTree(Funcionalidad f,
@@ -89,7 +89,7 @@ public class FuncionalidadServiceImpl implements FuncionalidadService {
         return new FuncionalidadTreeResponse(
                 f.getId(),
                 f.getNombre(),
-                f.getIcono(),
+                f.getCodigo(),
                 children
         );
     }
