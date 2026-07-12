@@ -4,6 +4,7 @@ import java.util.List;
 
 public record MisPermisosResponse(
         Long idFuncionalidad,
+        String codigo,
         String nombre,
         PermisosFlags permisos,
         List<MisPermisosResponse> hijos

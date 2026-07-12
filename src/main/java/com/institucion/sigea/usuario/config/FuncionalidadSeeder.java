@@ -29,32 +29,32 @@ public class FuncionalidadSeeder implements CommandLineRunner {
     public void run(String... args) {
         if (funcionalidadRepository.count() > 0) return;
 
-        Funcionalidad seguridad = crearFuncionalidad("Seguridad", null);
-        Funcionalidad academico = crearFuncionalidad("Académico", null);
-        Funcionalidad pagos = crearFuncionalidad("Pagos", null);
-        Funcionalidad auditoria = crearFuncionalidad("Auditoría", null);
-        Funcionalidad reportes = crearFuncionalidad("Reportes", null);
+        Funcionalidad seguridad = crearFuncionalidad("SEGURIDAD", "Seguridad", null);
+        Funcionalidad academico = crearFuncionalidad("ACADEMICO", "Académico", null);
+        Funcionalidad pagos = crearFuncionalidad("PAGOS", "Pagos", null);
+        Funcionalidad auditoria = crearFuncionalidad("AUDITORIA", "Auditoría", null);
+        Funcionalidad reportes = crearFuncionalidad("REPORTES", "Reportes", null);
 
-        crearFuncionalidad("Usuarios", seguridad);
-        crearFuncionalidad("Roles", seguridad);
-        crearFuncionalidad("Permisos", seguridad);
-        crearFuncionalidad("Parámetros", seguridad);
-        crearFuncionalidad("Mi Cuenta", seguridad);
+        crearFuncionalidad("USUARIOS", "Usuarios", seguridad);
+        crearFuncionalidad("ROLES", "Roles", seguridad);
+        crearFuncionalidad("PERMISOS", "Permisos", seguridad);
+        crearFuncionalidad("PARAMETROS", "Parámetros", seguridad);
+        crearFuncionalidad("MI_CUENTA", "Mi Cuenta", seguridad);
 
-        crearFuncionalidad("Aulas", academico);
-        crearFuncionalidad("Alumnos", academico);
-        crearFuncionalidad("Conceptos", academico);
-        crearFuncionalidad("Registrar Matrícula", academico);
+        crearFuncionalidad("AULAS", "Aulas", academico);
+        crearFuncionalidad("ALUMNOS", "Alumnos", academico);
+        crearFuncionalidad("CONCEPTOS", "Conceptos", academico);
+        crearFuncionalidad("MATRICULA_REGISTRAR", "Registrar Matrícula", academico);
 
-        crearFuncionalidad("Registrar Pago", pagos);
-        crearFuncionalidad("Historial de Deudas", pagos);
+        crearFuncionalidad("PAGO_REGISTRAR", "Registrar Pago", pagos);
+        crearFuncionalidad("DEUDA_HISTORIAL", "Historial de Deudas", pagos);
 
-        crearFuncionalidad("Registro de Auditoría", auditoria);
+        crearFuncionalidad("AUDITORIA_REGISTRO", "Registro de Auditoría", auditoria);
 
-        crearFuncionalidad("Reporte de Matrícula", reportes);
-        crearFuncionalidad("Reporte de Vacantes", reportes);
-        crearFuncionalidad("Reporte de Deudas", reportes);
-        crearFuncionalidad("Reporte de Caja", reportes);
+        crearFuncionalidad("REPORTE_MATRICULA", "Reporte de Matrícula", reportes);
+        crearFuncionalidad("REPORTE_VACANTES", "Reporte de Vacantes", reportes);
+        crearFuncionalidad("REPORTE_DEUDAS", "Reporte de Deudas", reportes);
+        crearFuncionalidad("REPORTE_CAJA", "Reporte de Caja", reportes);
 
         Rol superusuario = rolRepository.findByNombreRol("SUPERUSUARIO").orElseThrow();
         funcionalidadRepository.findAll().forEach(f ->
@@ -69,10 +69,11 @@ public class FuncionalidadSeeder implements CommandLineRunner {
         });
     }
 
-    private Funcionalidad crearFuncionalidad(String nombre, Funcionalidad padre) {
-        return funcionalidadRepository.findByNombre(nombre)
+    private Funcionalidad crearFuncionalidad(String codigo, String nombre, Funcionalidad padre) {
+        return funcionalidadRepository.findByCodigo(codigo)
                 .orElseGet(() -> {
                     Funcionalidad f = new Funcionalidad();
+                    f.setCodigo(codigo);
                     f.setNombre(nombre);
                     f.setPadre(padre);
                     return funcionalidadRepository.save(f);

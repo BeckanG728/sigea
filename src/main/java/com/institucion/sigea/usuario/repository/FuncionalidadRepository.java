@@ -8,5 +8,6 @@ import java.util.Optional;
 
 public interface FuncionalidadRepository extends JpaRepository<Funcionalidad, Long> {
     Optional<Funcionalidad> findByNombre(String nombre);
+    Optional<Funcionalidad> findByCodigo(String codigo);
     List<Funcionalidad> findByPadreIsNull();
 }

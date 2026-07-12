@@ -34,8 +34,8 @@ public class Funcionalidad extends AuditableEntity {
     @Column(nullable = false, unique = true, length = 80)
     private String nombre;
 
-    @Column(length = 60)
-    private String icono;
+    @Column(nullable = false, unique = true, length = 50)
+    private String codigo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "padre_id")
