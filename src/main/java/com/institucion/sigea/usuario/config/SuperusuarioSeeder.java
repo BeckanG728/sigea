@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Component
 @Profile("!test")
+@Order(1)
 @RequiredArgsConstructor
 public class SuperusuarioSeeder implements CommandLineRunner {
 
@@ -34,11 +36,6 @@ public class SuperusuarioSeeder implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-        if (superuserUsername.isBlank() || superuserPassword.isBlank()) {
-            log.warn("SUPERUSER_USERNAME/SUPERUSER_PASSWORD no configurados — se omite seeder");
-            return;
-        }
-
         Rol rol = rolRepository.findByNombreRol(NOMBRE_ROL_SUPERUSUARIO)
                 .orElseGet(() -> {
                     Rol nuevoRol = new Rol(NOMBRE_ROL_SUPERUSUARIO);
@@ -46,6 +43,11 @@ public class SuperusuarioSeeder implements CommandLineRunner {
                     log.info("Rol '{}' creado", NOMBRE_ROL_SUPERUSUARIO);
                     return nuevoRol;
                 });
+
+        if (superuserUsername.isBlank() || superuserPassword.isBlank()) {
+            log.warn("SUPERUSER_USERNAME/SUPERUSER_PASSWORD no configurados — se omite creacion de usuario");
+            return;
+        }
 
         if (!usuarioRepository.existsByNombreUsuario(superuserUsername)) {
             Usuario usuario = new Usuario();
