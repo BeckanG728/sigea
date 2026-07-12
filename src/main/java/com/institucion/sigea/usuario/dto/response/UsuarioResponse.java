@@ -12,7 +12,7 @@ public record UsuarioResponse(
         Long idRol,
         String nombreRol,
         boolean estado,
-        boolean dosFactorHabilitado,
+        boolean login2fa,
         boolean totpVerificado,
         Instant fechaRegistro
 ) {}

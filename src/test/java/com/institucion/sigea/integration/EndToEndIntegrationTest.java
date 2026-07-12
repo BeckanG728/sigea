@@ -89,7 +89,7 @@ class EndToEndIntegrationTest {
         usuario.setNombreUsuario("secretaria.e2e");
         usuario.setPassword(passwordEncoder.encode(PASSWORD));
         usuario.setRol(rol);
-        usuario.setDosFactorHabilitado(true);
+        usuario.setLogin2fa(true);
         usuario.setTotpSecret(secretoTotp); // AesConverter cifra al guardar
         usuario = usuarioRepository.save(usuario);
     }

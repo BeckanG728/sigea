@@ -68,7 +68,7 @@ class PagoIntegrationTest {
         usuario.setNombreUsuario("secretaria.pagos");
         usuario.setPassword(passwordEncoder.encode("Clave123!"));
         usuario.setRol(rol);
-        usuario.setDosFactorHabilitado(false);
+        usuario.setLogin2fa(false);
         usuario = usuarioRepository.save(usuario);
 
         token = jwtUtil.generateToken(usuario.getId(), usuario.getNombreUsuario(), "SUPERUSUARIO", true);

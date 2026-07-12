@@ -76,7 +76,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setNumeroDocumento(request.numeroDocumento());
         usuario.setPassword(passwordEncoder.encode(request.password()));
         usuario.setRol(rol);
-        usuario.setDosFactorHabilitado(false);
+        usuario.setLogin2fa(false);
         usuario.setTotpVerificado(false);
         GenerarSecretoResult secreto = totpService.generarSecreto(request.usuario());
         usuario.setTotpSecret(secreto.secretRaw());
