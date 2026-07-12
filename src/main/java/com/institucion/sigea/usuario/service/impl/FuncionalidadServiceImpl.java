@@ -58,7 +58,7 @@ public class FuncionalidadServiceImpl implements FuncionalidadService {
     private MisPermisosResponse toMisPermisos(Funcionalidad f, Map<Long, List<Funcionalidad>> hijosPorPadre,
                                               List<PermisoInfo> permisos) {
         PermisoInfo permiso = permisos.stream()
-                .filter(p -> p.nombreFuncionalidad().equalsIgnoreCase(f.getNombre()))
+                .filter(p -> p.idFuncionalidad().equals(f.getId()))
                 .findFirst().orElse(null);
 
         List<MisPermisosResponse> hijos = hijosPorPadre.getOrDefault(f.getId(), List.of()).stream()
