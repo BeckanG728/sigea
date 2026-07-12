@@ -1,5 +1,5 @@
 services:
-  postgres-sigea-main:
+  sigea-db:
     image: postgres:15
     container_name: postgres-main
     environment:
@@ -10,20 +10,8 @@ services:
       - "5432:5432"
     volumes:
       - postgres_main_data:/var/lib/postgresql/data
-
-  postgres-sigea-replica:
-    image: postgres:15
-    container_name: postgres-replica
-    depends_on:
-      - postgres-sigea-main
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - "5433:5432"
-    volumes:
-      - postgres_replica_data:/var/lib/postgresql/data
+    networks:
+      - sigea-network
 
   sigea:
     build: .
@@ -32,9 +20,9 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - postgres-sigea-main
+      - sigea-db
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-sigea-main:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://sigea-db:5432/${POSTGRES_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       AES_SECRET_KEY: ${AES_SECRET_KEY}
@@ -43,7 +31,12 @@ services:
       TOTP_ISSUER: ${TOTP_ISSUER}
       SUPERUSER_USERNAME: ${SUPERUSER_USERNAME}
       SUPERUSER_PASSWORD: ${SUPERUSER_PASSWORD}
+    networks:
+      - sigea-network
+
+networks:
+  sigea-network:
+    driver: bridge
 
 volumes:
   postgres_main_data:
-  postgres_replica_data:

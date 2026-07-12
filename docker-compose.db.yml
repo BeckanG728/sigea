@@ -1,5 +1,5 @@
 services:
-  postgres-main:
+  sigea-db:
     image: postgres:15
     container_name: postgres-main
     environment:
@@ -10,21 +10,12 @@ services:
       - "5432:5432"
     volumes:
       - postgres_main_data:/var/lib/postgresql/data
+    networks:
+      - sigea-network
 
-  postgres-replica:
-    image: postgres:15
-    container_name: postgres-replica
-    depends_on:
-      - postgres-main
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - "5433:5432"
-    volumes:
-      - postgres_replica_data:/var/lib/postgresql/data
+networks:
+  sigea-network:
+    driver: bridge
 
 volumes:
   postgres_main_data:
-  postgres_replica_data:
