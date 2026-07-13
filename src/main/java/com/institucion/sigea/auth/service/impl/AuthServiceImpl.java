@@ -1,11 +1,11 @@
 package com.institucion.sigea.auth.service.impl;
 
+import com.institucion.sigea.auditoria.AuditoriaService;
 import com.institucion.sigea.auth.dto.request.LoginRequest;
 import com.institucion.sigea.auth.dto.request.Verify2faRequest;
 import com.institucion.sigea.auth.dto.response.LoginResponse;
 import com.institucion.sigea.auth.service.AuthService;
 import com.institucion.sigea.auth.service.TotpService;
-import com.institucion.sigea.auditoria.AuditoriaService;
 import com.institucion.sigea.config.CacheConfig;
 import com.institucion.sigea.config.properties.JwtProperties;
 import com.institucion.sigea.core.exception.BusinessException;
@@ -54,6 +54,14 @@ public class AuthServiceImpl implements AuthService {
                             ErrorCode.INVALID_CREDENTIALS,
                             "Usuario o contraseña incorrectos");
                 });
+
+        boolean valido = usuarioRepository.existsByIdAndEstadoTrue(usuario.getId());
+        if (!valido) {
+            throw new BusinessException(
+                    ErrorCode.PERMISO_DENEGADO,
+                    "Usuario deshabilitado"
+            );
+        }
 
         int intentos = auditoriaService.contarIntentosFallidos(usuario.getId(), VENTANA_MINUTOS);
         if (intentos >= MAX_INTENTOS_FALLIDOS) {
@@ -128,7 +136,7 @@ public class AuthServiceImpl implements AuthService {
         try {
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
                     .currentRequestAttributes()).getRequest();
-            return request.getRemoteAddr();
+            return request.getRemoteHost();
         } catch (Exception e) {
             return null;
         }
