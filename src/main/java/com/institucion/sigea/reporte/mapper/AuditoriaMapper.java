@@ -11,6 +11,8 @@ import java.util.List;
 public interface AuditoriaMapper {
 
     @Mapping(target = "codUsuario", source = "usuario.id")
+    @Mapping(target = "nombreUsuario", source = "usuario.nombre")
+    @Mapping(target = "tablaAfectada", source = "tablaAfectada")
     AuditoriaReporteResponse toResponse(AuditoriaEntity auditoria);
 
     List<AuditoriaReporteResponse> toResponseList(List<AuditoriaEntity> auditorias);
