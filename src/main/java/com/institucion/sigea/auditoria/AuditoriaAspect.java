@@ -33,7 +33,7 @@ public class AuditoriaAspect {
     private final UsuarioRepository usuarioRepository;
     private final ObjectMapper objectMapper;
     private static final Set<String> CAMPOS_CIFRADOS = Set.of(
-            "numeroDocumento", "fechaNacimiento", "totpSecret", "nombreUsuario"
+            "numeroDocumento", "fechaNacimiento", "totpSecret", "email"
     );
     private static final String MASCARA = "***CIFRADO***";
 

@@ -44,6 +44,7 @@ public class FuncionalidadSeeder implements CommandLineRunner {
         crearFuncionalidad("ALUMNOS", "Alumnos", academico);
         crearFuncionalidad("CONCEPTOS", "Conceptos", academico);
         crearFuncionalidad("MATRICULA_REGISTRAR", "Registrar Matrícula", academico);
+        crearFuncionalidad("DASHBOARD", "Dashboard", academico);
 
         crearFuncionalidad("PAGO_REGISTRAR", "Registrar Pago", pagos);
         crearFuncionalidad("DEUDA_HISTORIAL", "Historial de Deudas", pagos);

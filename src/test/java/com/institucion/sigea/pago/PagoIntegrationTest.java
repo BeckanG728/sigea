@@ -65,13 +65,13 @@ class PagoIntegrationTest {
                 .orElseGet(() -> rolRepository.save(new Rol("SUPERUSUARIO")));
 
         Usuario usuario = new Usuario();
-        usuario.setNombreUsuario("secretaria.pagos");
+        usuario.setEmail("secretaria.pagos");
         usuario.setPassword(passwordEncoder.encode("Clave123!"));
         usuario.setRol(rol);
         usuario.setLogin2fa(false);
         usuario = usuarioRepository.save(usuario);
 
-        token = jwtUtil.generateToken(usuario.getId(), usuario.getNombreUsuario(), "SUPERUSUARIO", true);
+        token = jwtUtil.generateToken(usuario.getId(), usuario.getEmail(), "SUPERUSUARIO", true);
 
         matricula = new Matricula();
         matricula.setCodAlumno(1);

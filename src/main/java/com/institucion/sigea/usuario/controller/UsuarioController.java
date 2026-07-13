@@ -1,6 +1,7 @@
 package com.institucion.sigea.usuario.controller;
 
 import com.institucion.sigea.core.api.PageResponse;
+import com.institucion.sigea.core.api.SimpleResponse;
 import com.institucion.sigea.usuario.dto.request.ActualizarUsuarioRequest;
 import com.institucion.sigea.usuario.dto.request.CrearUsuarioRequest;
 import com.institucion.sigea.usuario.dto.response.UsuarioResponse;
@@ -21,23 +22,22 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
 
     @PostMapping
-    public ResponseEntity<UsuarioResponse> crear(@Valid @RequestBody CrearUsuarioRequest request) {
-        UsuarioResponse response = usuarioService.crear(request);
+    public ResponseEntity<SimpleResponse> crear(@Valid @RequestBody CrearUsuarioRequest request) {
+        SimpleResponse response = usuarioService.crear(request);
         return ResponseEntity.created(
-                URI.create("/api/usuarios/" + response.idUsuario())).body(response);
+                URI.create("/api/usuarios/" + response.id())).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioResponse> actualizar(
+    public ResponseEntity<SimpleResponse> actualizar(
             @PathVariable Long id,
             @Valid @RequestBody ActualizarUsuarioRequest request) {
         return ResponseEntity.ok(usuarioService.actualizar(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        usuarioService.eliminar(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<SimpleResponse> eliminar(@PathVariable Long id) {
+        return ResponseEntity.ok(usuarioService.eliminar(id));
     }
 
     @GetMapping("/{id}")
