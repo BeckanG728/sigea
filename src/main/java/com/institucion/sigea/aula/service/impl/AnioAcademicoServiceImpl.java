@@ -52,4 +52,11 @@ public class AnioAcademicoServiceImpl implements AnioAcademicoService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.INTERNAL_ERROR, "Año no encontrado"));
         target.setEstado(true);
     }
+    @Override
+    @Transactional(readOnly = true)
+    public AnioAcademico obtenerActivo() {
+        return anioAcademicoRepository.findByEstadoTrue()
+                .orElseThrow(() -> new BusinessException(ErrorCode.INTERNAL_ERROR,
+                        "No hay un año académico activo"));
+    }
 }

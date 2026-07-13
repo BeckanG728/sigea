@@ -7,4 +7,5 @@ public interface AnioAcademicoService {
     List<AnioAcademico> listar();
     AnioAcademico crear(Integer anio);
     void activar(Long id);
+    AnioAcademico obtenerActivo();
 }

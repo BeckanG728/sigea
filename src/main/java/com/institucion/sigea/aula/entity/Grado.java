@@ -24,4 +24,9 @@ public class Grado extends AuditableEntity {
 
     @Column(nullable = false, length = 20)
     private String nombreGrado; // ej. "1°"
+
+    @Transient
+    public Long getCodNivel() {
+        return nivel != null ? nivel.getId() : null;
+    }
 }
