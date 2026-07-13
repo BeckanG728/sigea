@@ -26,4 +26,12 @@ public interface AulaRepository extends JpaRepository<Aula, Long> {
           AND (:nivelId IS NULL OR a.nivel.id = :nivelId)
         """)
     List<Aula> buscar(@Param("anioAcademicoId") Long anioAcademicoId, @Param("nivelId") Long nivelId);
+
+    @Query("""
+    SELECT a FROM Aula a
+    WHERE (:anioAcademicoId IS NULL OR a.anioAcademico.id = :anioAcademicoId)
+      AND (:nivelId IS NULL OR a.nivel.id = :nivelId)
+    ORDER BY a.anioAcademico.anio, a.nivel.nombre, a.grado.nombreGrado, a.seccion
+    """)
+    List<Aula> buscarTodos(@Param("anioAcademicoId") Long anioAcademicoId, @Param("nivelId") Long nivelId);
 }
