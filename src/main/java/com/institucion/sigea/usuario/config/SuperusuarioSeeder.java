@@ -30,7 +30,7 @@ public class SuperusuarioSeeder implements CommandLineRunner {
     private final TotpService totpService;
 
     @Value("${superuser.username}")
-    private String superuserUsername;
+    private String superuserEmail;
 
     @Value("${superuser.password}")
     private String superuserPassword;
@@ -46,27 +46,26 @@ public class SuperusuarioSeeder implements CommandLineRunner {
                     return nuevoRol;
                 });
 
-        if (superuserUsername.isBlank() || superuserPassword.isBlank()) {
+        if (superuserEmail.isBlank() || superuserPassword.isBlank()) {
             log.warn("SUPERUSER_USERNAME/SUPERUSER_PASSWORD no configurados — se omite creacion de usuario");
             return;
         }
 
-        if (!usuarioRepository.existsByNombreUsuario(superuserUsername)) {
+        if (!usuarioRepository.existsByEmail(superuserEmail)) {
             Usuario usuario = new Usuario();
-            usuario.setNombreUsuario(superuserUsername);
+            usuario.setEmail(superuserEmail);
             usuario.setPassword(passwordEncoder.encode(superuserPassword));
             usuario.setRol(rol);
             usuario.setLogin2fa(false);
-            usuario.setNombre("Super");
-            usuario.setPrimerApellido("Usuario");
+            usuario.setNombre("Admin");
+            usuario.setPrimerApellido("Superusuario");
             usuario.setNumeroDocumento("00000000");
-            usuario.setCodigo("CU-000");
-            usuario.setTotpSecret(totpService.generarSecreto(superuserUsername).secretRaw());
+            usuario.setTotpSecret(totpService.generarSecreto(superuserEmail).secretRaw());
             usuario.setTotpVerificado(false);
             usuarioRepository.save(usuario);
-            log.info("Superusuario '{}' creado correctamente", superuserUsername);
+            log.info("Superusuario '{}' creado correctamente", superuserEmail);
         } else {
-            log.debug("Superusuario '{}' ya existe — se omite creacion", superuserUsername);
+            log.debug("Superusuario '{}' ya existe — se omite creacion", superuserEmail);
         }
     }
 }

@@ -4,7 +4,7 @@ public record LoginResponse(
         String token,
         Long expiresIn,
         Long idUsuario,
-        String nombreUsuario,
+        String nombreCompleto,
         Long idRol,
         String nombreRol,
         Boolean login2fa

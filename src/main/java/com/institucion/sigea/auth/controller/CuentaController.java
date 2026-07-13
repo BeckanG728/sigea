@@ -52,7 +52,7 @@ public class CuentaController {
                 .orElseThrow(() -> new BusinessException(
                         ErrorCode.INVALID_CREDENTIALS, "Usuario no encontrado"));
         String qrUri = totpService.generarQrUri(
-                usuario.getTotpSecret(), usuario.getNombreUsuario());
+                usuario.getTotpSecret(), usuario.getEmail());
         return ResponseEntity.ok(Map.of("qrUri", qrUri));
     }
 

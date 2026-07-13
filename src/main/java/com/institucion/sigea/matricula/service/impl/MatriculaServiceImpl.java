@@ -115,7 +115,7 @@ public class MatriculaServiceImpl implements MatriculaService {
 
         if (!usuario.isTotpVerificado()) {
             String qrUri = totpService.generarQrUri(
-                    usuario.getTotpSecret(), usuario.getNombreUsuario());
+                    usuario.getTotpSecret(), usuario.getEmail());
             return MatriculaResponse.withQrSetup(response, qrUri);
         }
 

@@ -29,6 +29,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
+    private static final String ROL_SUPERUSUARIO = "SUPERUSUARIO";
     private static final int MAX_INTENTOS_FALLIDOS = 5;
     private static final int VENTANA_MINUTOS = 10;
 
@@ -46,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
         String ip = getClientIp();
         String userAgent = getUserAgent();
 
-        Usuario usuario = usuarioRepository.findByNombreUsuario(request.usuario())
+        Usuario usuario = usuarioRepository.findByEmail(request.email())
                 .orElseThrow(() -> {
                     auditoriaService.registrarIntentoFallido(null, ip, null, userAgent);
                     return new BusinessException(
@@ -70,18 +71,21 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String rol = usuario.getRol().getNombre();
+        String nombreCompleto = ROL_SUPERUSUARIO.equals(rol)
+                ? usuario.getNombre()
+                : usuario.getNombre() + " " + usuario.getPrimerApellido();
 
         if (usuario.isLogin2fa()) {
             Cache cache = cacheManager.getCache(CacheConfig.CACHE_SESION_2FA_PENDIENTE);
             if (cache != null) {
                 cache.put(usuario.getId(), true);
             }
-            return new LoginResponse(null, null, usuario.getId(), usuario.getNombreUsuario(), usuario.getRol().getId(), rol, true);
+            return new LoginResponse(null, null, usuario.getId(), nombreCompleto, usuario.getRol().getId(), rol, true);
         }
 
-        String token = jwtUtil.generateToken(usuario.getId(), usuario.getNombreUsuario(), rol, false);
+        String token = jwtUtil.generateToken(usuario.getId(), usuario.getEmail(), rol, false);
         auditoriaService.registrarLogin(usuario.getId(), ip, null, userAgent);
-        return new LoginResponse(token, jwtProperties.expiration(), usuario.getId(), usuario.getNombreUsuario(), usuario.getRol().getId(), rol, false);
+        return new LoginResponse(token, jwtProperties.expiration(), usuario.getId(), nombreCompleto, usuario.getRol().getId(), rol, false);
     }
 
     @Override
@@ -111,10 +115,13 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String rol = usuario.getRol().getNombre();
-        String token = jwtUtil.generateToken(usuario.getId(), usuario.getNombreUsuario(), rol, true);
+        String nombreCompleto = ROL_SUPERUSUARIO.equals(rol)
+                ? usuario.getNombre()
+                : usuario.getNombre() + " " + usuario.getPrimerApellido();
+        String token = jwtUtil.generateToken(usuario.getId(), usuario.getEmail(), rol, true);
         auditoriaService.registrarLogin(usuario.getId(), ip, null, userAgent);
 
-        return new LoginResponse(token, jwtProperties.expiration(), usuario.getId(), usuario.getNombreUsuario(), usuario.getRol().getId(), rol, false);
+        return new LoginResponse(token, jwtProperties.expiration(), usuario.getId(), nombreCompleto, usuario.getRol().getId(), rol, false);
     }
 
     private String getClientIp() {

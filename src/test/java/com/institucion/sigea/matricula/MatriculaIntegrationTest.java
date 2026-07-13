@@ -75,14 +75,14 @@ class MatriculaIntegrationTest {
                 .orElseGet(() -> rolRepository.save(new Rol("SUPERUSUARIO")));
 
         Usuario usuario = new Usuario();
-        usuario.setNombreUsuario("secretaria.test");
+        usuario.setEmail("secretaria.test");
         usuario.setPassword(passwordEncoder.encode("Clave123!"));
         usuario.setRol(rol);
         usuario.setLogin2fa(false);
         usuario = usuarioRepository.save(usuario);
 
-        tokenCon2fa = jwtUtil.generateToken(usuario.getId(), usuario.getNombreUsuario(), "SUPERUSUARIO", true);
-        tokenSin2fa = jwtUtil.generateToken(usuario.getId(), usuario.getNombreUsuario(), "SUPERUSUARIO", false);
+        tokenCon2fa = jwtUtil.generateToken(usuario.getId(), usuario.getEmail(), "SUPERUSUARIO", true);
+        tokenSin2fa = jwtUtil.generateToken(usuario.getId(), usuario.getEmail(), "SUPERUSUARIO", false);
 
         anio = anioAcademicoRepository.save(nuevoAnio(2026));
         Nivel nivel = nivelRepository.save(nuevoNivel("Primaria"));
