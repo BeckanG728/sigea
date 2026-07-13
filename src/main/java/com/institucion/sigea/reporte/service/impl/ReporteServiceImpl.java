@@ -51,6 +51,9 @@ public class ReporteServiceImpl implements ReporteService {
     @Transactional(readOnly = true)
     public List<AuditoriaReporteResponse> reportarAuditoria(
             Long codUsuario, String modulo, Instant desde, Instant hasta) {
-        return auditoriaMapper.toResponseList(auditoriaService.buscar(codUsuario, modulo, desde, hasta));
+        return auditoriaService.buscar(codUsuario, modulo, desde, hasta)
+                .stream()
+                .map(auditoriaMapper::toResponse)
+                .toList();
     }
 }
