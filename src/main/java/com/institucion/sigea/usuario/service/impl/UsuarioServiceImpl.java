@@ -129,7 +129,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                         "Usuario no encontrado: " + id,
                         Map.of("id", id)));
 
-        if (ROL_SUPERUSUARIO.equals(usuario.getRol().getNombreRol())) {
+        if (ROL_SUPERUSUARIO.equals(usuario.getRol().getNombre())) {
             throw new BusinessException(
                     ErrorCode.USUARIO_NO_ELIMINABLE,
                     "No se puede eliminar al usuario Superusuario");

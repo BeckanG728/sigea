@@ -31,10 +31,10 @@ public class FuncionalidadController {
         return ResponseEntity.ok(funcionalidadService.obtenerArbol());
     }
 
-    @GetMapping("/mis-permisos")
+    @GetMapping
     public ResponseEntity<MisPermisosWrapper> misPermisos(Authentication authentication) {
         JwtPrincipal principal = (JwtPrincipal) authentication.getPrincipal();
-        Long idRol = rolRepository.findByNombreRol(principal.rol()).map(Rol::getId).orElseThrow();
+        Long idRol = rolRepository.findByNombre(principal.rol()).map(Rol::getId).orElseThrow();
         return ResponseEntity.ok(new MisPermisosWrapper(funcionalidadService.obtenerMisPermisos(idRol)));
     }
 }

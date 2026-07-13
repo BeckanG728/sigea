@@ -80,7 +80,7 @@ class EndToEndIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        Rol rol = rolRepository.findByNombreRol("SUPERUSUARIO")
+        Rol rol = rolRepository.findByNombre("SUPERUSUARIO")
                 .orElseGet(() -> rolRepository.save(new Rol("SUPERUSUARIO")));
 
         secretoTotp = secretGenerator.generate();

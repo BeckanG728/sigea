@@ -6,10 +6,12 @@ import com.institucion.sigea.usuario.service.RolService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/roles")
@@ -35,6 +37,8 @@ public class RolController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasPermission(null, 'ROLES', 'ELIMINAR')")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable Long id) { rolService.eliminar(id); }
+    public ResponseEntity<Map<String, String>> eliminar(@PathVariable Long id) {
+        rolService.eliminar(id);
+        return ResponseEntity.ok(Map.of("message", "Rol eliminado exitosamente"));
+    }
 }

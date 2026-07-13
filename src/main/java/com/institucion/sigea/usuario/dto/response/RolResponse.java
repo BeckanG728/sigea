@@ -1,4 +1,4 @@
 package com.institucion.sigea.usuario.dto.response;
 
-public record RolResponse(Long id, String nombreRol, boolean estado) {
+public record RolResponse(Long idRol, String nombre, boolean estado) {
 }
