@@ -41,7 +41,7 @@ public class PermisoEvaluator implements PermissionEvaluator {
             return true;
         }
 
-        Long idRol = rolRepository.findByNombreRol(principal.rol())
+        Long idRol = rolRepository.findByNombre(principal.rol())
                 .map(Rol::getId)
                 .orElseThrow(() -> new BusinessException(
                         ErrorCode.PERMISO_DENEGADO, "Rol no encontrado: " + principal.rol()));

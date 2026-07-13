@@ -71,7 +71,7 @@ class MatriculaIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        Rol rol = rolRepository.findByNombreRol("SUPERUSUARIO")
+        Rol rol = rolRepository.findByNombre("SUPERUSUARIO")
                 .orElseGet(() -> rolRepository.save(new Rol("SUPERUSUARIO")));
 
         Usuario usuario = new Usuario();

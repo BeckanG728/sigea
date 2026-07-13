@@ -37,7 +37,6 @@ public class FuncionalidadSeeder implements CommandLineRunner {
 
         crearFuncionalidad("USUARIOS", "Usuarios", seguridad);
         crearFuncionalidad("ROLES", "Roles", seguridad);
-        crearFuncionalidad("PERMISOS", "Permisos", seguridad);
         crearFuncionalidad("PARAMETROS", "Parámetros", seguridad);
         crearFuncionalidad("MI_CUENTA", "Mi Cuenta", seguridad);
 
@@ -56,7 +55,7 @@ public class FuncionalidadSeeder implements CommandLineRunner {
         crearFuncionalidad("REPORTE_DEUDAS", "Reporte de Deudas", reportes);
         crearFuncionalidad("REPORTE_CAJA", "Reporte de Caja", reportes);
 
-        Rol superusuario = rolRepository.findByNombreRol("SUPERUSUARIO").orElseThrow();
+        Rol superusuario = rolRepository.findByNombre("SUPERUSUARIO").orElseThrow();
         funcionalidadRepository.findAll().forEach(f ->
                 rolFuncionalidadRepository.save(new RolFuncionalidad(superusuario, f, true, true, true, true, true)));
 

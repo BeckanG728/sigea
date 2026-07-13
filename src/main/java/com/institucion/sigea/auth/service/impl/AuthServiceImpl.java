@@ -69,7 +69,7 @@ public class AuthServiceImpl implements AuthService {
                     "Usuario o contraseña incorrectos");
         }
 
-        String rol = usuario.getRol().getNombreRol();
+        String rol = usuario.getRol().getNombre();
 
         if (usuario.isLogin2fa()) {
             Cache cache = cacheManager.getCache(CacheConfig.CACHE_SESION_2FA_PENDIENTE);
@@ -110,7 +110,7 @@ public class AuthServiceImpl implements AuthService {
             cache.evict(request.idUsuario());
         }
 
-        String rol = usuario.getRol().getNombreRol();
+        String rol = usuario.getRol().getNombre();
         String token = jwtUtil.generateToken(usuario.getId(), usuario.getNombreUsuario(), rol, true);
         auditoriaService.registrarLogin(usuario.getId(), ip, null, userAgent);
 

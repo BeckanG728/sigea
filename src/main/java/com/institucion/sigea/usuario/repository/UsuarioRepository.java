@@ -12,6 +12,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByNombreUsuario(String nombreUsuario);
     boolean existsByNombreUsuario(String nombreUsuario);
     boolean existsByNumeroDocumento(String numeroDocumento);
+    long countByRolIdAndEstadoTrue(Long rolId);
 
     @Override
     @EntityGraph(attributePaths = {"rol"})

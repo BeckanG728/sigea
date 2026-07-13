@@ -60,8 +60,8 @@ class PermisoServiceImplTest {
         when(funcionalidadRepository.getReferenceById(ID_FUNC_AULAS)).thenReturn(funcAulas);
 
         List<PermisoItem> items = List.of(
-                new PermisoItem(ID_FUNC_ALUMNOS, true, true, false, false, true),
-                new PermisoItem(ID_FUNC_AULAS, true, false, false, false, false));
+                new PermisoItem(ID_FUNC_ALUMNOS, null, true, true, false, false, true),
+                new PermisoItem(ID_FUNC_AULAS, null, true, false, false, false, false));
 
         permisoService.aplicar(ID_ROL, items);
 
@@ -94,7 +94,7 @@ class PermisoServiceImplTest {
         when(rolFuncionalidadRepository.findByRolId(ID_ROL)).thenReturn(List.of(existente));
 
         List<PermisoItem> items = List.of(
-                new PermisoItem(ID_FUNC_ALUMNOS, true, true, true, false, false));
+                new PermisoItem(ID_FUNC_ALUMNOS, null, true, true, true, false, false));
 
         permisoService.aplicar(ID_ROL, items);
 
@@ -119,7 +119,7 @@ class PermisoServiceImplTest {
         when(rolFuncionalidadRepository.findByRolId(ID_ROL)).thenReturn(List.of(inactivo));
 
         List<PermisoItem> items = List.of(
-                new PermisoItem(ID_FUNC_ALUMNOS, false, true, false, false, false));
+                new PermisoItem(ID_FUNC_ALUMNOS, null, false, true, false, false, false));
 
         permisoService.aplicar(ID_ROL, items);
 
@@ -143,7 +143,7 @@ class PermisoServiceImplTest {
         when(funcionalidadRepository.getReferenceById(ID_FUNC_ALUMNOS)).thenReturn(funcAlumnos);
 
         List<PermisoItem> items = List.of(
-                new PermisoItem(ID_FUNC_ALUMNOS, true, false, false, false, false));
+                new PermisoItem(ID_FUNC_ALUMNOS, null, true, false, false, false, false));
 
         permisoService.aplicar(ID_ROL, items);
 
@@ -159,7 +159,7 @@ class PermisoServiceImplTest {
         when(rolRepository.findById(999L)).thenReturn(Optional.empty());
 
         List<PermisoItem> items = List.of(
-                new PermisoItem(ID_FUNC_ALUMNOS, true, false, false, false, false));
+                new PermisoItem(ID_FUNC_ALUMNOS, null, true, false, false, false, false));
 
         BusinessException ex = assertThrows(BusinessException.class,
                 () -> permisoService.aplicar(999L, items));

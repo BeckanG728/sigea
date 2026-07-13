@@ -27,13 +27,13 @@ public class Rol extends AuditableEntity {
     @Column(name = "cod_rol")
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 40)
-    private String nombreRol;
+    @Column(name = "nombre_rol", nullable = false, unique = true, length = 40)
+    private String nombre;
 
     @OneToMany(mappedBy = "rol")
     private List<Usuario> usuarios = new ArrayList<>();
 
-    public Rol(String nombreRol) {
-        this.nombreRol = nombreRol;
+    public Rol(String nombre) {
+        this.nombre = nombre;
     }
 }

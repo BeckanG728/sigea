@@ -38,7 +38,7 @@ public class SuperusuarioSeeder implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-        Rol rol = rolRepository.findByNombreRol(NOMBRE_ROL_SUPERUSUARIO)
+        Rol rol = rolRepository.findByNombre(NOMBRE_ROL_SUPERUSUARIO)
                 .orElseGet(() -> {
                     Rol nuevoRol = new Rol(NOMBRE_ROL_SUPERUSUARIO);
                     nuevoRol = rolRepository.save(nuevoRol);
