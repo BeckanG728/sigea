@@ -85,6 +85,13 @@ public class AlumnoServiceImpl implements AlumnoService {
     }
 
     @Override
+    public List<AlumnoBusquedaResponse> buscarPorDocumento(String numero) {
+        return alumnoRepository.findByNumeroDocumentoAndEstadoTrue(numero).stream()
+                .map(alumnoMapper::toBusquedaResponse)
+                .toList();
+    }
+
+    @Override
     @Transactional
     @Auditable(modulo = "alumno", operacion = TipoOperacionAuditoria.DELETE)
     public void eliminar(Long id) {
