@@ -44,6 +44,7 @@ public class ClonadorConceptoServiceImpl implements ClonadorConceptoService {
             nuevo.setMonto(c.getMonto());
             nuevo.setOrdenPago(c.getOrdenPago());
             nuevo.setObligatorio(c.isObligatorio());
+            nuevo.setTipo(c.getTipo());
             return nuevo;
         }).toList();
 
