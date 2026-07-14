@@ -43,6 +43,16 @@ public class AulaController {
         return aulaService.buscarParaMatricula(periodo);
     }
 
+    @GetMapping("/buscar")
+    @PreAuthorize("hasPermission(null, 'AULA', 'VER')")
+    public List<AulaListadoResponse> buscarAulas(
+            @RequestParam(required = false) Long anioAcademico,
+            @RequestParam(required = false) Long nivel,
+            @RequestParam(required = false) Long grado,
+            @RequestParam(required = false) Boolean estado) {
+        return aulaService.buscarAulas(anioAcademico, nivel, grado, estado);
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasPermission(null, 'AULA', 'VER')")
     public AulaListadoResponse obtener(@PathVariable Long id) {

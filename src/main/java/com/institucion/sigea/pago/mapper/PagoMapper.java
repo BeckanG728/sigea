@@ -16,6 +16,8 @@ import java.util.List;
 public interface PagoMapper {
 
     @Mapping(target = "codCuota", source = "id")
+    @Mapping(target = "nombreConcepto", ignore = true)
+    @Mapping(target = "anioAcademico", ignore = true)
     CuotaDeudaResponse toDeudaResponse(Cuota cuota);
 
     List<CuotaDeudaResponse> toDeudaResponseList(List<Cuota> cuotas);

@@ -13,6 +13,7 @@ import com.institucion.sigea.alumno.service.AlumnoService;
 import com.institucion.sigea.auditoria.Auditable;
 import com.institucion.sigea.concepto.entity.Concepto;
 import com.institucion.sigea.concepto.repository.ConceptoRepository;
+import com.institucion.sigea.core.crypto.HmacService;
 import com.institucion.sigea.core.enums.TipoOperacionAuditoria;
 import com.institucion.sigea.core.exception.BusinessException;
 import com.institucion.sigea.core.exception.ErrorCode;
@@ -27,10 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,14 +43,17 @@ public class AlumnoServiceImpl implements AlumnoService {
     private final MatriculaRepository matriculaRepository;
     private final CuotaRepository cuotaRepository;
     private final ConceptoRepository conceptoRepository;
+    private final HmacService hmacService;
 
     @Override
     @Transactional
     @Auditable(modulo = "alumno", operacion = TipoOperacionAuditoria.INSERT)
     public AlumnoResponse crear(AlumnoRequest request) {
         List<Alumno> candidatos = alumnoRepository.findByTipoDocumentoId(request.codTipoDocumento());
+        String dniHash = hmacService.generarHash(request.numeroDocumento());
         boolean duplicado = candidatos.stream()
-                .anyMatch(a -> a.getNumeroDocumento().equals(request.numeroDocumento()));
+                .anyMatch(a -> a.getDniHash()
+                        .equals(dniHash));
         if (duplicado) {
             throw new BusinessException(ErrorCode.ALUMNO_DUPLICADO,
                     "Ya existe un alumno con ese documento",
@@ -64,6 +65,7 @@ public class AlumnoServiceImpl implements AlumnoService {
         Alumno alumno = new Alumno();
         alumno.setTipoDocumento(tipoDocumento);
         alumno.setNumeroDocumento(request.numeroDocumento());
+        alumno.setDniHash(dniHash);
         alumno.setNombres(request.nombres());
         alumno.setApellidoPaterno(request.apellidoPaterno());
         alumno.setApellidoMaterno(request.apellidoMaterno());
@@ -117,13 +119,17 @@ public class AlumnoServiceImpl implements AlumnoService {
                     .toList();
         }
 
-        List<Alumno> porTexto = alumnoRepository.buscarPorTexto(q.trim());
+        String texto = q.trim();
+        List<Alumno> porTexto = alumnoRepository.buscarPorTexto(texto);
 
-        List<Alumno> porDoc = alumnoRepository.buscarPorDocumento(q.trim());
+        Set<Alumno> combinados = new LinkedHashSet<>(porTexto);
 
-        Set<Alumno> combinados = new LinkedHashSet<>();
-        combinados.addAll(porTexto);
-        combinados.addAll(porDoc);
+        // Búsqueda exacta por documento: el número está cifrado con IV aleatorio,
+        // por lo que no se puede comparar por igualdad de columna; se compara por dni_hash.
+        if (texto.matches("\\d{8,15}")) {
+            String dniHash = hmacService.generarHash(texto);
+            alumnoRepository.findByDniHashAndEstadoTrue(dniHash).ifPresent(combinados::add);
+        }
 
         return combinados.stream()
                 .map(this::toMatriculaResponse)
@@ -166,9 +172,21 @@ public class AlumnoServiceImpl implements AlumnoService {
 
     @Override
     public List<AlumnoBusquedaResponse> buscarPorDocumento(String numero) {
-        return alumnoRepository.findByNumeroDocumentoAndEstadoTrue(numero).stream()
+        String dniHash = hmacService.generarHash(numero);
+        return alumnoRepository.findByDniHashAndEstadoTrue(dniHash).stream()
                 .map(alumnoMapper::toBusquedaResponse)
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public AlumnoResponse buscarPorDni(String dni) {
+        String hash = hmacService.generarHash(dni);
+        Alumno alumno = alumnoRepository.findByDniHashAndEstadoTrue(hash)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ALUMNO_NO_ENCONTRADO,
+                        "No existe un alumno con ese número de documento",
+                        Map.of("dni", dni)));
+        return alumnoMapper.toResponse(alumno);
     }
 
     @Override

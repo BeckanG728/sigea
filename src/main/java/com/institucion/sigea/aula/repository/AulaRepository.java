@@ -2,6 +2,7 @@ package com.institucion.sigea.aula.repository;
 
 import com.institucion.sigea.aula.entity.Aula;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,7 +11,7 @@ import jakarta.persistence.LockModeType;
 import java.util.List;
 import java.util.Optional;
 
-public interface AulaRepository extends JpaRepository<Aula, Long> {
+public interface AulaRepository extends JpaRepository<Aula, Long>, JpaSpecificationExecutor<Aula> {
 
     boolean existsByAnioAcademicoIdAndNivelIdAndGradoIdAndSeccion(
             Long anioAcademicoId, Long nivelId, Long gradoId, String seccion);

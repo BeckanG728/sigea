@@ -29,6 +29,10 @@ jwt:
 aes:
   secret: ${AES_SECRET_KEY}
 
+app:
+  security:
+    hmac-key: ${HMAC_SECRET_KEY}
+
 totp:
   issuer: ${TOTP_ISSUER}
 

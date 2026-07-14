@@ -7,9 +7,12 @@ import com.institucion.sigea.alumno.dto.response.AlumnoResponse;
 import com.institucion.sigea.alumno.service.AlumnoService;
 import com.institucion.sigea.pago.dto.response.DeudaMatriculaResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/alumnos")
 @RequiredArgsConstructor
+@Validated
 public class AlumnoController {
 
     private final AlumnoService alumnoService;
@@ -46,10 +50,19 @@ public class AlumnoController {
             @PathVariable Long id,
             @RequestParam Integer anio) {
         return alumnoService.listarDeudasMatricula(id, anio);
+    }
+
     @GetMapping("/documento/{numero}")
     @PreAuthorize("hasPermission(null, 'ALUMNO', 'VER')")
     public List<AlumnoBusquedaResponse> buscarPorDocumento(@PathVariable String numero) {
         return alumnoService.buscarPorDocumento(numero);
+    }
+
+    @GetMapping("/buscar")
+    @PreAuthorize("hasPermission(null, 'ALUMNO', 'VER')")
+    public AlumnoResponse buscarPorDni(
+            @RequestParam @NotBlank @Pattern(regexp = "\\d{8}", message = "El DNI debe tener 8 dígitos") String dni) {
+        return alumnoService.buscarPorDni(dni);
     }
 
     @DeleteMapping("/{id}")

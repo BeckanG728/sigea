@@ -12,6 +12,7 @@ import java.util.List;
 public interface AulaService {
     AulaResponse crear(AulaRequest request);
     List<AulaBusquedaResponse> buscar(Long anioAcademicoId, Long nivelId);
+    List<AulaListadoResponse> buscarAulas(Long anioAcademicoId, Long nivelId, Long gradoId, Boolean estado);
     List<AulaMatriculaResponse> buscarParaMatricula(Integer periodo);
     List<AulaListadoResponse> listarConDetalle(Long anioAcademicoId, Long nivelId);
     AulaListadoResponse obtenerPorId(Long id);
