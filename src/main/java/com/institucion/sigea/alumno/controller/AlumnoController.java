@@ -32,6 +32,12 @@ public class AlumnoController {
         return alumnoService.buscar(nombres);
     }
 
+    @GetMapping("/documento/{numero}")
+    @PreAuthorize("hasPermission(null, 'ALUMNO', 'VER')")
+    public List<AlumnoBusquedaResponse> buscarPorDocumento(@PathVariable String numero) {
+        return alumnoService.buscarPorDocumento(numero);
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasPermission(null, 'ALUMNO', 'ELIMINAR')")

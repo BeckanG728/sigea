@@ -13,4 +13,6 @@ public interface AlumnoRepository extends JpaRepository<Alumno, Long> {
 
     List<Alumno> findByEstadoTrueAndNombresContainingIgnoreCaseOrEstadoTrueAndApellidoPaternoContainingIgnoreCase(
             String nombres, String apellidoPaterno);
+
+    List<Alumno> findByNumeroDocumentoAndEstadoTrue(String numeroDocumento);
 }
