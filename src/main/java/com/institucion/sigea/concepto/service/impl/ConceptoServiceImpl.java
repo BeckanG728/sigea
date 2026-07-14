@@ -9,14 +9,16 @@ import com.institucion.sigea.concepto.mapper.ConceptoMapper;
 import com.institucion.sigea.concepto.repository.ConceptoRepository;
 import com.institucion.sigea.concepto.repository.TipoConceptoRepository;
 import com.institucion.sigea.concepto.service.ConceptoService;
+import com.institucion.sigea.core.api.PageResponse;
 import com.institucion.sigea.core.enums.TipoOperacionAuditoria;
 import com.institucion.sigea.core.exception.BusinessException;
 import com.institucion.sigea.core.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -45,6 +47,7 @@ public class ConceptoServiceImpl implements ConceptoService {
         concepto.setMonto(request.monto());
         concepto.setOrdenPago(request.ordenPago());
         concepto.setObligatorio(request.obligatorio());
+        concepto.setTipo(request.tipo());
 
         conceptoRepository.save(concepto);
         return conceptoMapper.toResponse(concepto);
@@ -61,9 +64,16 @@ public class ConceptoServiceImpl implements ConceptoService {
             throw new BusinessException(ErrorCode.VERSION_CONFLICT, "Edición concurrente detectada",
                     Map.of("versionActual", concepto.getVersion(), "versionEnviada", request.version()));
         }
+        if (request.codTipoConcepto() != null) {
+            concepto.setTipoConcepto(tipoConceptoRepository.getReferenceById(request.codTipoConcepto()));
+        }
+        if (request.nombreConcepto() != null) {
+            concepto.setNombreConcepto(request.nombreConcepto());
+        }
         concepto.setMonto(request.monto());
         concepto.setOrdenPago(request.ordenPago());
         concepto.setObligatorio(request.obligatorio());
+        concepto.setTipo(request.tipo());
 
         conceptoRepository.save(concepto);
         return conceptoMapper.toResponse(concepto);
@@ -80,10 +90,13 @@ public class ConceptoServiceImpl implements ConceptoService {
     }
 
     @Override
-    public List<ConceptoResponse> listar() {
-        return conceptoRepository.findAll().stream()
-                .filter(Concepto::isEstado)
-                .map(conceptoMapper::toResponse)
-                .toList();
+    public PageResponse<ConceptoResponse> listar(Long anioAcademicoId, Pageable pageable) {
+        Page<Concepto> page;
+        if (anioAcademicoId != null) {
+            page = conceptoRepository.findByAnioAcademicoIdAndEstadoTrue(anioAcademicoId, pageable);
+        } else {
+            page = conceptoRepository.findByEstadoTrue(pageable);
+        }
+        return PageResponse.of(page.map(conceptoMapper::toResponse));
     }
 }

@@ -13,5 +13,6 @@ public record ConceptoRequest(
         @Positive BigDecimal monto,
         @NotNull Short ordenPago,
         @NotNull Boolean obligatorio,
+        @NotBlank String tipo, // FIJO, MENSUAL, OPCIONAL
         Long version // null al crear; obligatorio al actualizar
 ) {}

@@ -41,4 +41,7 @@ public class Concepto extends AuditableEntity {
 
     @Column(nullable = false)
     private boolean obligatorio;
+
+    @Column(nullable = false, length = 20)
+    private String tipo; // FIJO, MENSUAL, OPCIONAL
 }

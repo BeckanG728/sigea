@@ -8,5 +8,11 @@ public record ConceptoResponse(
         BigDecimal monto,
         short ordenPago,
         boolean obligatorio,
+        String tipo,
+        boolean estado,
+        Long tipoConceptoId,
+        String tipoConceptoNombre,
+        Long anioAcademicoId,
+        Integer anioAcademico,
         Long version
 ) {}
