@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -87,6 +88,19 @@ public class ConceptoServiceImpl implements ConceptoService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.CONCEPTO_NO_ENCONTRADO, "Concepto no encontrado"));
         concepto.setEstado(false);
         conceptoRepository.save(concepto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ConceptoResponse> listarPorAnio(Integer anio) {
+        return anioAcademicoRepository.findAll().stream()
+                .filter(a -> a.getAnio().equals(anio) && a.isEstado())
+                .findFirst()
+                .map(a -> conceptoRepository.findByAnioAcademicoId(a.getId()).stream()
+                        .filter(Concepto::isEstado)
+                        .map(conceptoMapper::toResponse)
+                        .toList())
+                .orElse(List.of());
     }
 
     @Override

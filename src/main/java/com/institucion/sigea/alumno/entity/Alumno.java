@@ -13,10 +13,11 @@ import lombok.Setter;
 @Table(name = "alumno")
 @Getter @Setter
 @NoArgsConstructor
+@SequenceGenerator(name = "seq_alumno", sequenceName = "seq_alumno", allocationSize = 1)
 public class Alumno extends AuditableEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_alumno")
     @Column(name = "cod_alumno")
     private Long id;
 

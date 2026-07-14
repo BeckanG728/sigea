@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/auth/login/verify-2fa", "/crypto/key-exchange", "/h2-console/**")
+                        .requestMatchers("/auth/login", "/auth/login/verify-2fa", "/auth/verify-2fa", "/crypto/key-exchange", "/h2-console/**")
                         .permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

@@ -22,5 +22,7 @@ public interface MatriculaMapper {
     List<MatriculaReporteResponse> toReporteResponseList(List<Matricula> matriculas);
 
     @Mapping(target = "cuotas", source = "cuotas")
+    @Mapping(target = "requiresQrSetup", ignore = true)
+    @Mapping(target = "qrUri", ignore = true)
     MatriculaResponse toResponse(Matricula matricula, List<Cuota> cuotas);
 }

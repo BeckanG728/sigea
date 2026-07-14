@@ -42,4 +42,10 @@ public class Matricula extends AuditableEntity {
 
     @Column(name = "fecha_matricula", nullable = false)
     private LocalDateTime fechaMatricula;
+
+    @Column(name = "estado_matricula", nullable = false, length = 20)
+    private String estadoMatricula = "ACTIVO";
+
+    @Column(name = "cod_usuario")
+    private Integer codUsuario;
 }

@@ -28,4 +28,9 @@ public class AuthController {
     public ResponseEntity<LoginResponse> verify2fa(@Valid @RequestBody Verify2faRequest request) {
         return ResponseEntity.ok(authService.verify2fa(request));
     }
+
+    @PostMapping("/verify-2fa")
+    public ResponseEntity<LoginResponse> verify2faAlias(@Valid @RequestBody Verify2faRequest request) {
+        return ResponseEntity.ok(authService.verify2fa(request));
+    }
 }

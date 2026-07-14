@@ -4,6 +4,7 @@ import com.institucion.sigea.aula.dto.request.AulaRequest;
 import com.institucion.sigea.aula.dto.response.AlumnoAulaResponse;
 import com.institucion.sigea.aula.dto.response.AulaBusquedaResponse;
 import com.institucion.sigea.aula.dto.response.AulaListadoResponse;
+import com.institucion.sigea.aula.dto.response.AulaMatriculaResponse;
 import com.institucion.sigea.aula.dto.response.AulaResponse;
 import com.institucion.sigea.aula.service.AulaService;
 import jakarta.validation.Valid;
@@ -34,6 +35,12 @@ public class AulaController {
             @RequestParam(required = false) Long anioAcademico,
             @RequestParam(required = false) Long nivel) {
         return aulaService.listarConDetalle(anioAcademico, nivel);
+    }
+
+    @GetMapping(params = "periodo")
+    @PreAuthorize("hasPermission(null, 'AULA', 'VER')")
+    public List<AulaMatriculaResponse> listarParaMatricula(@RequestParam Integer periodo) {
+        return aulaService.buscarParaMatricula(periodo);
     }
 
     @GetMapping("/{id}")
