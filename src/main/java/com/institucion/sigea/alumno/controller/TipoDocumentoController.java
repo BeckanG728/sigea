@@ -17,14 +17,14 @@ public class TipoDocumentoController {
     private final TipoDocumentoService tipoDocumentoService;
 
     @GetMapping
-    @PreAuthorize("hasPermission(null, 'ALUMNO', 'CREAR')")
+    @PreAuthorize("hasPermission(null, 'ALUMNOS', 'CREAR')")
     public List<TipoDocumentoResponse> listar() {
         return tipoDocumentoService.listar();
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasPermission(null, 'ALUMNO', 'ELIMINAR')")
+    @PreAuthorize("hasPermission(null, 'ALUMNOS', 'ELIMINAR')")
     public void eliminar(@PathVariable Long id) {
         tipoDocumentoService.eliminar(id);
     }

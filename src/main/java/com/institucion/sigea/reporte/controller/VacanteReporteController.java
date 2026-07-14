@@ -16,7 +16,7 @@ public class VacanteReporteController {
     private final VacanteReporteService vacanteReporteService;
 
     @GetMapping("/vacantes")
-    @PreAuthorize("hasPermission(null, 'REPORTE', 'VER')")
+    @PreAuthorize("hasPermission(null, 'REPORTE_VACANTES', 'VER')")
     public List<VacanteReporteResponse> vacantes(
             @RequestParam(required = false) Long anioAcademico,
             @RequestParam(required = false) Long nivel,

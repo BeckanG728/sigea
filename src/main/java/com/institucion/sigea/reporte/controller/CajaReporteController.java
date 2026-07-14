@@ -24,7 +24,7 @@ public class CajaReporteController {
      * Mismo formato ISO que /reportes/pagos.
      */
     @GetMapping("/caja")
-    @PreAuthorize("hasPermission(null, 'REPORTE', 'VER')")
+    @PreAuthorize("hasPermission(null, 'REPORTE_CAJA', 'VER')")
     public CajaReporteResponse caja(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime desde,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime hasta) {

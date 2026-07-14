@@ -24,7 +24,7 @@ public class DeudaDetalleReporteController {
      * Ambos parámetros son opcionales.
      */
     @GetMapping("/deudas/detalle")
-    @PreAuthorize("hasPermission(null, 'REPORTE', 'VER')")
+    @PreAuthorize("hasPermission(null, 'REPORTE_DEUDAS', 'VER')")
     public List<DeudaDetalleReporteResponse> deudasDetalle(
             @RequestParam(required = false) Integer anio,
             @RequestParam(required = false) List<EstadoCuota> estados) {

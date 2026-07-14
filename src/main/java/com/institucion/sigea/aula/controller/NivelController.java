@@ -17,14 +17,14 @@ public class NivelController {
     private final NivelService nivelService;
 
     @GetMapping
-    @PreAuthorize("hasPermission(null, 'AULA', 'VER')")
+    @PreAuthorize("hasPermission(null, 'AULAS', 'VER')")
     public List<NivelResponse> listar() {
         return nivelService.listar();
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasPermission(null, 'AULA', 'ELIMINAR')")
+    @PreAuthorize("hasPermission(null, 'AULAS', 'ELIMINAR')")
     public void eliminar(@PathVariable Long id) {
         nivelService.eliminar(id);
     }

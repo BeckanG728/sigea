@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -52,9 +53,12 @@ public class ReporteServiceImpl implements ReporteService {
     @Override
     @Transactional(readOnly = true)
     public PageResponse<AuditoriaReporteResponse> reportarAuditoria(
-            Long codUsuario, String modulo, TipoOperacionAuditoria operacion, Instant desde, Instant hasta, Pageable pageable) {
-        return PageResponse.of(
-                auditoriaService.buscar(codUsuario, modulo, operacion, desde, hasta, pageable)
+            Long codUsuario, String modulo, TipoOperacionAuditoria operacion,LocalDateTime desde, LocalDateTime hasta, Pageable pageable) {
+        Instant desdeInstant = desde != null ? desde.atZone(ZoneId.systemDefault()).toInstant() : null;
+        Instant hastaInstant = hasta != null ? hasta.atZone(ZoneId.systemDefault()).toInstant() : null;
+
+    return PageResponse.of(
+                auditoriaService.buscar(codUsuario, modulo, operacion, desdeInstant, hastaInstant, pageable)
                         .map(auditoriaMapper::toResponse));
     }
 }

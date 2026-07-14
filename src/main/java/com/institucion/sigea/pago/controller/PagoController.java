@@ -29,19 +29,19 @@ public class PagoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasPermission(null, 'PAGO', 'CREAR')")
+    @PreAuthorize("hasPermission(null, 'PAGO_REGISTRAR', 'CREAR')")
     public PagoResponse registrarPago(@Valid @RequestBody RegistrarPagoRequest request) {
         return pagoTransaccionService.registrarPago(request);
     }
 
     @GetMapping("/deudas")
-    @PreAuthorize("hasPermission(null, 'PAGO', 'VER')")
+    @PreAuthorize("hasPermission(null, 'DEUDA_HISTORIAL', 'VER')")
     public List<CuotaDeudaResponse> listarDeudas(@RequestParam Long codAlumno) {
         return pagoService.listarDeudas(codAlumno);
     }
 
     @GetMapping("/historial")
-    @PreAuthorize("hasPermission(null, 'PAGO', 'VER')")
+    @PreAuthorize("hasPermission(null, 'DEUDA_HISTORIAL', 'VER')")
     public HistorialGeneralResponse listarHistorial(@PageableDefault(size = 8) Pageable pageable) {
         return pagoService.listarHistorialGeneral(pageable);
     }

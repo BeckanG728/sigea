@@ -69,7 +69,7 @@ public class AulaServiceImpl implements AulaService {
         aula.setSeccion(request.seccion());
         aula.setCapacidadMaxima(capacidad);
         Long siguienteCorrelativo = ((Number) entityManager
-                .createNativeQuery("SELECT nextval('seq_codigo_aula')")
+                .createNativeQuery("SELECT nextval('seq_aula')")
                 .getSingleResult()).longValue();
         aula.setCodigo(FORMATO_CODIGO_AULA.formatted(siguienteCorrelativo));
         aulaRepository.save(aula);

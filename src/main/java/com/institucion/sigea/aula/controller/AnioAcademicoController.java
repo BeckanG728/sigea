@@ -18,26 +18,26 @@ public class AnioAcademicoController {
     private final AnioAcademicoService anioAcademicoService;
 
     @GetMapping
-    @PreAuthorize("hasPermission(null, 'AULA', 'VER')")
+    @PreAuthorize("hasPermission(null, 'AULAS', 'VER')")
     public List<AnioAcademicoResponse> listar() {
         return anioAcademicoService.listar();
     }
 
     @GetMapping("/activo")
-    @PreAuthorize("hasPermission(null, 'AULA', 'VER')")
+    @PreAuthorize("hasPermission(null, 'AULAS', 'VER')")
     public AnioAcademicoResponse obtenerActivo() {
         return anioAcademicoService.obtenerActivo();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasPermission(null, 'AULA', 'CREAR')")
+    @PreAuthorize("hasPermission(null, 'AULAS', 'CREAR')")
     public AnioAcademicoResponse crear(@RequestBody Map<String, Integer> body) {
         return anioAcademicoService.crear(body.get("anio"));
     }
 
     @PostMapping("/{id}/activar")
-    @PreAuthorize("hasPermission(null, 'AULA', 'EDITAR')")
+    @PreAuthorize("hasPermission(null, 'AULAS', 'EDITAR')")
     public void activar(@PathVariable Long id) {
         anioAcademicoService.activar(id);
     }

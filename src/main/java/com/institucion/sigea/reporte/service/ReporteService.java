@@ -22,5 +22,5 @@ public interface ReporteService {
     List<DeudaAlumnoResponse> reportarDeudas();
 
     PageResponse<AuditoriaReporteResponse> reportarAuditoria(
-            Long codUsuario, String modulo, TipoOperacionAuditoria operacion, Instant desde, Instant hasta, Pageable pageable);
+            Long codUsuario, String modulo, TipoOperacionAuditoria operacion, LocalDateTime desde, LocalDateTime hasta, Pageable pageable);
 }

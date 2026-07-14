@@ -29,7 +29,7 @@ public class ReporteController {
     }
 
     @GetMapping("/matriculas")
-    @PreAuthorize("hasPermission(null, 'REPORTE', 'VER')")
+    @PreAuthorize("hasPermission(null, 'REPORTE_MATRICULA', 'VER')")
     public List<MatriculaReporteResponse> matriculas(
             @RequestParam(required = false) Integer anioAcademico,
             @RequestParam(required = false) Long codNivel,
@@ -39,7 +39,7 @@ public class ReporteController {
     }
 
     @GetMapping("/pagos")
-    @PreAuthorize("hasPermission(null, 'REPORTE', 'VER')")
+    @PreAuthorize("hasPermission(null, 'REPORTE_CAJA', 'VER')")
     public PagoReporteResponse pagos(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime desde,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime hasta) {
@@ -47,19 +47,19 @@ public class ReporteController {
     }
 
     @GetMapping("/deudas")
-    @PreAuthorize("hasPermission(null, 'REPORTE', 'VER')")
+    @PreAuthorize("hasPermission(null, 'REPORTE_DEUDAS', 'VER')")
     public List<DeudaAlumnoResponse> deudas() {
         return reporteService.reportarDeudas();
     }
 
     @GetMapping("/auditoria")
-    @PreAuthorize("hasPermission(null, 'REPORTE', 'VER')")
+    @PreAuthorize("hasPermission(null, 'AUDITORIA_REGISTRO', 'VER')")
     public PageResponse<AuditoriaReporteResponse> auditoria(
             @RequestParam(required = false) Long codUsuario,
             @RequestParam(required = false) String modulo,
             @RequestParam(required = false) TipoOperacionAuditoria operacion,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant desde,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant hasta,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime desde,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime hasta,
             @PageableDefault(size = 5, sort = "fechaHora", direction = Sort.Direction.DESC) Pageable pageable) {
         return reporteService.reportarAuditoria(codUsuario, modulo, operacion, desde, hasta, pageable);
     }

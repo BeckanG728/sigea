@@ -71,7 +71,7 @@ public class AlumnoServiceImpl implements AlumnoService {
         alumno.setApellidoMaterno(request.apellidoMaterno());
         alumno.setFechaNacimiento(request.fechaNacimiento().toString());
         Long siguienteCorrelativo = ((Number) entityManager
-                .createNativeQuery("SELECT nextval('seq_codigo_alumno')")
+                .createNativeQuery("SELECT nextval('seq_alumno')")
                 .getSingleResult()).longValue();
         alumno.setCodigo(FORMATO_CODIGO_ALUMNO.formatted(siguienteCorrelativo));
         alumnoRepository.save(alumno);
