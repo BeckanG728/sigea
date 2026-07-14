@@ -1,6 +1,6 @@
 package com.institucion.sigea.alumno.controller;
 
-import com.institucion.sigea.alumno.entity.TipoDocumento;
+import com.institucion.sigea.alumno.dto.response.TipoDocumentoResponse;
 import com.institucion.sigea.alumno.service.TipoDocumentoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ public class TipoDocumentoController {
 
     @GetMapping
     @PreAuthorize("hasPermission(null, 'ALUMNO', 'CREAR')")
-    public List<TipoDocumento> listar() {
+    public List<TipoDocumentoResponse> listar() {
         return tipoDocumentoService.listar();
     }
 

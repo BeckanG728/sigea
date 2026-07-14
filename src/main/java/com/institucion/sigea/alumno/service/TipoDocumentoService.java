@@ -1,10 +1,10 @@
 package com.institucion.sigea.alumno.service;
 
-import com.institucion.sigea.alumno.entity.TipoDocumento;
+import com.institucion.sigea.alumno.dto.response.TipoDocumentoResponse;
 
 import java.util.List;
 
 public interface TipoDocumentoService {
-    List<TipoDocumento> listar();
+    List<TipoDocumentoResponse> listar();
     void eliminar(Long id);
 }

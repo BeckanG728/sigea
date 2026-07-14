@@ -1,5 +1,6 @@
 package com.institucion.sigea.aula.service.impl;
 
+import com.institucion.sigea.aula.dto.response.NivelResponse;
 import com.institucion.sigea.aula.entity.Nivel;
 import com.institucion.sigea.aula.repository.NivelRepository;
 import com.institucion.sigea.aula.service.NivelService;
@@ -21,8 +22,10 @@ public class NivelServiceImpl implements NivelService {
     private final NivelRepository nivelRepository;
 
     @Override
-    public List<Nivel> listar() {
-        return nivelRepository.findAll();
+    public List<NivelResponse> listar() {
+        return nivelRepository.findAll().stream()
+                .map(n -> new NivelResponse(n.getId(), n.getNombre()))
+                .toList();
     }
 
     @Override

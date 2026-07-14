@@ -1,5 +1,6 @@
 package com.institucion.sigea.usuario.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.institucion.sigea.core.crypto.AesConverter;
 import com.institucion.sigea.core.crypto.AesDeterministicConverter;
 import com.institucion.sigea.core.persistence.AuditableEntity;
@@ -34,6 +35,7 @@ public class Usuario extends AuditableEntity {
     @Convert(converter = AesDeterministicConverter.class)
     private String numeroDocumento;
 
+    @JsonIgnore
     @Column(nullable = false, length = 255)
     private String password;
 
@@ -44,6 +46,7 @@ public class Usuario extends AuditableEntity {
     @Column(nullable = false)
     private boolean login2fa;
 
+    @JsonIgnore
     @Column(length = 255)
     @Convert(converter = AesConverter.class)
     private String totpSecret;

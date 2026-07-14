@@ -1,5 +1,6 @@
 package com.institucion.sigea.alumno.service.impl;
 
+import com.institucion.sigea.alumno.dto.response.TipoDocumentoResponse;
 import com.institucion.sigea.alumno.entity.TipoDocumento;
 import com.institucion.sigea.alumno.repository.TipoDocumentoRepository;
 import com.institucion.sigea.alumno.service.TipoDocumentoService;
@@ -21,8 +22,10 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoService {
     private final TipoDocumentoRepository tipoDocumentoRepository;
 
     @Override
-    public List<TipoDocumento> listar() {
-        return tipoDocumentoRepository.findAll();
+    public List<TipoDocumentoResponse> listar() {
+        return tipoDocumentoRepository.findAll().stream()
+                .map(td -> new TipoDocumentoResponse(td.getId(), td.getDescripcion()))
+                .toList();
     }
 
     @Override

@@ -3,12 +3,13 @@ package com.institucion.sigea.auditoria;
 import com.institucion.sigea.core.enums.TipoOperacionAuditoria;
 import com.institucion.sigea.usuario.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -65,7 +66,7 @@ public class AuditoriaServiceImpl implements AuditoriaService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AuditoriaEntity> buscar(Long usuarioId, String modulo, Instant desde, Instant hasta) {
-        return auditoriaRepository.buscar(usuarioId, modulo, desde, hasta);
+    public Page<AuditoriaEntity> buscar(Long usuarioId, String modulo, TipoOperacionAuditoria operacion, Instant desde, Instant hasta, Pageable pageable) {
+        return auditoriaRepository.buscar(usuarioId, modulo, operacion, desde, hasta, pageable);
     }
 }
