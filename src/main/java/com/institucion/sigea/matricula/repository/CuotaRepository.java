@@ -76,4 +76,25 @@ public interface CuotaRepository extends JpaRepository<Cuota, Long> {
     """)
     List<DeudaAlumnoProjection> reporteDeudasPorAlumno(@Param("estados") List<EstadoCuota> estados);
 
+    /**
+     * Reporte detallado de deudas: una fila por cuota adeudada, con los datos
+     * del alumno, su documento y el concepto asociado.
+     * El converter AES de numeroDocumento se aplica automáticamente al leer.
+     */
+    @Query("""
+    SELECT new com.institucion.sigea.matricula.repository.DeudaDetalleRow(
+           c.id, a.nombres, a.apellidoPaterno, a.apellidoMaterno,
+           a.tipoDocumento.descripcion, a.numeroDocumento, co.nombreConcepto,
+           co.anioAcademico.anio, c.ordenPago, c.montoPagar, c.estadoCuota)
+    FROM Cuota c, Matricula m, Alumno a, Concepto co
+    WHERE c.codMatricula = m.id
+      AND m.codAlumno = a.id
+      AND c.codConcepto = co.id
+      AND c.estadoCuota IN :estados
+      AND (:anio IS NULL OR co.anioAcademico.anio = :anio)
+    ORDER BY a.apellidoPaterno ASC, a.nombres ASC, c.ordenPago ASC
+    """)
+    List<DeudaDetalleRow> reporteDeudasDetalle(@Param("estados") List<EstadoCuota> estados,
+                                               @Param("anio") Integer anio);
 }
+
