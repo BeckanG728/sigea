@@ -2,10 +2,13 @@ package com.institucion.sigea.pago.controller;
 
 import com.institucion.sigea.pago.dto.request.RegistrarPagoRequest;
 import com.institucion.sigea.pago.dto.response.CuotaDeudaResponse;
+import com.institucion.sigea.pago.dto.response.HistorialGeneralResponse;
 import com.institucion.sigea.pago.dto.response.PagoResponse;
 import com.institucion.sigea.pago.service.PagoService;
 import com.institucion.sigea.pago.service.PagoTransaccionService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -35,5 +38,11 @@ public class PagoController {
     @PreAuthorize("hasPermission(null, 'PAGO', 'VER')")
     public List<CuotaDeudaResponse> listarDeudas(@RequestParam Long codAlumno) {
         return pagoService.listarDeudas(codAlumno);
+    }
+
+    @GetMapping("/historial")
+    @PreAuthorize("hasPermission(null, 'PAGO', 'VER')")
+    public HistorialGeneralResponse listarHistorial(@PageableDefault(size = 8) Pageable pageable) {
+        return pagoService.listarHistorialGeneral(pageable);
     }
 }

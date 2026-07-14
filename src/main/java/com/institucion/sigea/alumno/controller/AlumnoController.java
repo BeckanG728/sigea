@@ -46,6 +46,10 @@ public class AlumnoController {
             @PathVariable Long id,
             @RequestParam Integer anio) {
         return alumnoService.listarDeudasMatricula(id, anio);
+    @GetMapping("/documento/{numero}")
+    @PreAuthorize("hasPermission(null, 'ALUMNO', 'VER')")
+    public List<AlumnoBusquedaResponse> buscarPorDocumento(@PathVariable String numero) {
+        return alumnoService.buscarPorDocumento(numero);
     }
 
     @DeleteMapping("/{id}")

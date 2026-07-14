@@ -31,4 +31,5 @@ public interface AlumnoRepository extends JpaRepository<Alumno, Long> {
     WHERE a.estado = true AND a.numeroDocumento = :documento
     """)
     List<Alumno> buscarPorDocumento(@Param("documento") String documento);
+    List<Alumno> findByNumeroDocumentoAndEstadoTrue(String numeroDocumento);
 }

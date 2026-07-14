@@ -9,5 +9,7 @@ public record CuotaDeudaResponse(
         Integer codMatricula,
         BigDecimal montoPagar,
         Short ordenPago,
-        EstadoCuota estadoCuota
+        EstadoCuota estadoCuota,
+        String nombreConcepto,
+        Integer anioAcademico
 ) {}
