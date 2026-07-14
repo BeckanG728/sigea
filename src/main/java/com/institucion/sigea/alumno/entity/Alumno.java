@@ -1,17 +1,16 @@
 package com.institucion.sigea.alumno.entity;
 
 import com.institucion.sigea.core.crypto.AesConverter;
-import com.institucion.sigea.core.crypto.AesDeterministicConverter;
 import com.institucion.sigea.core.persistence.AuditableEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "alumno")
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @SequenceGenerator(name = "seq_alumno", sequenceName = "seq_alumno", allocationSize = 1)
 public class Alumno extends AuditableEntity {
@@ -28,9 +27,12 @@ public class Alumno extends AuditableEntity {
     @JoinColumn(name = "tipo_documento_id", nullable = false)
     private TipoDocumento tipoDocumento;
 
-    @Column(nullable = false, length = 255)
-    @Convert(converter = AesDeterministicConverter.class)
+    @Column(nullable = false, length = 256)
+    @Convert(converter = AesConverter.class)
     private String numeroDocumento;
+
+    @Column(nullable = false, length = 256, unique = true, name = "dni_hash")
+    private String dniHash;
 
     @Column(nullable = false, length = 80)
     private String nombres;
@@ -41,7 +43,7 @@ public class Alumno extends AuditableEntity {
     @Column(nullable = false, length = 60)
     private String apellidoMaterno;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, length = 256)
     @Convert(converter = AesConverter.class)
     private String fechaNacimiento; // texto ISO (yyyy-MM-dd), se guarda cifrado
 }

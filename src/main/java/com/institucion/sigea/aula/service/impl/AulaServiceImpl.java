@@ -16,10 +16,12 @@ import com.institucion.sigea.aula.repository.AulaRepository;
 import com.institucion.sigea.aula.repository.GradoRepository;
 import com.institucion.sigea.aula.repository.NivelRepository;
 import com.institucion.sigea.aula.service.AulaService;
+import com.institucion.sigea.aula.specification.AulaSpecification;
 import com.institucion.sigea.core.enums.TipoOperacionAuditoria;
 import com.institucion.sigea.core.exception.BusinessException;
 import com.institucion.sigea.core.exception.ErrorCode;
 import com.institucion.sigea.matricula.repository.MatriculaRepository;
+import com.institucion.sigea.matricula.repository.MatriculadosPorAulaProjection;
 import com.institucion.sigea.parametro.service.ParametroService;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -114,6 +117,51 @@ public class AulaServiceImpl implements AulaService {
                             .countByCodAulaAndCodAnioAcademicoAndEstadoTrue(
                                     aula.getId().intValue(),
                                     aula.getAnioAcademico().getAnio());
+                    AulaListadoResponse dto = aulaMapper.toListadoResponse(aula);
+                    return new AulaListadoResponse(
+                            dto.id(), dto.codigo(), dto.nivel(), dto.grado(),
+                            dto.seccion(), dto.capacidadMaxima(),
+                            matriculados,
+                            dto.capacidadMaxima() - matriculados,
+                            aula.isEstado()
+                    );
+                })
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AulaListadoResponse> buscarAulas(Long anioAcademicoId, Long nivelId, Long gradoId, Boolean estado) {
+        List<Aula> aulas = aulaRepository.findAll(
+                AulaSpecification.conFiltros(anioAcademicoId, nivelId, gradoId, estado));
+
+        if (aulas.isEmpty()) {
+            return List.of();
+        }
+
+        // El conteo de matriculados se agrupa por año académico porque
+        // countByCodAulaInAndCodAnioAcademicoAndEstadoTrue requiere un único codAnioAcademico por lote.
+        Map<Integer, List<Aula>> aulasPorAnio = aulas.stream()
+                .collect(Collectors.groupingBy(a -> a.getAnioAcademico().getAnio()));
+
+        Map<Long, Long> matriculadosPorAula = new java.util.HashMap<>();
+        aulasPorAnio.forEach((anio, aulasDelAnio) -> {
+            List<Integer> codAulas = aulasDelAnio.stream()
+                    .map(a -> a.getId().intValue())
+                    .toList();
+            List<MatriculadosPorAulaProjection> conteos = matriculaRepository
+                    .countByCodAulaInAndCodAnioAcademicoAndEstadoTrue(codAulas, anio);
+            conteos.forEach(c -> matriculadosPorAula.put(c.getCodAula().longValue(), c.getTotal()));
+        });
+
+        return aulas.stream()
+                .sorted(java.util.Comparator
+                        .comparing((Aula a) -> a.getAnioAcademico().getAnio())
+                        .thenComparing(a -> a.getNivel().getNombre())
+                        .thenComparing(a -> a.getGrado().getNombreGrado())
+                        .thenComparing(Aula::getSeccion))
+                .map(aula -> {
+                    long matriculados = matriculadosPorAula.getOrDefault(aula.getId(), 0L);
                     AulaListadoResponse dto = aulaMapper.toListadoResponse(aula);
                     return new AulaListadoResponse(
                             dto.id(), dto.codigo(), dto.nivel(), dto.grado(),

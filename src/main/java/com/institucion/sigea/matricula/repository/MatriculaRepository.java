@@ -16,6 +16,18 @@ public interface MatriculaRepository extends JpaRepository<Matricula, Long> {
 
     long countByCodAulaAndCodAnioAcademicoAndEstadoTrue(Integer codAula, Integer codAnioAcademico);
 
+    @Query("""
+        SELECT m.codAula AS codAula, COUNT(m) AS total
+        FROM Matricula m
+        WHERE m.codAula IN :codAulas
+          AND m.codAnioAcademico = :codAnioAcademico
+          AND m.estado = true
+        GROUP BY m.codAula
+        """)
+    List<MatriculadosPorAulaProjection> countByCodAulaInAndCodAnioAcademicoAndEstadoTrue(
+            @Param("codAulas") List<Integer> codAulas,
+            @Param("codAnioAcademico") Integer codAnioAcademico);
+
     List<Matricula> findByCodAlumnoAndEstadoTrueAndCodAnioAcademicoNot(Integer codAlumno, Integer codAnioAcademico);
 
     @Query("""

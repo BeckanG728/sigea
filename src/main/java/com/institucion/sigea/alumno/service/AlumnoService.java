@@ -14,5 +14,6 @@ public interface AlumnoService {
     List<AlumnoMatriculaResponse> buscarParaMatricula(String q);
     List<DeudaMatriculaResponse> listarDeudasMatricula(Long alumnoId, Integer anio);
     List<AlumnoBusquedaResponse> buscarPorDocumento(String numero);
+    AlumnoResponse buscarPorDni(String dni);
     void eliminar(Long id);
 }
