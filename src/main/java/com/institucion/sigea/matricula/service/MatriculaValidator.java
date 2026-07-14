@@ -2,7 +2,9 @@ package com.institucion.sigea.matricula.service;
 
 import com.institucion.sigea.alumno.entity.Alumno;
 import com.institucion.sigea.alumno.repository.AlumnoRepository;
+import com.institucion.sigea.aula.entity.AnioAcademico;
 import com.institucion.sigea.aula.entity.Aula;
+import com.institucion.sigea.aula.repository.AnioAcademicoRepository;
 import com.institucion.sigea.aula.repository.AulaRepository;
 import com.institucion.sigea.concepto.entity.Concepto;
 import com.institucion.sigea.concepto.repository.ConceptoRepository;
@@ -15,8 +17,10 @@ import com.institucion.sigea.matricula.repository.MatriculaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -24,6 +28,7 @@ public class MatriculaValidator {
 
     private final AulaRepository aulaRepository;
     private final AlumnoRepository alumnoRepository;
+    private final AnioAcademicoRepository anioAcademicoRepository;
     private final ConceptoRepository conceptoRepository;
     private final MatriculaRepository matriculaRepository;
     private final CuotaRepository cuotaRepository;
@@ -44,7 +49,15 @@ public class MatriculaValidator {
         validarConceptosActivos(codAnioAcademico);
     }
 
-    private Aula validarAula(Long codAula) {
+    public Alumno validarAlumno(Long codAlumno) {
+        return alumnoRepository.findById(codAlumno)
+                .filter(Alumno::isEstado)
+                .orElseThrow(() -> new BusinessException(
+                        ErrorCode.ALUMNO_NO_ENCONTRADO, "Alumno no encontrado",
+                        Map.of("codAlumno", codAlumno)));
+    }
+
+    public Aula validarAula(Long codAula) {
         return aulaRepository.findById(codAula)
                 .filter(Aula::isEstado)
                 .orElseThrow(() -> new BusinessException(
@@ -52,37 +65,36 @@ public class MatriculaValidator {
                         Map.of("codAula", codAula)));
     }
 
-    private void validarAlumno(Long codAlumno) {
-        alumnoRepository.findById(codAlumno)
-                .filter(Alumno::isEstado)
+    public AnioAcademico validarAnioAcademico(Long codAnioAcademico) {
+        return anioAcademicoRepository.findById(codAnioAcademico)
                 .orElseThrow(() -> new BusinessException(
-                        ErrorCode.ALUMNO_NO_ENCONTRADO, "Alumno no encontrado",
-                        Map.of("codAlumno", codAlumno)));
+                        ErrorCode.ANIO_NO_ENCONTRADO, "El año académico no existe.",
+                        Map.of("codAnioAcademico", codAnioAcademico)));
     }
 
-    private void validarNoMatriculadoEsteAnio(Long codAlumno, Long codAnioAcademico) {
+    public void validarNoMatriculadoEsteAnio(Long codAlumno, Long codAnioAcademico) {
         boolean yaMatriculado = matriculaRepository.existsByCodAlumnoAndCodAnioAcademicoAndEstadoTrue(
                 codAlumno.intValue(), codAnioAcademico.intValue());
 
         if (yaMatriculado) {
             throw new BusinessException(ErrorCode.ALUMNO_DUPLICADO,
-                    "El alumno ya está matriculado en este año académico",
+                    "El alumno ya se encuentra matriculado en este año académico.",
                     Map.of("codAlumno", codAlumno, "codAnioAcademico", codAnioAcademico));
         }
     }
 
-    private void validarVacantesDisponibles(Aula aula, Long codAnioAcademico) {
+    public void validarVacantesDisponibles(Aula aula, Long codAnioAcademico) {
         long matriculadosActuales = matriculaRepository.countByCodAulaAndCodAnioAcademicoAndEstadoTrue(
                 aula.getId().intValue(), codAnioAcademico.intValue());
 
         if (matriculadosActuales >= aula.getCapacidadMaxima()) {
             throw new BusinessException(ErrorCode.AULA_SIN_VACANTES,
-                    "El aula no tiene vacantes disponibles",
+                    "No existen vacantes disponibles.",
                     Map.of("codAula", aula.getId(), "capacidadMaxima", aula.getCapacidadMaxima()));
         }
     }
 
-    private void validarSinDeudaAnioAnterior(Long codAlumno, Long codAnioAcademico) {
+    public void validarSinDeudaAnioAnterior(Long codAlumno, Long codAnioAcademico) {
         List<Matricula> matriculasAnteriores = matriculaRepository
                 .findByCodAlumnoAndEstadoTrueAndCodAnioAcademicoNot(
                         codAlumno.intValue(), codAnioAcademico.intValue());
@@ -94,7 +106,7 @@ public class MatriculaValidator {
 
             if (cuotasPendientes > 0) {
                 throw new BusinessException(ErrorCode.CUOTA_ANTERIOR_PENDIENTE,
-                        "El alumno tiene cuotas pendientes de un año académico anterior",
+                        "El alumno posee deudas anteriores pendientes.",
                         Map.of(
                                 "codAlumno", codAlumno,
                                 "codMatriculaAnterior", anterior.getId(),
@@ -103,15 +115,99 @@ public class MatriculaValidator {
         }
     }
 
-    private void validarConceptosActivos(Long codAnioAcademico) {
+    public void validarConceptosActivos(Long codAnioAcademico) {
         List<Concepto> conceptosActivos = conceptoRepository.findByAnioAcademicoId(codAnioAcademico).stream()
                 .filter(Concepto::isEstado)
                 .toList();
 
         if (conceptosActivos.isEmpty()) {
             throw new BusinessException(ErrorCode.CONCEPTO_NO_ENCONTRADO,
-                    "No existen conceptos de pago activos para este año académico",
+                    "No existen conceptos de pago configurados para el año académico.",
                     Map.of("codAnioAcademico", codAnioAcademico));
         }
+    }
+
+    public List<String> validarPreview(Long codAlumno, Long codAula, Long codAnioAcademico) {
+        List<String> errores = new ArrayList<>();
+
+        Optional.ofNullable(previewValidarAlumno(codAlumno)).ifPresent(errores::add);
+        Optional.ofNullable(previewValidarAula(codAula)).ifPresent(errores::add);
+        Optional.ofNullable(previewValidarAnio(codAnioAcademico)).ifPresent(errores::add);
+
+        if (errores.isEmpty()) {
+            Optional.ofNullable(previewValidarNoMatriculado(codAlumno, codAnioAcademico)).ifPresent(errores::add);
+            Optional.ofNullable(previewValidarVacantes(codAula, codAnioAcademico)).ifPresent(errores::add);
+            Optional.ofNullable(previewValidarDeudas(codAlumno, codAnioAcademico)).ifPresent(errores::add);
+            Optional.ofNullable(previewValidarConceptos(codAnioAcademico)).ifPresent(errores::add);
+        }
+
+        return errores;
+    }
+
+    private String previewValidarAlumno(Long codAlumno) {
+        return alumnoRepository.findById(codAlumno)
+                .map(a -> {
+                    if (!a.isEstado()) return "El alumno se encuentra inactivo.";
+                    return null;
+                })
+                .orElse("El alumno no existe.");
+    }
+
+    private String previewValidarAula(Long codAula) {
+        return aulaRepository.findById(codAula)
+                .map(a -> {
+                    if (!a.isEstado()) return "El aula no se encuentra activa.";
+                    return null;
+                })
+                .orElse("El aula no existe.");
+    }
+
+    private String previewValidarAnio(Long codAnioAcademico) {
+        return anioAcademicoRepository.findById(codAnioAcademico)
+                .map(a -> {
+                    if (!a.isEstado()) return "El año académico no permite nuevas matrículas.";
+                    return null;
+                })
+                .orElse("El año académico no existe.");
+    }
+
+    private String previewValidarNoMatriculado(Long codAlumno, Long codAnioAcademico) {
+        boolean yaMatriculado = matriculaRepository.existsByCodAlumnoAndCodAnioAcademicoAndEstadoTrue(
+                codAlumno.intValue(), codAnioAcademico.intValue());
+        if (yaMatriculado) return "El alumno ya se encuentra matriculado en este año académico.";
+        return null;
+    }
+
+    private String previewValidarVacantes(Long codAula, Long codAnioAcademico) {
+        return aulaRepository.findById(codAula)
+                .map(aula -> {
+                    long matriculados = matriculaRepository
+                            .countByCodAulaAndCodAnioAcademicoAndEstadoTrue(
+                                    aula.getId().intValue(), codAnioAcademico.intValue());
+                    if (matriculados >= aula.getCapacidadMaxima()) return "No existen vacantes disponibles.";
+                    return null;
+                })
+                .orElse(null);
+    }
+
+    private String previewValidarDeudas(Long codAlumno, Long codAnioAcademico) {
+        List<Matricula> anteriores = matriculaRepository
+                .findByCodAlumnoAndEstadoTrueAndCodAnioAcademicoNot(
+                        codAlumno.intValue(), codAnioAcademico.intValue());
+        for (Matricula anterior : anteriores) {
+            long pendientes = cuotaRepository.countByCodMatriculaAndEstadoCuotaIn(
+                    anterior.getId().intValue(),
+                    List.of(EstadoCuota.PENDIENTE, EstadoCuota.BLOQUEADA));
+            if (pendientes > 0) return "El alumno posee deudas anteriores pendientes.";
+        }
+        return null;
+    }
+
+    private String previewValidarConceptos(Long codAnioAcademico) {
+        List<Concepto> activos = conceptoRepository.findByAnioAcademicoId(codAnioAcademico).stream()
+                .filter(Concepto::isEstado)
+                .toList();
+        if (activos.isEmpty()) return "No existen conceptos de pago configurados para el año académico.";
+        return null;
     }
 }

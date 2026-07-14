@@ -4,16 +4,17 @@ import com.institucion.sigea.concepto.dto.request.ClonadoRequest;
 import com.institucion.sigea.concepto.dto.request.ConceptoRequest;
 import com.institucion.sigea.concepto.dto.response.ClonadoResponse;
 import com.institucion.sigea.concepto.dto.response.ConceptoResponse;
-import com.institucion.sigea.concepto.service.ConceptoService;
 import com.institucion.sigea.concepto.service.ClonadorConceptoService;
+import com.institucion.sigea.concepto.service.ConceptoService;
 import com.institucion.sigea.core.api.PageResponse;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/conceptos")
@@ -59,5 +60,11 @@ public class ConceptoController {
             @RequestParam(required = false) Long anioAcademicoId,
             @PageableDefault(size = 6, sort = "ordenPago") Pageable pageable) {
         return conceptoService.listar(anioAcademicoId, pageable);
+    }
+
+    @GetMapping(params = "anio")
+    @PreAuthorize("hasPermission(null, 'CONCEPTO', 'VER')")
+    public List<ConceptoResponse> listarPorAnio(@RequestParam Integer anio) {
+        return conceptoService.listarPorAnio(anio);
     }
 }

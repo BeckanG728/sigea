@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -45,10 +46,19 @@ public class Cuota extends AuditableEntity {
     @Column(name = "fecha_pago")
     private LocalDateTime fechaPago;
 
+    @Column(name = "fecha_vencimiento")
+    private LocalDate fechaVencimiento;
+
+    @Column(name = "saldo_pendiente", precision = 10, scale = 2)
+    private BigDecimal saldoPendiente;
+
     @PrePersist
     void prePersist() {
         if (estadoCuota == null) {
             estadoCuota = EstadoCuota.PENDIENTE;
+        }
+        if (saldoPendiente == null) {
+            saldoPendiente = montoPagar;
         }
     }
 }

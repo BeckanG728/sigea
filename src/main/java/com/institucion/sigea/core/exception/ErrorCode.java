@@ -41,7 +41,9 @@ public enum ErrorCode {
     TIPO_DOCUMENTO_NO_ENCONTRADO(HttpStatus.NOT_FOUND),
     TWOFA_ALREADY_VERIFIED(HttpStatus.CONFLICT),
     INVALID_OTP(HttpStatus.BAD_REQUEST),
-    OTP_BLOCKED(HttpStatus.TOO_MANY_REQUESTS);
+    OTP_BLOCKED(HttpStatus.TOO_MANY_REQUESTS),
+    ANIO_NO_ENCONTRADO(HttpStatus.NOT_FOUND),
+    ANIO_CERRADO(HttpStatus.UNPROCESSABLE_ENTITY);
 
     private final HttpStatus httpStatus;
 

@@ -38,6 +38,9 @@ public interface CuotaRepository extends JpaRepository<Cuota, Long> {
     """)
     List<Cuota> findDeudasPorAlumno(@Param("codAlumno") Integer codAlumno, @Param("estados") List<EstadoCuota> estados);
 
+    List<Cuota> findByCodMatriculaAndEstadoCuotaInOrderByOrdenPagoAsc(
+            Integer codMatricula, List<EstadoCuota> estados);
+
     List<Cuota> findByCodMatriculaAndEstadoCuotaInAndOrdenPagoLessThanOrderByOrdenPagoAsc(
             Integer codMatricula, List<EstadoCuota> estados, Short ordenPago);
 

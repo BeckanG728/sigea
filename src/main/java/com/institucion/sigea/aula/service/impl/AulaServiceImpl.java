@@ -7,6 +7,7 @@ import com.institucion.sigea.aula.dto.request.AulaRequest;
 import com.institucion.sigea.aula.dto.response.AlumnoAulaResponse;
 import com.institucion.sigea.aula.dto.response.AulaBusquedaResponse;
 import com.institucion.sigea.aula.dto.response.AulaListadoResponse;
+import com.institucion.sigea.aula.dto.response.AulaMatriculaResponse;
 import com.institucion.sigea.aula.dto.response.AulaResponse;
 import com.institucion.sigea.aula.entity.Aula;
 import com.institucion.sigea.aula.mapper.AulaMapper;
@@ -77,6 +78,32 @@ public class AulaServiceImpl implements AulaService {
         return aulaRepository.buscar(anioAcademicoId, nivelId).stream()
                 .map(aulaMapper::toBusquedaResponse)
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AulaMatriculaResponse> buscarParaMatricula(Integer periodo) {
+        return anioAcademicoRepository.findAll().stream()
+                .filter(a -> a.getAnio().equals(periodo))
+                .findFirst()
+                .map(anio -> aulaRepository.buscar(anio.getId(), null).stream()
+                        .map(aula -> {
+                            long matriculados = matriculaRepository
+                                    .countByCodAulaAndCodAnioAcademicoAndEstadoTrue(
+                                            aula.getId().intValue(), periodo);
+                            return new AulaMatriculaResponse(
+                                    aula.getId(),
+                                    aula.getNivel().getNombre(),
+                                    aula.getGrado().getNombreGrado(),
+                                    aula.getSeccion(),
+                                    matriculados,
+                                    aula.getCapacidadMaxima(),
+                                    aula.isEstado(),
+                                    periodo
+                            );
+                        })
+                        .toList())
+                .orElse(List.of());
     }
 
     @Override

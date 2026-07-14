@@ -2,8 +2,10 @@ package com.institucion.sigea.alumno.controller;
 
 import com.institucion.sigea.alumno.dto.request.AlumnoRequest;
 import com.institucion.sigea.alumno.dto.response.AlumnoBusquedaResponse;
+import com.institucion.sigea.alumno.dto.response.AlumnoMatriculaResponse;
 import com.institucion.sigea.alumno.dto.response.AlumnoResponse;
 import com.institucion.sigea.alumno.service.AlumnoService;
+import com.institucion.sigea.pago.dto.response.DeudaMatriculaResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,6 +34,18 @@ public class AlumnoController {
         return alumnoService.buscar(nombres);
     }
 
+    @GetMapping(params = "q")
+    @PreAuthorize("hasPermission(null, 'ALUMNO', 'VER')")
+    public List<AlumnoMatriculaResponse> buscarParaMatricula(@RequestParam String q) {
+        return alumnoService.buscarParaMatricula(q);
+    }
+
+    @GetMapping("/{id}/deudas")
+    @PreAuthorize("hasPermission(null, 'PAGO', 'VER')")
+    public List<DeudaMatriculaResponse> listarDeudas(
+            @PathVariable Long id,
+            @RequestParam Integer anio) {
+        return alumnoService.listarDeudasMatricula(id, anio);
     @GetMapping("/documento/{numero}")
     @PreAuthorize("hasPermission(null, 'ALUMNO', 'VER')")
     public List<AlumnoBusquedaResponse> buscarPorDocumento(@PathVariable String numero) {

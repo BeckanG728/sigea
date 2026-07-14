@@ -12,10 +12,11 @@ import lombok.Setter;
         columnNames = {"anio_academico_id", "nivel_id", "grado_id", "seccion"}))
 @Getter @Setter
 @NoArgsConstructor
+@SequenceGenerator(name = "seq_aula", sequenceName = "seq_aula", allocationSize = 1)
 public class Aula extends AuditableEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_aula")
     @Column(name = "cod_aula")
     private Long id;
 
