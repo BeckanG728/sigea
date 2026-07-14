@@ -30,32 +30,32 @@ public class ConceptoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasPermission(null, 'CONCEPTO', 'CREAR')")
+    @PreAuthorize("hasPermission(null, 'CONCEPTOS', 'CREAR')")
     public ConceptoResponse crear(@Valid @RequestBody ConceptoRequest request) {
         return conceptoService.crear(request);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasPermission(null, 'CONCEPTO', 'EDITAR')")
+    @PreAuthorize("hasPermission(null, 'CONCEPTOS', 'EDITAR')")
     public ConceptoResponse actualizar(@PathVariable Long id, @Valid @RequestBody ConceptoRequest request) {
         return conceptoService.actualizar(id, request);
     }
 
     @PostMapping("/clonar")
-    @PreAuthorize("hasPermission(null, 'CONCEPTO', 'CREAR')")
+    @PreAuthorize("hasPermission(null, 'CONCEPTOS', 'CREAR')")
     public ClonadoResponse clonar(@Valid @RequestBody ClonadoRequest request) {
         return clonadorConceptoService.clonar(request.anioOrigen(), request.anioDestino());
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasPermission(null, 'CONCEPTO', 'ELIMINAR')")
+    @PreAuthorize("hasPermission(null, 'CONCEPTOS', 'ELIMINAR')")
     public void eliminar(@PathVariable Long id) {
         conceptoService.eliminar(id);
     }
 
     @GetMapping
-    @PreAuthorize("hasPermission(null, 'CONCEPTO', 'VER')")
+    @PreAuthorize("hasPermission(null, 'CONCEPTOS', 'VER')")
     public PageResponse<ConceptoResponse> listar(
             @RequestParam(required = false) Long anioAcademicoId,
             @PageableDefault(size = 6, sort = "ordenPago") Pageable pageable) {
@@ -63,7 +63,7 @@ public class ConceptoController {
     }
 
     @GetMapping(params = "anio")
-    @PreAuthorize("hasPermission(null, 'CONCEPTO', 'VER')")
+    @PreAuthorize("hasPermission(null, 'CONCEPTOS', 'VER')")
     public List<ConceptoResponse> listarPorAnio(@RequestParam Integer anio) {
         return conceptoService.listarPorAnio(anio);
     }

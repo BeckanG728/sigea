@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PagoServiceImpl implements PagoService {
 
-    private static final List<EstadoCuota> ESTADOS_DEUDA = List.of(EstadoCuota.PENDIENTE, EstadoCuota.BLOQUEADA);
+    private static final List<EstadoCuota> ESTADOS_DEUDA = List.of(EstadoCuota.PENDIENTE);
 
     private final CuotaRepository cuotaRepository;
     private final PagoRepository pagoRepository;

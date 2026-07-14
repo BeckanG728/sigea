@@ -113,7 +113,7 @@ public class PermisoServiceImpl implements PermisoService {
                 .stream()
                 .map(rf -> new PermisoInfo(
                         rf.getFuncionalidad().getId(),
-                        rf.getFuncionalidad().getNombre(),
+                        rf.getFuncionalidad().getCodigo(),
                         rf.isVer(),
                         rf.isCrear(),
                         rf.isEditar(),

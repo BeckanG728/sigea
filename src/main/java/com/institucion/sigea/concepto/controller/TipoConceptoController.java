@@ -22,26 +22,26 @@ public class TipoConceptoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasPermission(null, 'CONCEPTO', 'CREAR')")
+    @PreAuthorize("hasPermission(null, 'CONCEPTOS', 'CREAR')")
     public TipoConceptoResponse crear(@Valid @RequestBody TipoConceptoRequest request) {
         return tipoConceptoService.crear(request);
     }
 
     @GetMapping
-    @PreAuthorize("hasPermission(null, 'CONCEPTO', 'VER')")
+    @PreAuthorize("hasPermission(null, 'CONCEPTOS', 'VER')")
     public List<TipoConceptoResponse> listar() {
         return tipoConceptoService.listar();
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasPermission(null, 'CONCEPTO', 'EDITAR')")
+    @PreAuthorize("hasPermission(null, 'CONCEPTOS', 'EDITAR')")
     public TipoConceptoResponse actualizar(@PathVariable Long id, @Valid @RequestBody TipoConceptoRequest request) {
         return tipoConceptoService.actualizar(id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasPermission(null, 'CONCEPTO', 'ELIMINAR')")
+    @PreAuthorize("hasPermission(null, 'CONCEPTOS', 'ELIMINAR')")
     public void eliminar(@PathVariable Long id) {
         tipoConceptoService.eliminar(id);
     }

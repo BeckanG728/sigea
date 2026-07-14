@@ -24,7 +24,7 @@ public class MatriculaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasPermission(null, 'MATRICULA', 'CREAR')")
+    @PreAuthorize("hasPermission(null, 'MATRICULA_REGISTRAR', 'CREAR')")
     public MatriculaResponse matricular(@Valid @RequestBody MatriculaRequest request) {
         return matriculaService.matricular(request);
     }

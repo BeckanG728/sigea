@@ -24,13 +24,13 @@ public class AulaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasPermission(null, 'AULA', 'CREAR')")
+    @PreAuthorize("hasPermission(null, 'AULAS', 'CREAR')")
     public AulaResponse crear(@Valid @RequestBody AulaRequest request) {
         return aulaService.crear(request);
     }
 
     @GetMapping
-    @PreAuthorize("hasPermission(null, 'AULA', 'VER')")
+    @PreAuthorize("hasPermission(null, 'AULAS', 'VER')")
     public List<AulaListadoResponse> listar(
             @RequestParam(required = false) Long anioAcademico,
             @RequestParam(required = false) Long nivel) {
@@ -38,13 +38,13 @@ public class AulaController {
     }
 
     @GetMapping(params = "periodo")
-    @PreAuthorize("hasPermission(null, 'AULA', 'VER')")
+    @PreAuthorize("hasPermission(null, 'AULAS', 'VER')")
     public List<AulaMatriculaResponse> listarParaMatricula(@RequestParam Integer periodo) {
         return aulaService.buscarParaMatricula(periodo);
     }
 
     @GetMapping("/buscar")
-    @PreAuthorize("hasPermission(null, 'AULA', 'VER')")
+    @PreAuthorize("hasPermission(null, 'AULAS', 'VER')")
     public List<AulaListadoResponse> buscarAulas(
             @RequestParam(required = false) Long anioAcademico,
             @RequestParam(required = false) Long nivel,
@@ -54,13 +54,13 @@ public class AulaController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasPermission(null, 'AULA', 'VER')")
+    @PreAuthorize("hasPermission(null, 'AULAS', 'VER')")
     public AulaListadoResponse obtener(@PathVariable Long id) {
         return aulaService.obtenerPorId(id);
     }
 
     @GetMapping("/{id}/alumnos")
-    @PreAuthorize("hasPermission(null, 'AULA', 'VER')")
+    @PreAuthorize("hasPermission(null, 'AULAS', 'VER')")
     public List<AlumnoAulaResponse> listarAlumnos(
             @PathVariable Long id,
             @RequestParam(required = false) Long anioAcademico) {
@@ -68,14 +68,14 @@ public class AulaController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasPermission(null, 'AULA', 'EDITAR')")
+    @PreAuthorize("hasPermission(null, 'AULAS', 'EDITAR')")
     public AulaResponse actualizar(@PathVariable Long id, @Valid @RequestBody AulaRequest request) {
         return aulaService.actualizar(id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasPermission(null, 'AULA', 'ELIMINAR')")
+    @PreAuthorize("hasPermission(null, 'AULAS', 'ELIMINAR')")
     public void eliminar(@PathVariable Long id) {
         aulaService.eliminar(id);
     }

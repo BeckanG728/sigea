@@ -27,25 +27,25 @@ public class AlumnoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasPermission(null, 'ALUMNO', 'CREAR')")
+    @PreAuthorize("hasPermission(null, 'ALUMNOS', 'CREAR')")
     public AlumnoResponse crear(@Valid @RequestBody AlumnoRequest request) {
         return alumnoService.crear(request);
     }
 
     @GetMapping
-    @PreAuthorize("hasPermission(null, 'ALUMNO', 'VER')")
+    @PreAuthorize("hasPermission(null, 'ALUMNOS', 'VER')")
     public List<AlumnoBusquedaResponse> buscar(@RequestParam(required = false) String nombres) {
         return alumnoService.buscar(nombres);
     }
 
     @GetMapping(params = "q")
-    @PreAuthorize("hasPermission(null, 'ALUMNO', 'VER')")
+    @PreAuthorize("hasPermission(null, 'ALUMNOS', 'VER')")
     public List<AlumnoMatriculaResponse> buscarParaMatricula(@RequestParam String q) {
         return alumnoService.buscarParaMatricula(q);
     }
 
     @GetMapping("/{id}/deudas")
-    @PreAuthorize("hasPermission(null, 'PAGO', 'VER')")
+    @PreAuthorize("hasPermission(null, 'DEUDA_HISTORIAL', 'VER')")
     public List<DeudaMatriculaResponse> listarDeudas(
             @PathVariable Long id,
             @RequestParam Integer anio) {
@@ -53,13 +53,13 @@ public class AlumnoController {
     }
 
     @GetMapping("/documento/{numero}")
-    @PreAuthorize("hasPermission(null, 'ALUMNO', 'VER')")
+    @PreAuthorize("hasPermission(null, 'ALUMNOS', 'VER')")
     public List<AlumnoBusquedaResponse> buscarPorDocumento(@PathVariable String numero) {
         return alumnoService.buscarPorDocumento(numero);
     }
 
     @GetMapping("/buscar")
-    @PreAuthorize("hasPermission(null, 'ALUMNO', 'VER')")
+    @PreAuthorize("hasPermission(null, 'ALUMNOS', 'VER')")
     public AlumnoResponse buscarPorDni(
             @RequestParam @NotBlank @Pattern(regexp = "\\d{8}", message = "El DNI debe tener 8 dígitos") String dni) {
         return alumnoService.buscarPorDni(dni);
@@ -67,7 +67,7 @@ public class AlumnoController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasPermission(null, 'ALUMNO', 'ELIMINAR')")
+    @PreAuthorize("hasPermission(null, 'ALUMNOS', 'ELIMINAR')")
     public void eliminar(@PathVariable Long id) {
         alumnoService.eliminar(id);
     }

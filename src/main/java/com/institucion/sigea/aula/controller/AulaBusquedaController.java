@@ -18,7 +18,7 @@ public class AulaBusquedaController {
     }
 
     @GetMapping
-    @PreAuthorize("hasPermission(null, 'AULA', 'VER')")
+    @PreAuthorize("hasPermission(null, 'AULAS', 'VER')")
     public List<AulaBusquedaResponse> buscar(
             @RequestParam(required = false) Long anioAcademico,
             @RequestParam(required = false) Long nivel) {

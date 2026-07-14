@@ -19,7 +19,7 @@ public class DeudaDetalleReporteServiceImpl implements DeudaDetalleReporteServic
 
     /** Mismo criterio de "deuda" que usa PagoServiceImpl. */
     private static final List<EstadoCuota> ESTADOS_DEUDA =
-            List.of(EstadoCuota.PENDIENTE, EstadoCuota.BLOQUEADA);
+            List.of(EstadoCuota.PENDIENTE);
 
     /**
      * Regla provisional de vencimiento (la tabla cuota aún no persiste una

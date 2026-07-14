@@ -18,7 +18,7 @@ public class GradoController {
     private final GradoService gradoService;
 
     @GetMapping
-    @PreAuthorize("hasPermission(null, 'AULA', 'VER')")
+    @PreAuthorize("hasPermission(null, 'AULAS', 'VER')")
     public List<GradoResponse> listar() {
         return gradoService.listar().stream()
                 .map(g -> new GradoResponse(g.getId(), g.getNombreGrado(), g.getNivel().getId()))
@@ -26,7 +26,7 @@ public class GradoController {
     }
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasPermission(null, 'AULA', 'ELIMINAR')")
+    @PreAuthorize("hasPermission(null, 'AULAS', 'ELIMINAR')")
     public void eliminar(@PathVariable Long id) {
         gradoService.eliminar(id);
     }
