@@ -1,6 +1,6 @@
 package com.institucion.sigea.aula.controller;
 
-import com.institucion.sigea.aula.entity.AnioAcademico;
+import com.institucion.sigea.aula.dto.response.AnioAcademicoResponse;
 import com.institucion.sigea.aula.service.AnioAcademicoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,20 +19,20 @@ public class AnioAcademicoController {
 
     @GetMapping
     @PreAuthorize("hasPermission(null, 'AULA', 'VER')")
-    public List<AnioAcademico> listar() {
+    public List<AnioAcademicoResponse> listar() {
         return anioAcademicoService.listar();
     }
 
     @GetMapping("/activo")
     @PreAuthorize("hasPermission(null, 'AULA', 'VER')")
-    public AnioAcademico obtenerActivo() {
+    public AnioAcademicoResponse obtenerActivo() {
         return anioAcademicoService.obtenerActivo();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasPermission(null, 'AULA', 'CREAR')")
-    public AnioAcademico crear(@RequestBody Map<String, Integer> body) {
+    public AnioAcademicoResponse crear(@RequestBody Map<String, Integer> body) {
         return anioAcademicoService.crear(body.get("anio"));
     }
 

@@ -1,10 +1,10 @@
 package com.institucion.sigea.aula.service;
 
-import com.institucion.sigea.aula.entity.Nivel;
+import com.institucion.sigea.aula.dto.response.NivelResponse;
 
 import java.util.List;
 
 public interface NivelService {
-    List<Nivel> listar();
+    List<NivelResponse> listar();
     void eliminar(Long id);
 }

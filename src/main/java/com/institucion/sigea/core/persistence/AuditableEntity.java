@@ -1,5 +1,6 @@
 package com.institucion.sigea.core.persistence;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,10 +36,12 @@ public abstract class AuditableEntity {
     @CreatedBy
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_creacion_id", updatable = false)
+    @JsonIgnore
     private Usuario usuarioCreacion;
 
     @LastModifiedBy
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_modificacion_id")
+    @JsonIgnore
     private Usuario usuarioModificacion;
 }

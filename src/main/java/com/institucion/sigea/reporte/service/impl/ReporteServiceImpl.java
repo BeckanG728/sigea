@@ -1,7 +1,8 @@
 package com.institucion.sigea.reporte.service.impl;
 
-import com.institucion.sigea.auditoria.AuditoriaEntity;
 import com.institucion.sigea.auditoria.AuditoriaService;
+import com.institucion.sigea.core.api.PageResponse;
+import com.institucion.sigea.core.enums.TipoOperacionAuditoria;
 import com.institucion.sigea.matricula.dto.response.MatriculaReporteResponse;
 import com.institucion.sigea.matricula.service.MatriculaService;
 import com.institucion.sigea.pago.dto.response.DeudaAlumnoResponse;
@@ -11,6 +12,7 @@ import com.institucion.sigea.reporte.dto.response.AuditoriaReporteResponse;
 import com.institucion.sigea.reporte.mapper.AuditoriaMapper;
 import com.institucion.sigea.reporte.service.ReporteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,11 +51,10 @@ public class ReporteServiceImpl implements ReporteService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AuditoriaReporteResponse> reportarAuditoria(
-            Long codUsuario, String modulo, Instant desde, Instant hasta) {
-        return auditoriaService.buscar(codUsuario, modulo, desde, hasta)
-                .stream()
-                .map(auditoriaMapper::toResponse)
-                .toList();
+    public PageResponse<AuditoriaReporteResponse> reportarAuditoria(
+            Long codUsuario, String modulo, TipoOperacionAuditoria operacion, Instant desde, Instant hasta, Pageable pageable) {
+        return PageResponse.of(
+                auditoriaService.buscar(codUsuario, modulo, operacion, desde, hasta, pageable)
+                        .map(auditoriaMapper::toResponse));
     }
 }

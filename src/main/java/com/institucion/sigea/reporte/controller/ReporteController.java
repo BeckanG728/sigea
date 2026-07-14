@@ -1,10 +1,15 @@
 package com.institucion.sigea.reporte.controller;
 
+import com.institucion.sigea.core.api.PageResponse;
+import com.institucion.sigea.core.enums.TipoOperacionAuditoria;
 import com.institucion.sigea.matricula.dto.response.MatriculaReporteResponse;
 import com.institucion.sigea.pago.dto.response.DeudaAlumnoResponse;
 import com.institucion.sigea.pago.dto.response.PagoReporteResponse;
 import com.institucion.sigea.reporte.dto.response.AuditoriaReporteResponse;
 import com.institucion.sigea.reporte.service.ReporteService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -49,11 +54,13 @@ public class ReporteController {
 
     @GetMapping("/auditoria")
     @PreAuthorize("hasPermission(null, 'REPORTE', 'VER')")
-    public List<AuditoriaReporteResponse> auditoria(
+    public PageResponse<AuditoriaReporteResponse> auditoria(
             @RequestParam(required = false) Long codUsuario,
             @RequestParam(required = false) String modulo,
+            @RequestParam(required = false) TipoOperacionAuditoria operacion,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant desde,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant hasta) {
-        return reporteService.reportarAuditoria(codUsuario, modulo, desde, hasta);
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant hasta,
+            @PageableDefault(size = 5, sort = "fechaHora", direction = Sort.Direction.DESC) Pageable pageable) {
+        return reporteService.reportarAuditoria(codUsuario, modulo, operacion, desde, hasta, pageable);
     }
 }

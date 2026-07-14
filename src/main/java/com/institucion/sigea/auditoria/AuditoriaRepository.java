@@ -1,6 +1,8 @@
 package com.institucion.sigea.auditoria;
 
 import com.institucion.sigea.core.enums.TipoOperacionAuditoria;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,11 +27,15 @@ public interface AuditoriaRepository extends JpaRepository<AuditoriaEntity, Long
     SELECT a FROM AuditoriaEntity a
     WHERE (:usuarioId IS NULL OR a.usuario.id = :usuarioId)
       AND (:modulo IS NULL OR a.modulo = :modulo)
+      AND (:operacion IS NULL OR a.operacion = :operacion)
       AND (:desde IS NULL OR a.fechaHora >= :desde)
       AND (:hasta IS NULL OR a.fechaHora <= :hasta)
-    ORDER BY a.fechaHora DESC
     """)
-    List<AuditoriaEntity> buscar(
-            @Param("usuarioId") Long usuarioId, @Param("modulo") String modulo,
-            @Param("desde") Instant desde, @Param("hasta") Instant hasta);
+    Page<AuditoriaEntity> buscar(
+            @Param("usuarioId") Long usuarioId,
+            @Param("modulo") String modulo,
+            @Param("operacion") TipoOperacionAuditoria operacion,
+            @Param("desde") Instant desde,
+            @Param("hasta") Instant hasta,
+            Pageable pageable);
 }

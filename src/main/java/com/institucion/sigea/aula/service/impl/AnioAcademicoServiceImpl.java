@@ -1,5 +1,6 @@
 package com.institucion.sigea.aula.service.impl;
 
+import com.institucion.sigea.aula.dto.response.AnioAcademicoResponse;
 import com.institucion.sigea.aula.entity.AnioAcademico;
 import com.institucion.sigea.aula.repository.AnioAcademicoRepository;
 import com.institucion.sigea.aula.service.AnioAcademicoService;
@@ -21,20 +22,23 @@ public class AnioAcademicoServiceImpl implements AnioAcademicoService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AnioAcademico> listar() {
-        return anioAcademicoRepository.findAll();
+    public List<AnioAcademicoResponse> listar() {
+        return anioAcademicoRepository.findAll().stream()
+                .map(a -> new AnioAcademicoResponse(a.getId(), a.getAnio(), a.isEstado()))
+                .toList();
     }
 
     @Override
     @Transactional
     @Auditable(modulo = "anio_academico", operacion = TipoOperacionAuditoria.INSERT)
-    public AnioAcademico crear(Integer anio) {
+    public AnioAcademicoResponse crear(Integer anio) {
         AnioAcademico nuevo = new AnioAcademico();
         nuevo.setAnio(anio);
         nuevo.setEstado(true);
 
         anioAcademicoRepository.findByEstadoTrue().ifPresent(a -> a.setEstado(false));
-        return anioAcademicoRepository.save(nuevo);
+        AnioAcademico guardado = anioAcademicoRepository.save(nuevo);
+        return new AnioAcademicoResponse(guardado.getId(), guardado.getAnio(), guardado.isEstado());
     }
 
     @Override
@@ -54,9 +58,10 @@ public class AnioAcademicoServiceImpl implements AnioAcademicoService {
     }
     @Override
     @Transactional(readOnly = true)
-    public AnioAcademico obtenerActivo() {
-        return anioAcademicoRepository.findByEstadoTrue()
+    public AnioAcademicoResponse obtenerActivo() {
+        AnioAcademico a = anioAcademicoRepository.findByEstadoTrue()
                 .orElseThrow(() -> new BusinessException(ErrorCode.INTERNAL_ERROR,
                         "No hay un año académico activo"));
+        return new AnioAcademicoResponse(a.getId(), a.getAnio(), a.isEstado());
     }
 }

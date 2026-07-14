@@ -1,7 +1,10 @@
 package com.institucion.sigea.auditoria;
 
+import com.institucion.sigea.core.enums.TipoOperacionAuditoria;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.time.Instant;
-import java.util.List;
 
 public interface AuditoriaService {
 
@@ -13,5 +16,5 @@ public interface AuditoriaService {
 
     int contarIntentosFallidos(Long idUsuario, int minutos);
 
-    List<AuditoriaEntity> buscar(Long usuarioId, String modulo, Instant desde, Instant hasta);
+    Page<AuditoriaEntity> buscar(Long usuarioId, String modulo, TipoOperacionAuditoria operacion, Instant desde, Instant hasta, Pageable pageable);
 }

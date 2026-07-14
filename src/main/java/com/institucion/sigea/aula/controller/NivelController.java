@@ -1,6 +1,6 @@
 package com.institucion.sigea.aula.controller;
 
-import com.institucion.sigea.aula.entity.Nivel;
+import com.institucion.sigea.aula.dto.response.NivelResponse;
 import com.institucion.sigea.aula.service.NivelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ public class NivelController {
 
     @GetMapping
     @PreAuthorize("hasPermission(null, 'AULA', 'VER')")
-    public List<Nivel> listar() {
+    public List<NivelResponse> listar() {
         return nivelService.listar();
     }
 
