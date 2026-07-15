@@ -6,6 +6,6 @@ public record UsuarioResponse(
         String primerApellido,
         String numeroDocumento,
         String nombreRol,
-        boolean estado
-) {
-}
+        boolean estado,
+        Long version
+) {}
