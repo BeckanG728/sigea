@@ -9,10 +9,9 @@ import com.institucion.sigea.usuario.service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -24,8 +23,7 @@ public class UsuarioController {
     @PostMapping
     public ResponseEntity<SimpleResponse> crear(@Valid @RequestBody CrearUsuarioRequest request) {
         SimpleResponse response = usuarioService.crear(request);
-        return ResponseEntity.created(
-                URI.create("/api/usuarios/" + response.id())).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")

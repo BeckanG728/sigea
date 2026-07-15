@@ -54,9 +54,9 @@ public class UsuarioServiceImpl implements UsuarioService {
                         Map.of("idRol", request.idRol())));
 
         String email = (request.numeroDocumento()
-                + request.nombre().charAt(0)
-                + request.primerApellido().charAt(0)
-                + "@sigea.edu.pe").toLowerCase();
+                        + request.nombre().charAt(0)
+                        + request.primerApellido().charAt(0)
+                        + "@sigea.edu.pe").toLowerCase();
 
         if (usuarioRepository.existsByEmail(email)) {
             throw new BusinessException(
@@ -100,8 +100,22 @@ public class UsuarioServiceImpl implements UsuarioService {
                         "Usuario no encontrado: " + id,
                         Map.of("id", id)));
 
-        if (StringUtils.hasText(request.password())) {
-            usuario.setPassword(passwordEncoder.encode(request.password()));
+        if (StringUtils.hasText(request.nombre())) {
+            usuario.setNombre(request.nombre());
+        }
+
+        if (StringUtils.hasText(request.primerApellido())) {
+            usuario.setPrimerApellido(request.primerApellido());
+        }
+
+        if (StringUtils.hasText(request.numeroDocumento())) {
+            if (!request.numeroDocumento().equals(usuario.getNumeroDocumento()) &&
+                usuarioRepository.existsByNumeroDocumento(request.numeroDocumento())) {
+                throw new BusinessException(
+                        ErrorCode.USUARIO_DUPLICADO,
+                        "Ya existe un usuario con ese dni");
+            }
+            usuario.setNumeroDocumento(request.numeroDocumento());
         }
 
         if (request.idRol() != null) {
@@ -113,8 +127,8 @@ public class UsuarioServiceImpl implements UsuarioService {
             usuario.setRol(rol);
         }
 
-        if (request.estado() != null) {
-            usuario.setEstado(request.estado());
+        if (request.version() != null) {
+            usuario.setVersion(request.version());
         }
 
         usuario = usuarioRepository.save(usuario);
