@@ -52,7 +52,7 @@ public class DashboardServiceImpl implements DashboardService {
                         m,
                         alumnos.get(m.getCodAlumno().longValue()),
                         aulas.get(m.getCodAula().longValue()),
-                        usuarios.get(m.getCodUsuario().longValue()),
+                        m.getCodUsuario() != null ? usuarios.get(m.getCodUsuario().longValue()) : null,
                         page.getNumber() * page.getSize() + page.getContent().indexOf(m) + 1
                 ))
         );
@@ -78,6 +78,7 @@ public class DashboardServiceImpl implements DashboardService {
                         (a, b) -> a
                 ));
         Map<Long, Usuario> usuarios = todas.stream()
+                .filter(m -> m.getCodUsuario() != null)
                 .collect(Collectors.toMap(
                         m -> m.getCodUsuario().longValue(),
                         m -> usuarioRepository.findById(m.getCodUsuario().longValue()).orElse(null),
@@ -90,7 +91,7 @@ public class DashboardServiceImpl implements DashboardService {
                         m,
                         alumnos.get(m.getCodAlumno().longValue()),
                         aulas.get(m.getCodAula().longValue()),
-                        usuarios.get(m.getCodUsuario().longValue()),
+                        m.getCodUsuario() != null ? usuarios.get(m.getCodUsuario().longValue()) : null,
                         i[0]++
                 ))
                 .toList();
@@ -112,6 +113,7 @@ public class DashboardServiceImpl implements DashboardService {
 
     private Map<Long, Usuario> cargarUsuarios(Page<Matricula> page) {
         return page.getContent().stream()
+                .filter(m -> m.getCodUsuario() != null)
                 .map(m -> usuarioRepository.findById(m.getCodUsuario().longValue()).orElse(null))
                 .filter(u -> u != null)
                 .collect(Collectors.toMap(Usuario::getId, Function.identity(), (a, b) -> a));

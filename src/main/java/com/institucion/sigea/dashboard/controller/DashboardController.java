@@ -22,7 +22,7 @@ public class DashboardController {
 
     @GetMapping
     @PreAuthorize("hasPermission(null, 'DASHBOARD', 'VER')")
-    public DashboardResponse obtenerResumen(@PageableDefault(size = 7) Pageable pageable) {
+    public DashboardResponse obtenerResumen(@PageableDefault(size = 5) Pageable pageable) {
         return dashboardService.obtenerResumen(pageable);
     }
 
