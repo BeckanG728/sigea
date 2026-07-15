@@ -21,10 +21,11 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SequenceGenerator(name = "seq_matricula", sequenceName = "seq_matricula", allocationSize = 1)
 public class Matricula extends AuditableEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_matricula")
     @Column(name = "cod_matricula")
     private Long id;
 
