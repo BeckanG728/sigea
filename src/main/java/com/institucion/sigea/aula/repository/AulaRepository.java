@@ -13,6 +13,8 @@ import java.util.Optional;
 
 public interface AulaRepository extends JpaRepository<Aula, Long>, JpaSpecificationExecutor<Aula> {
 
+    long countByEstadoTrue();
+
     boolean existsByAnioAcademicoIdAndNivelIdAndGradoIdAndSeccion(
             Long anioAcademicoId, Long nivelId, Long gradoId, String seccion);
 

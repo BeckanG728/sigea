@@ -16,6 +16,8 @@ import java.util.Optional;
 
 public interface CuotaRepository extends JpaRepository<Cuota, Long> {
 
+    long countByEstadoCuota(EstadoCuota estadoCuota);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT c FROM Cuota c WHERE c.id = :id")
     Optional<Cuota> findWithLockById(@Param("id") Long id);
