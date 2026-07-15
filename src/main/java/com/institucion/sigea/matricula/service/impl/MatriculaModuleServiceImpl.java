@@ -44,10 +44,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Year;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -181,6 +183,7 @@ public class MatriculaModuleServiceImpl implements MatriculaModuleService {
 
         List<Concepto> seleccionados = conceptosActivos.stream()
                 .filter(c -> idsSeleccionados.contains(c.getId()))
+                .sorted(Comparator.comparing(Concepto::getOrdenPago))
                 .toList();
 
         List<Concepto> obligatorios = conceptosActivos.stream()
@@ -196,14 +199,15 @@ public class MatriculaModuleServiceImpl implements MatriculaModuleService {
             }
         }
 
-        List<Cuota> cuotas = seleccionados.stream()
-                .map(concepto -> {
+        List<Cuota> cuotas = IntStream.range(0, seleccionados.size())
+                .mapToObj(i -> {
+                    Concepto concepto = seleccionados.get(i);
                     Cuota cuota = new Cuota();
                     cuota.setCodMatricula(matricula.getId().intValue());
                     cuota.setCodConcepto(concepto.getId().intValue());
                     cuota.setMontoPagar(concepto.getMonto());
                     cuota.setOrdenPago(concepto.getOrdenPago());
-                    cuota.setEstadoCuota(EstadoCuota.PENDIENTE);
+                    cuota.setEstadoCuota(i == 0 ? EstadoCuota.PENDIENTE : EstadoCuota.BLOQUEADA);
                     cuota.setSaldoPendiente(concepto.getMonto());
                     cuota.setFechaVencimiento(LocalDate.of(anio.getAnio() + 1, 3, 15));
                     return cuota;

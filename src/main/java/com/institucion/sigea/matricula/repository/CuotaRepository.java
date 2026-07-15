@@ -40,6 +40,22 @@ public interface CuotaRepository extends JpaRepository<Cuota, Long> {
     """)
     List<Cuota> findDeudasPorAlumno(@Param("codAlumno") Integer codAlumno, @Param("estados") List<EstadoCuota> estados);
 
+    @Query("""
+    SELECT c FROM Cuota c, Matricula m
+    WHERE c.codMatricula = m.id
+      AND m.codAlumno = :codAlumno
+    ORDER BY c.ordenPago ASC
+    """)
+    Page<Cuota> findCuotasPorAlumno(@Param("codAlumno") Integer codAlumno, Pageable pageable);
+
+    @Query("""
+    SELECT c FROM Cuota c, Matricula m
+    WHERE c.codMatricula = m.id
+      AND m.codAlumno = :codAlumno
+    ORDER BY c.ordenPago ASC
+    """)
+    List<Cuota> findTodasCuotasPorAlumno(@Param("codAlumno") Integer codAlumno);
+
     List<Cuota> findByCodMatriculaAndEstadoCuotaInOrderByOrdenPagoAsc(
             Integer codMatricula, List<EstadoCuota> estados);
 

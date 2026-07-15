@@ -33,8 +33,10 @@ import jakarta.persistence.EntityManager;
 import java.time.Year;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -96,16 +98,18 @@ public class MatriculaServiceImpl implements MatriculaService {
         List<Concepto> conceptosActivos = conceptoRepository
                 .findByAnioAcademicoId(request.codAnioAcademico()).stream()
                 .filter(Concepto::isEstado)
+                .sorted(Comparator.comparing(Concepto::getOrdenPago))
                 .toList();
 
-        List<Cuota> cuotas = conceptosActivos.stream()
-                .map(concepto -> {
+        List<Cuota> cuotas = IntStream.range(0, conceptosActivos.size())
+                .mapToObj(i -> {
+                    Concepto concepto = conceptosActivos.get(i);
                     Cuota cuota = new Cuota();
                     cuota.setCodMatricula(matricula.getId().intValue());
                     cuota.setCodConcepto(concepto.getId().intValue());
                     cuota.setMontoPagar(concepto.getMonto());
                     cuota.setOrdenPago(concepto.getOrdenPago());
-                    cuota.setEstadoCuota(EstadoCuota.PENDIENTE);
+                    cuota.setEstadoCuota(i == 0 ? EstadoCuota.PENDIENTE : EstadoCuota.BLOQUEADA);
                     return cuota;
                 })
                 .toList();
