@@ -16,12 +16,13 @@ public record MatriculaPreviewResponse(
         AnioAcademicoResponse anio,
         List<ConceptoResponse> conceptos,
         BigDecimal total,
-        Cupos cupos
+        Cupos cupos,
+        boolean totpVerificado
 ) {
     public record Cupos(long capacidad, long matriculados, long vacantes) {}
 
     public static MatriculaPreviewResponse invalido(List<String> errores) {
-        return new MatriculaPreviewResponse(false, errores, null, null, null, List.of(), BigDecimal.ZERO, new Cupos(0, 0, 0));
+        return new MatriculaPreviewResponse(false, errores, null, null, null, List.of(), BigDecimal.ZERO, new Cupos(0, 0, 0), false);
     }
 
     public static MatriculaPreviewResponse valido(
@@ -32,7 +33,8 @@ public record MatriculaPreviewResponse(
             BigDecimal total,
             long capacidad,
             long matriculados,
-            long vacantes) {
-        return new MatriculaPreviewResponse(true, List.of(), alumno, aula, anio, conceptos, total, new Cupos(capacidad, matriculados, vacantes));
+            long vacantes,
+            boolean totpVerificado) {
+        return new MatriculaPreviewResponse(true, List.of(), alumno, aula, anio, conceptos, total, new Cupos(capacidad, matriculados, vacantes), totpVerificado);
     }
 }

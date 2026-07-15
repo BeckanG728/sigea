@@ -145,30 +145,24 @@ public class MatriculaValidator {
     }
 
     private String previewValidarAlumno(Long codAlumno) {
-        return alumnoRepository.findById(codAlumno)
-                .map(a -> {
-                    if (!a.isEstado()) return "El alumno se encuentra inactivo.";
-                    return null;
-                })
-                .orElse("El alumno no existe.");
+        Optional<Alumno> opt = alumnoRepository.findById(codAlumno);
+        if (opt.isEmpty()) return "El alumno no existe.";
+        if (!opt.get().isEstado()) return "El alumno se encuentra inactivo.";
+        return null;
     }
 
     private String previewValidarAula(Long codAula) {
-        return aulaRepository.findById(codAula)
-                .map(a -> {
-                    if (!a.isEstado()) return "El aula no se encuentra activa.";
-                    return null;
-                })
-                .orElse("El aula no existe.");
+        Optional<Aula> opt = aulaRepository.findById(codAula);
+        if (opt.isEmpty()) return "El aula no existe.";
+        if (!opt.get().isEstado()) return "El aula no se encuentra activa.";
+        return null;
     }
 
     private String previewValidarAnio(Long codAnioAcademico) {
-        return anioAcademicoRepository.findById(codAnioAcademico)
-                .map(a -> {
-                    if (!a.isEstado()) return "El año académico no permite nuevas matrículas.";
-                    return null;
-                })
-                .orElse("El año académico no existe.");
+        Optional<AnioAcademico> opt = anioAcademicoRepository.findById(codAnioAcademico);
+        if (opt.isEmpty()) return "El año académico no existe.";
+        if (!opt.get().isEstado()) return "El año académico no permite nuevas matrículas.";
+        return null;
     }
 
     private String previewValidarNoMatriculado(Long codAlumno, Long codAnioAcademico) {
@@ -179,15 +173,14 @@ public class MatriculaValidator {
     }
 
     private String previewValidarVacantes(Long codAula, Long codAnioAcademico) {
-        return aulaRepository.findById(codAula)
-                .map(aula -> {
-                    long matriculados = matriculaRepository
-                            .countByCodAulaAndCodAnioAcademicoAndEstadoTrue(
-                                    aula.getId().intValue(), codAnioAcademico.intValue());
-                    if (matriculados >= aula.getCapacidadMaxima()) return "No existen vacantes disponibles.";
-                    return null;
-                })
-                .orElse(null);
+        Optional<Aula> opt = aulaRepository.findById(codAula);
+        if (opt.isEmpty()) return null;
+        Aula aula = opt.get();
+        long matriculados = matriculaRepository
+                .countByCodAulaAndCodAnioAcademicoAndEstadoTrue(
+                        aula.getId().intValue(), codAnioAcademico.intValue());
+        if (matriculados >= aula.getCapacidadMaxima()) return "No existen vacantes disponibles.";
+        return null;
     }
 
     private String previewValidarDeudas(Long codAlumno, Long codAnioAcademico) {

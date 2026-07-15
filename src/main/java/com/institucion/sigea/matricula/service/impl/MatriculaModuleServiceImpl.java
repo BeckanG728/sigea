@@ -71,6 +71,13 @@ public class MatriculaModuleServiceImpl implements MatriculaModuleService {
     @Override
     @Transactional(readOnly = true)
     public MatriculaPreviewResponse preview(MatriculaPreviewRequest request) {
+        JwtPrincipal principal = (JwtPrincipal) SecurityContextHolder
+                .getContext().getAuthentication().getPrincipal();
+        Usuario usuario = usuarioRepository.findById(principal.userId())
+                .orElseThrow(() -> new BusinessException(
+                        ErrorCode.INVALID_CREDENTIALS, "Usuario no encontrado"));
+        boolean totpVerificado = usuario.isTotpVerificado();
+
         List<String> errores = matriculaValidator.validarPreview(
                 request.alumnoId(), request.aulaId(), request.anioId());
 
@@ -118,7 +125,7 @@ public class MatriculaModuleServiceImpl implements MatriculaModuleService {
 
         return MatriculaPreviewResponse.valido(
                 alumnoResp, aulaResp, anioResp,
-                conceptosResp, total, capacidad, matriculados, vacantes);
+                conceptosResp, total, capacidad, matriculados, vacantes, totpVerificado);
     }
 
     @Override
@@ -148,6 +155,7 @@ public class MatriculaModuleServiceImpl implements MatriculaModuleService {
         matriculaValidator.validar(aula, request.alumnoId(), request.anioId());
 
         verificarTotp(usuario, request.codigoTotp());
+        usuario.setTotpVerificado(true);
 
         Matricula matricula = new Matricula();
         matricula.setCodAlumno(request.alumnoId().intValue());
@@ -159,7 +167,7 @@ public class MatriculaModuleServiceImpl implements MatriculaModuleService {
 
         int anioActual = Year.now().getValue();
         Long siguienteCorrelativo = ((Number) entityManager
-                .createNativeQuery("SELECT nextval('seq_codigo_matricula')")
+                .createNativeQuery("SELECT nextval('seq_matricula')")
                 .getSingleResult()).longValue();
         matricula.setCodigo(FORMATO_CODIGO_MATRICULA.formatted(anioActual, siguienteCorrelativo));
         matriculaRepository.save(matricula);
@@ -182,7 +190,7 @@ public class MatriculaModuleServiceImpl implements MatriculaModuleService {
             if (!idsSeleccionados.contains(obligatorio.getId())) {
                 throw new BusinessException(ErrorCode.VALIDACION_FORMULARIO,
                         "El concepto obligatorio " + obligatorio.getNombreConcepto()
-                                + " debe estar seleccionado.",
+                        + " debe estar seleccionado.",
                         Map.of("conceptoId", obligatorio.getId(),
                                 "nombreConcepto", obligatorio.getNombreConcepto()));
             }
