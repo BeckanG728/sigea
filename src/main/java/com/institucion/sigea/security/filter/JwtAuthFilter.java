@@ -67,7 +67,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 Cache disabledCache = cacheManager.getCache(CACHE_USUARIOS_DESACTIVADOS);
                 if (disabledCache != null && disabledCache.get(userId, Long.class) != null) {
                     SecurityContextHolder.clearContext();
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Usuario desactivado");
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"error\":\"USER_DISABLED\",\"message\":\"Usuario desactivado\"}");
                     return;
                 }
 
@@ -88,8 +90,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
 
         } catch (JwtException | IllegalArgumentException e) {
-            // token inválido → no autenticado
             SecurityContextHolder.clearContext();
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\":\"TOKEN_EXPIRED\",\"message\":\"Token inválido o expirado\"}");
+            return;
         }
 
         filterChain.doFilter(request, response);
