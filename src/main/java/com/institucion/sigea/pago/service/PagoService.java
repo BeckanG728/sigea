@@ -5,6 +5,7 @@ import com.institucion.sigea.pago.dto.response.CuotaDeudaResponse;
 import com.institucion.sigea.pago.dto.response.DeudaAlumnoResponse;
 import com.institucion.sigea.pago.dto.response.HistorialGeneralResponse;
 import com.institucion.sigea.pago.dto.response.PagoReporteResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,10 @@ public interface PagoService {
     List<CuotaDeudaResponse> listarDeudas(Long codAlumno);
 
     HistorialGeneralResponse listarHistorialGeneral(Pageable pageable);
+
+    Page<CuotaDeudaResponse> listarCuotasAlumno(Long codAlumno, Pageable pageable);
+
+    List<CuotaDeudaResponse> listarTodasCuotasAlumno(Long codAlumno);
 
     Cuota validarOrdenDePago(Long codCuota);
 

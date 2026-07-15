@@ -1,6 +1,8 @@
 package com.institucion.sigea.pago.service.impl;
 
 import com.institucion.sigea.auditoria.Auditable;
+import com.institucion.sigea.concepto.entity.Concepto;
+import com.institucion.sigea.concepto.repository.ConceptoRepository;
 import com.institucion.sigea.core.enums.TipoOperacionAuditoria;
 import com.institucion.sigea.core.exception.BusinessException;
 import com.institucion.sigea.core.exception.ErrorCode;
@@ -23,7 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.Year;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +40,7 @@ public class PagoTransaccionServiceImpl implements PagoTransaccionService {
     private final PagoRepository pagoRepository;
     private final ReciboRepository reciboRepository;
     private final CuotaRepository cuotaRepository;
+    private final ConceptoRepository conceptoRepository;
 
     private final EntityManager entityManager;
     private final PagoMapper pagoMapper;
@@ -79,6 +85,69 @@ public class PagoTransaccionServiceImpl implements PagoTransaccionService {
         cuota.setFechaPago(LocalDateTime.now());
         cuotaRepository.save(cuota);
 
+        desbloquearSiguientes(cuota);
+
         return pagoMapper.toResponse(pago, cuota);
+    }
+
+    private void desbloquearSiguientes(Cuota cuotaPagada) {
+        List<Cuota> cuotas = cuotaRepository
+                .findByCodMatriculaOrderByOrdenPagoAsc(cuotaPagada.getCodMatricula());
+
+        Map<Integer, Concepto> conceptosMap = conceptoRepository
+                .findAllById(cuotas.stream()
+                        .map(c -> Long.valueOf(c.getCodConcepto())).toList())
+                .stream()
+                .collect(Collectors.toMap(c -> c.getId().intValue(), Function.identity()));
+
+        Concepto conceptoPagado = conceptosMap.get(cuotaPagada.getCodConcepto());
+        if (conceptoPagado == null) return;
+
+        switch (conceptoPagado.getTipo()) {
+            case "FIJO" -> desbloquearFijo(cuotas, conceptosMap, cuotaPagada.getOrdenPago());
+            case "MENSUAL" -> desbloquearSiguienteTipo(cuotas, conceptosMap, cuotaPagada.getOrdenPago(), "MENSUAL");
+        }
+    }
+
+    private void desbloquearFijo(List<Cuota> cuotas, Map<Integer, Concepto> conceptosMap, short ordenPagado) {
+        for (Cuota c : cuotas) {
+            if (c.getOrdenPago() > ordenPagado && c.getEstadoCuota() == EstadoCuota.BLOQUEADA) {
+                Concepto conc = conceptosMap.get(c.getCodConcepto());
+                if (conc != null && "FIJO".equals(conc.getTipo())) {
+                    c.setEstadoCuota(EstadoCuota.PENDIENTE);
+                    cuotaRepository.save(c);
+                    return;
+                }
+            }
+        }
+        boolean primerMensualEncontrado = false;
+        for (Cuota c : cuotas) {
+            if (c.getEstadoCuota() == EstadoCuota.BLOQUEADA) {
+                Concepto conc = conceptosMap.get(c.getCodConcepto());
+                if (conc != null) {
+                    if ("OPCIONAL".equals(conc.getTipo())) {
+                        c.setEstadoCuota(EstadoCuota.PENDIENTE);
+                        cuotaRepository.save(c);
+                    } else if ("MENSUAL".equals(conc.getTipo()) && !primerMensualEncontrado) {
+                        c.setEstadoCuota(EstadoCuota.PENDIENTE);
+                        cuotaRepository.save(c);
+                        primerMensualEncontrado = true;
+                    }
+                }
+            }
+        }
+    }
+
+    private void desbloquearSiguienteTipo(List<Cuota> cuotas, Map<Integer, Concepto> conceptosMap, short ordenPagado, String tipo) {
+        for (Cuota c : cuotas) {
+            if (c.getOrdenPago() > ordenPagado && c.getEstadoCuota() == EstadoCuota.BLOQUEADA) {
+                Concepto conc = conceptosMap.get(c.getCodConcepto());
+                if (conc != null && tipo.equals(conc.getTipo())) {
+                    c.setEstadoCuota(EstadoCuota.PENDIENTE);
+                    cuotaRepository.save(c);
+                    return;
+                }
+            }
+        }
     }
 }

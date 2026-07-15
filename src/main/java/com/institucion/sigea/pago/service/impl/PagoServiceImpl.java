@@ -65,6 +65,41 @@ public class PagoServiceImpl implements PagoService {
     }
 
     @Override
+    public Page<CuotaDeudaResponse> listarCuotasAlumno(Long codAlumno, Pageable pageable) {
+        return cuotaRepository.findCuotasPorAlumno(codAlumno.intValue(), pageable)
+                .map(c -> {
+                    String nombreConcepto = conceptoRepository.findById(c.getCodConcepto().longValue())
+                            .map(Concepto::getNombreConcepto)
+                            .orElse(null);
+                    Integer anioAcademico = matriculaRepository.findById(c.getCodMatricula().longValue())
+                            .map(Matricula::getCodAnioAcademico)
+                            .orElse(null);
+                    CuotaDeudaResponse base = pagoMapper.toDeudaResponse(c);
+                    return new CuotaDeudaResponse(
+                            base.codCuota(), base.codMatricula(), base.montoPagar(),
+                            base.ordenPago(), base.estadoCuota(), nombreConcepto, anioAcademico);
+                });
+    }
+
+    @Override
+    public List<CuotaDeudaResponse> listarTodasCuotasAlumno(Long codAlumno) {
+        return cuotaRepository.findTodasCuotasPorAlumno(codAlumno.intValue()).stream()
+                .map(c -> {
+                    String nombreConcepto = conceptoRepository.findById(c.getCodConcepto().longValue())
+                            .map(Concepto::getNombreConcepto)
+                            .orElse(null);
+                    Integer anioAcademico = matriculaRepository.findById(c.getCodMatricula().longValue())
+                            .map(Matricula::getCodAnioAcademico)
+                            .orElse(null);
+                    CuotaDeudaResponse base = pagoMapper.toDeudaResponse(c);
+                    return new CuotaDeudaResponse(
+                            base.codCuota(), base.codMatricula(), base.montoPagar(),
+                            base.ordenPago(), base.estadoCuota(), nombreConcepto, anioAcademico);
+                })
+                .toList();
+    }
+
+    @Override
     public HistorialGeneralResponse listarHistorialGeneral(Pageable pageable) {
         Page<Cuota> cuotaPage = cuotaRepository.findAllDeudas(ESTADOS_DEUDA, pageable);
 
@@ -139,6 +174,23 @@ public class PagoServiceImpl implements PagoService {
         List<Cuota> anterioresPendientes = cuotaRepository
                 .findByCodMatriculaAndEstadoCuotaInAndOrdenPagoLessThanOrderByOrdenPagoAsc(
                         cuota.getCodMatricula(), ESTADOS_DEUDA, cuota.getOrdenPago());
+
+        if (!anterioresPendientes.isEmpty()) {
+            Concepto concPagado = conceptoRepository.findById(cuota.getCodConcepto().longValue()).orElse(null);
+            if (concPagado != null && "OPCIONAL".equals(concPagado.getTipo())) {
+                Map<Integer, Concepto> conceptoMap = conceptoRepository.findAllById(
+                        anterioresPendientes.stream()
+                                .map(c -> Long.valueOf(c.getCodConcepto()))
+                                .toList()
+                ).stream().collect(Collectors.toMap(c -> c.getId().intValue(), Function.identity()));
+                anterioresPendientes = anterioresPendientes.stream()
+                        .filter(c -> {
+                            Concepto cc = conceptoMap.get(c.getCodConcepto());
+                            return cc != null && "FIJO".equals(cc.getTipo());
+                        })
+                        .toList();
+            }
+        }
 
         if (!anterioresPendientes.isEmpty()) {
             Cuota anterior = anterioresPendientes.get(0);
