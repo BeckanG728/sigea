@@ -2,6 +2,8 @@ package com.institucion.sigea.pago.service.impl;
 
 import com.institucion.sigea.alumno.entity.Alumno;
 import com.institucion.sigea.alumno.repository.AlumnoRepository;
+import com.institucion.sigea.aula.entity.AnioAcademico;
+import com.institucion.sigea.aula.repository.AnioAcademicoRepository;
 import com.institucion.sigea.concepto.entity.Concepto;
 import com.institucion.sigea.concepto.repository.ConceptoRepository;
 import com.institucion.sigea.core.exception.BusinessException;
@@ -44,6 +46,7 @@ public class PagoServiceImpl implements PagoService {
     private final ConceptoRepository conceptoRepository;
     private final MatriculaRepository matriculaRepository;
     private final AlumnoRepository alumnoRepository;
+    private final AnioAcademicoRepository anioAcademicoRepository;
 
     private final PagoMapper pagoMapper;
 
@@ -56,6 +59,8 @@ public class PagoServiceImpl implements PagoService {
                     .orElse(null);
             Integer anioAcademico = matriculaRepository.findById(c.getCodMatricula().longValue())
                     .map(Matricula::getCodAnioAcademico)
+                    .flatMap(cod -> anioAcademicoRepository.findById(cod.longValue()))
+                    .map(AnioAcademico::getAnio)
                     .orElse(null);
             CuotaDeudaResponse base = pagoMapper.toDeudaResponse(c);
             return new CuotaDeudaResponse(
@@ -73,6 +78,8 @@ public class PagoServiceImpl implements PagoService {
                             .orElse(null);
                     Integer anioAcademico = matriculaRepository.findById(c.getCodMatricula().longValue())
                             .map(Matricula::getCodAnioAcademico)
+                            .flatMap(cod -> anioAcademicoRepository.findById(cod.longValue()))
+                            .map(AnioAcademico::getAnio)
                             .orElse(null);
                     CuotaDeudaResponse base = pagoMapper.toDeudaResponse(c);
                     return new CuotaDeudaResponse(
@@ -90,6 +97,8 @@ public class PagoServiceImpl implements PagoService {
                             .orElse(null);
                     Integer anioAcademico = matriculaRepository.findById(c.getCodMatricula().longValue())
                             .map(Matricula::getCodAnioAcademico)
+                            .flatMap(cod -> anioAcademicoRepository.findById(cod.longValue()))
+                            .map(AnioAcademico::getAnio)
                             .orElse(null);
                     CuotaDeudaResponse base = pagoMapper.toDeudaResponse(c);
                     return new CuotaDeudaResponse(
@@ -121,6 +130,12 @@ public class PagoServiceImpl implements PagoService {
                         .collect(Collectors.toList())
         ).stream().collect(Collectors.toMap(c -> c.getId().intValue(), Function.identity()));
 
+        Map<Integer, AnioAcademico> anioAcademicoCache = anioAcademicoRepository.findAllById(
+                matriculaCache.values().stream()
+                        .map(m -> Long.valueOf(m.getCodAnioAcademico()))
+                        .collect(Collectors.toList())
+        ).stream().collect(Collectors.toMap(a -> a.getId().intValue(), Function.identity()));
+
         List<DeudaHistorialResponse> content = cuotaPage.getContent().stream().map(c -> {
             Matricula m = matriculaCache.get(c.getCodMatricula());
             Alumno a = m != null ? alumnoCache.get(m.getCodAlumno()) : null;
@@ -139,7 +154,8 @@ public class PagoServiceImpl implements PagoService {
                     a != null ? a.getNumeroDocumento() : null,
                     alumnoNombre,
                     concepto != null ? concepto.getNombreConcepto() : null,
-                    m != null ? m.getCodAnioAcademico() : null,
+                    m != null ? anioAcademicoCache.get(m.getCodAnioAcademico()) != null
+                            ? anioAcademicoCache.get(m.getCodAnioAcademico()).getAnio() : null : null,
                     c.getMontoPagar(),
                     c.getEstadoCuota().name()
             );

@@ -98,7 +98,7 @@ public class MatriculaModuleServiceImpl implements MatriculaModuleService {
 
         long matriculados = matriculaRepository
                 .countByCodAulaAndCodAnioAcademicoAndEstadoTrue(
-                        aula.getId().intValue(), anio.getAnio());
+                        aula.getId().intValue(), anio.getId().intValue());
 
         AulaMatriculaResponse aulaResp = new AulaMatriculaResponse(
                 aula.getId(), aula.getNivel().getNombre(),

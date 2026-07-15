@@ -18,9 +18,15 @@ public record MatriculaDashboardResponse(
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     public static MatriculaDashboardResponse from(Matricula m, Alumno al, Aula au, Usuario u, long index) {
-        String nombreAlumno = al.getApellidoPaterno() + " " + al.getApellidoMaterno() + ", " + al.getNombres();
-        String descAula = au.getNivel().getNombre() + " " + au.getGrado().getNombreGrado() + " " + au.getSeccion();
-        String nombreUsuario = u.getNombre() + " " + u.getPrimerApellido();
+        String nombreAlumno = al != null
+                ? al.getApellidoPaterno() + " " + al.getApellidoMaterno() + ", " + al.getNombres()
+                : "[Alumno eliminado]";
+        String descAula = au != null
+                ? au.getNivel().getNombre() + " " + au.getGrado().getNombreGrado() + " " + au.getSeccion()
+                : "[Aula eliminada]";
+        String nombreUsuario = u != null
+                ? u.getNombre() + " " + u.getPrimerApellido()
+                : "[Usuario eliminado]";
         return new MatriculaDashboardResponse(
                 index,
                 nombreAlumno,

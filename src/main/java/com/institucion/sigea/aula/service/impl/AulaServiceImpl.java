@@ -93,7 +93,7 @@ public class AulaServiceImpl implements AulaService {
                         .map(aula -> {
                             long matriculados = matriculaRepository
                                     .countByCodAulaAndCodAnioAcademicoAndEstadoTrue(
-                                            aula.getId().intValue(), periodo);
+                                            aula.getId().intValue(), anio.getId().intValue());
                             return new AulaMatriculaResponse(
                                     aula.getId(),
                                     aula.getNivel().getNombre(),
@@ -116,7 +116,7 @@ public class AulaServiceImpl implements AulaService {
                     long matriculados = matriculaRepository
                             .countByCodAulaAndCodAnioAcademicoAndEstadoTrue(
                                     aula.getId().intValue(),
-                                    aula.getAnioAcademico().getAnio());
+                                    aula.getAnioAcademico().getId().intValue());
                     AulaListadoResponse dto = aulaMapper.toListadoResponse(aula);
                     return new AulaListadoResponse(
                             dto.id(), dto.codigo(), dto.nivel(), dto.grado(),
@@ -142,7 +142,7 @@ public class AulaServiceImpl implements AulaService {
         // El conteo de matriculados se agrupa por año académico porque
         // countByCodAulaInAndCodAnioAcademicoAndEstadoTrue requiere un único codAnioAcademico por lote.
         Map<Integer, List<Aula>> aulasPorAnio = aulas.stream()
-                .collect(Collectors.groupingBy(a -> a.getAnioAcademico().getAnio()));
+                .collect(Collectors.groupingBy(a -> a.getAnioAcademico().getId().intValue()));
 
         Map<Long, Long> matriculadosPorAula = new java.util.HashMap<>();
         aulasPorAnio.forEach((anio, aulasDelAnio) -> {
@@ -181,7 +181,7 @@ public class AulaServiceImpl implements AulaService {
         long matriculados = matriculaRepository
                 .countByCodAulaAndCodAnioAcademicoAndEstadoTrue(
                         aula.getId().intValue(),
-                        aula.getAnioAcademico().getAnio());
+                        aula.getAnioAcademico().getId().intValue());
         AulaListadoResponse dto = aulaMapper.toListadoResponse(aula);
         return new AulaListadoResponse(
                 dto.id(), dto.codigo(), dto.nivel(), dto.grado(),

@@ -31,7 +31,7 @@ public class VacanteReporteServiceImpl implements VacanteReporteService {
         long matriculados = matriculaRepository
                 .countByCodAulaAndCodAnioAcademicoAndEstadoTrue(
                         aula.getId().intValue(),
-                        aula.getAnioAcademico().getAnio());
+                        aula.getAnioAcademico().getId().intValue());
         long vacantes = aula.getCapacidadMaxima() - matriculados;
 
         String descripcion = aula.getAnioAcademico().getAnio() + " - "
